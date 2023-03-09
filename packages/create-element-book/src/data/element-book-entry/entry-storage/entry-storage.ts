@@ -1,4 +1,4 @@
-import {createSimpleObservable} from '../../augments/simple-observable';
+import {createSimpleObservable} from '../../../augments/simple-observable';
 import {ElementBookEntry} from '../element-book-entry';
 import {emptyTreeNode, EntryTreeNode, traverseToImmediateParent} from './entry-tree';
 

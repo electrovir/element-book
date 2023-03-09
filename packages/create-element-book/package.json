@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "@augment-vir/common": "^13.1.0",
+        "spa-router-vir": "^2.0.0",
         "typed-event-target": "^1.2.0"
     },
     "devDependencies": {

@@ -1,5 +1,5 @@
-import {ElementBook} from '@element-book/create-element-book';
 import {assign, css, defineElementNoInputs, html} from 'element-vir';
+import {VirElementBook} from '../../create-element-book';
 import {entries} from '../../element-book/example.element.book';
 
 export const VirApp = defineElementNoInputs({
@@ -15,7 +15,7 @@ export const VirApp = defineElementNoInputs({
     `,
     renderCallback: () => {
         return html`
-            <${ElementBook} ${assign(ElementBook, {entries})}></${ElementBook}>
+            <${VirElementBook} ${assign(VirElementBook, {entries})}></${VirElementBook}>
         `;
     },
 });
