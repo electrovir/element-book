@@ -7,7 +7,11 @@ import {findTitleAncestry} from './entry-tree';
 describe(findTitleAncestry.name, () => {
     const exampleSection = defineElementBookSection('section title');
     const exampleChapter = defineElementBookChapter('chapter title', exampleSection);
-    const examplePage = defineElementBookPage('page title', exampleChapter);
+    const examplePage = defineElementBookPage({
+        examples: [],
+        title: 'page title',
+        parent: exampleChapter,
+    });
 
     itCases(findTitleAncestry, [
         {

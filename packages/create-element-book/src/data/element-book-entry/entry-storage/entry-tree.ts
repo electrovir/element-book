@@ -1,14 +1,23 @@
-import {ElementBookEntry} from '../element-book-entry';
+import {ensureType, isLengthAtLeast} from '@augment-vir/common';
+import {ReadonlyDeep} from 'type-fest';
+import {ElementBookEntry, ElementBookRoot} from '../element-book-entry';
+import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 
-export type EntryTreeNode = {
-    entry: ElementBookEntry;
+export type EntryTreeNode<EntryType extends ElementBookEntry = ElementBookEntry> = {
+    entry: EntryType;
     children: Record<string, EntryTreeNode>;
 };
 
-export const emptyTreeNode: Readonly<EntryTreeNode> = {
-    entry: {title: 'entry tree root'} as ElementBookEntry,
+export const emptyTreeNode: Readonly<EntryTreeNode> = ensureType<
+    Readonly<EntryTreeNode<ElementBookRoot>>
+>({
+    entry: {
+        type: ElementBookEntryTypeEnum.Root,
+        title: 'element book tree root',
+        parent: undefined,
+    },
     children: {} as Record<string, EntryTreeNode>,
-};
+});
 
 export function traverseToImmediateParent(
     entry: Readonly<ElementBookEntry>,
@@ -39,4 +48,23 @@ export function findTitleAncestry(entry: ElementBookEntry): string[] {
     } else {
         return [];
     }
+}
+
+export function findEntryByTitles(
+    titles: ReadonlyArray<string>,
+    tree: ReadonlyDeep<EntryTreeNode>,
+): ReadonlyDeep<EntryTreeNode> {
+    if (!isLengthAtLeast(titles, 1)) {
+        return tree;
+    }
+
+    const nextEntryTitle = titles[0];
+
+    const nextTree = tree.children[nextEntryTitle];
+
+    if (!nextTree) {
+        throw new Error(`Failed to find '${tree.entry.title}' > '${nextEntryTitle}'.`);
+    }
+
+    return findEntryByTitles(titles.slice(1), nextTree);
 }

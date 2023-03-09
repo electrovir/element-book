@@ -8,8 +8,13 @@ export const VirElementBookRouteLink = defineElement<{
     router: ElementBookRouter | undefined;
 }>()({
     tagName: 'vir-route-link',
-    styles: css`
+    cssVars: {
+        anchorPadding: '',
+    },
+    styles: ({cssVarValues}) => css`
         a {
+            display: block;
+            padding: ${cssVarValues.anchorPadding};
             text-decoration: inherit;
             color: inherit;
             height: 100%;

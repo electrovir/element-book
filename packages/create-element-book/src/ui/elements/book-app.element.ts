@@ -1,7 +1,10 @@
-import {assign, css, defineElement, html, listen} from 'element-vir';
+import {assign, css, html, listen} from 'element-vir';
 import {ElementBookEntry} from '../../data/element-book-entry/element-book-entry';
 import {entryStorage} from '../../data/element-book-entry/entry-storage/entry-storage';
-import {emptyTreeNode} from '../../data/element-book-entry/entry-storage/entry-tree';
+import {
+    emptyTreeNode,
+    findEntryByTitles,
+} from '../../data/element-book-entry/entry-storage/entry-tree';
 import {createElementBookRouter} from '../../routing/create-element-book-router';
 import {
     ElementBookFullRoute,
@@ -9,14 +12,21 @@ import {
     emptyElementBookFullRoute,
 } from '../../routing/element-book-routing';
 import {ChangeRouteEvent} from '../events/change-route.event';
-import {VirElementBookNav} from './vir-book-nav.element';
+import {BookNav} from './book-nav.element';
+import {defineBookElement} from './define-book-element';
+import {BookEntryDisplay} from './entry-display/book-entry-display.element';
 
-export const VirElementBook = defineElement<{
+export const BookApp = defineBookElement<{
     entries?: ReadonlyArray<ElementBookEntry>;
     baseRoute?: string;
     defaultPath?: ReadonlyArray<string>;
 }>()({
-    tagName: 'vir-element-book',
+    tagName: 'book-app',
+    stateInit: {
+        entriesTree: emptyTreeNode,
+        currentRoute: emptyElementBookFullRoute,
+        router: undefined as undefined | ElementBookRouter,
+    },
     styles: css`
         :host {
             display: block;
@@ -28,11 +38,6 @@ export const VirElementBook = defineElement<{
             display: flex;
         }
     `,
-    stateInit: {
-        entriesTree: emptyTreeNode,
-        currentRoute: emptyElementBookFullRoute,
-        router: undefined as undefined | ElementBookRouter,
-    },
     initCallback({updateState, state, inputs}) {
         entryStorage.watch((newTree) => {
             updateState({entriesTree: newTree});
@@ -69,8 +74,6 @@ export const VirElementBook = defineElement<{
             const defaultPath: ReadonlyArray<string> | undefined =
                 inputs.defaultPath ?? (firstTitle ? [firstTitle] : undefined);
 
-            console.log({defaultPath, children: state.entriesTree.children});
-
             if (defaultPath && defaultPath.length) {
                 const newRoute: Pick<ElementBookFullRoute, 'paths'> = {
                     paths: defaultPath,
@@ -79,6 +82,11 @@ export const VirElementBook = defineElement<{
             }
         }
 
+        const currentEntry: ElementBookEntry = findEntryByTitles(
+            state.currentRoute.paths,
+            state.entriesTree,
+        ).entry;
+
         return html`
             <div
                 class="root"
@@ -86,13 +94,18 @@ export const VirElementBook = defineElement<{
                     updateRoutes(event.detail);
                 })}
             >
-                <${VirElementBookNav}
-                    ${assign(VirElementBookNav, {
+                <${BookNav}
+                    ${assign(BookNav, {
                         tree: state.entriesTree,
                         router: state.router,
                     })}
-                ></${VirElementBookNav}>
-                ${state.currentRoute.paths.join(', ')}
+                ></${BookNav}>
+                <${BookEntryDisplay}
+                    ${assign(BookEntryDisplay, {
+                        currentRoute: state.currentRoute,
+                        currentEntry,
+                    })}
+                ></${BookEntryDisplay}>
             </div>
         `;
     },

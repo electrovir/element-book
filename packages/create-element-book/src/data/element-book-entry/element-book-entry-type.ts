@@ -5,4 +5,6 @@ export enum ElementBookEntryTypeEnum {
     Chapter = 'chapter',
     /** An individual element or specific example of an element. */
     Page = 'page',
+    /** Tree root. Do not use this in user code. */
+    Root = 'root',
 }

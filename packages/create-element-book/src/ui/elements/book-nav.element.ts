@@ -1,14 +1,15 @@
-import {assign, css, defineElement, html} from 'element-vir';
+import {assign, css, html} from 'element-vir';
 import {TemplateResult} from 'lit';
 import {EntryTreeNode} from '../../data/element-book-entry/entry-storage/entry-tree';
 import {ElementBookRouter} from '../../routing/element-book-routing';
 import {VirElementBookRouteLink} from './common/vir-element-book-route-link.element';
+import {defineBookElement} from './define-book-element';
 
-export const VirElementBookNav = defineElement<{
+export const BookNav = defineBookElement<{
     tree: EntryTreeNode;
     router: ElementBookRouter | undefined;
 }>()({
-    tagName: 'vir-element-book-nav',
+    tagName: 'book-nav',
     styles: css`
         :host {
             display: flex;
@@ -20,7 +21,9 @@ export const VirElementBookNav = defineElement<{
         }
 
         .title-row {
-            padding-left: calc(16px * var(--indent, 0));
+            display: block;
+            ${VirElementBookRouteLink.cssVarNames
+                .anchorPadding}: 0 0 0 calc(16px * var(--indent, 0));
         }
     `,
     renderCallback({inputs}) {
