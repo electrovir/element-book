@@ -1,5 +1,6 @@
 {
-    "name": "@element-book/create-element-book",
+    "name": "@element-book/frontend-example",
+    "private": true,
     "homepage": "https://github.com/electrovir/element-book",
     "bugs": {
         "url": "https://github.com/electrovir/element-book/issues"
@@ -16,30 +17,22 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "compile": "rm -rf dist && virmator compile",
-        "test": "virmator test-web",
-        "test:coverage": "npm run test coverage",
+        "start": "virmator frontend",
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/common": "^13.1.0",
-        "typed-event-target": "^1.2.0"
+        "element-vir": "^9.2.2"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^13.1.0",
+        "@augment-vir/node-js": "^13.1.0",
         "@open-wc/testing": "^3.1.7",
         "@types/mocha": "^10.0.1",
         "@web/dev-server-esbuild": "^0.3.3",
         "@web/test-runner": "^0.15.1",
         "@web/test-runner-commands": "^0.6.5",
         "@web/test-runner-playwright": "^0.9.0",
-        "@web/test-runner-visual-regression": "^0.7.0",
-        "element-vir": "^9.2.2",
         "istanbul-smart-text-reporter": "^1.1.1",
-        "type-fest": "^3.6.1",
-        "typescript": "^4.9.5"
-    },
-    "peerDependencies": {
-        "element-vir": "^>=9.x"
+        "typescript": "^4.9.5",
+        "vite": "^4.1.4"
     }
 }
