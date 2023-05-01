@@ -11,10 +11,5 @@
         "./dist",
         "./node_modules",
         "./test-files"
-    ],
-    "references": [
-        {
-            "path": "../create-element-book"
-        }
     ]
 }

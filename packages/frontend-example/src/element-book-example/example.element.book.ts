@@ -1,9 +1,5 @@
+import {createExample, defineElementBookPage, defineElementBookSection} from 'element-book';
 import {html, listen} from 'element-vir';
-import {
-    createExample,
-    defineElementBookPage,
-    defineElementBookSection,
-} from '../create-element-book';
 
 const section = defineElementBookSection('my section');
 const section2 = defineElementBookSection('my section 2');

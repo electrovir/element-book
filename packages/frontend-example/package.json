@@ -1,38 +1,27 @@
 {
     "name": "@element-book/frontend-example",
     "private": true,
-    "homepage": "https://github.com/electrovir/element-book",
-    "bugs": {
-        "url": "https://github.com/electrovir/element-book/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/electrovir/element-book"
-    },
-    "license": "MIT",
-    "author": {
-        "name": "electrovir",
-        "url": "https://github.com/electrovir"
-    },
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
     "scripts": {
+        "compile": "npm run test:types",
+        "compile:clean": "npm run compile",
         "start": "virmator frontend",
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "element-vir": "^11.0.0"
+        "element-book": "*",
+        "element-vir": "^12.2.0"
     },
     "devDependencies": {
-        "@augment-vir/node-js": "^13.2.1",
-        "@open-wc/testing": "^3.1.7",
+        "@augment-vir/node-js": "^13.3.0",
+        "@open-wc/testing": "^3.1.8",
         "@types/mocha": "^10.0.1",
-        "@web/dev-server-esbuild": "^0.3.4",
-        "@web/test-runner": "^0.15.1",
-        "@web/test-runner-commands": "^0.6.5",
-        "@web/test-runner-playwright": "^0.9.0",
+        "@web/dev-server-esbuild": "^0.4.1",
+        "@web/test-runner": "^0.16.1",
+        "@web/test-runner-commands": "^0.7.0",
+        "@web/test-runner-playwright": "^0.10.0",
         "istanbul-smart-text-reporter": "^1.1.1",
         "typescript": "^4.9.5",
-        "vite": "^4.2.1"
+        "vite": "^4.3.3",
+        "vite-tsconfig-paths": "^4.2.0"
     }
 }

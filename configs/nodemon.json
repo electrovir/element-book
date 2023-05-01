@@ -1,0 +1,9 @@
+{
+    "watch": ["./packages/element-book/"],
+    "ignore": [
+        "*.test.ts",
+        "dist/**"
+    ],
+    "ext": "js,json,html,css,ts,tsx,jsx",
+    "exec": "cd packages/element-book && npm run compile"
+}

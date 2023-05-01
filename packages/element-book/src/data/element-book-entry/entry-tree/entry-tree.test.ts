@@ -4,8 +4,8 @@ import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 import {defineElementBookPage} from '../element-book-page/element-book-page';
 import {defineElementBookSection} from '../element-book-section/element-book-section';
 import {
-    doesNodeHaveEntryType,
     EntryTreeNode,
+    doesNodeHaveEntryType,
     entryTreeRootNode,
     listTitleBreadcrumbs,
 } from './entry-tree';
