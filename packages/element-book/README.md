@@ -4,6 +4,8 @@ An [`element-vir`](https://npmjs.com/element-vir) drop-in element for building, 
 
 Currently in MVP form. Functional, but WIP.
 
+(Example link here.)[https://electrovir.github.io/element-book/]
+
 # Installation
 
 ```bash
@@ -12,7 +14,12 @@ npm i element-book
 
 # Terminology
 
--   **section**:
+-   **Chapter**: a group of sub-chapters or element examples. Chapters can be infinitely nested.
+-   **Example**: an individual element example with independent state, styles, and title.
+
+# Usage
+
+_todo_
 
 # Why not Storybook?
 
