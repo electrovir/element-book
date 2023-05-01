@@ -1,10 +1,10 @@
-import {assign, css, html, listen} from 'element-vir';
+import {assign, css, defineElement, html, listen} from 'element-vir';
 import {ElementBookEntry} from '../../data/element-book-entry/element-book-entry';
-import {entryStorage} from '../../data/element-book-entry/entry-storage/entry-storage';
 import {
-    emptyTreeNode,
-    findEntryByTitles,
-} from '../../data/element-book-entry/entry-storage/entry-tree';
+    entriesToTree,
+    findEntryByBreadcrumbs,
+} from '../../data/element-book-entry/entry-tree/entry-tree';
+import {findFirstPageBreadcrumbs} from '../../data/element-book-entry/entry-tree/walk-entry-tree';
 import {createElementBookRouter} from '../../routing/create-element-book-router';
 import {
     ElementBookFullRoute,
@@ -13,23 +13,24 @@ import {
 } from '../../routing/element-book-routing';
 import {ChangeRouteEvent} from '../events/change-route.event';
 import {BookNav} from './book-nav.element';
-import {defineBookElement} from './define-book-element';
 import {BookEntryDisplay} from './entry-display/book-entry-display.element';
 
-export const BookApp = defineBookElement<{
-    entries?: ReadonlyArray<ElementBookEntry>;
+export const ElementBookApp = defineElement<{
+    entries: ReadonlyArray<ElementBookEntry>;
     baseRoute?: string;
     defaultPath?: ReadonlyArray<string>;
 }>()({
-    tagName: 'book-app',
+    tagName: 'element-book-app',
     stateInit: {
-        entriesTree: emptyTreeNode,
         currentRoute: emptyElementBookFullRoute,
         router: undefined as undefined | ElementBookRouter,
     },
     styles: css`
         :host {
             display: block;
+            height: 100%;
+            width: 100%;
+            font-family: sans-serif;
         }
 
         .root {
@@ -37,12 +38,12 @@ export const BookApp = defineBookElement<{
             width: 100%;
             display: flex;
         }
+
+        ${BookEntryDisplay} {
+            flex-grow: 1;
+        }
     `,
     initCallback({updateState, state, inputs}) {
-        entryStorage.watch((newTree) => {
-            updateState({entriesTree: newTree});
-        });
-
         if (inputs.baseRoute && !state.router) {
             const router = createElementBookRouter(inputs.baseRoute);
             updateState({router});
@@ -68,11 +69,15 @@ export const BookApp = defineBookElement<{
             }
         }
 
+        const entriesTree = entriesToTree(inputs.entries);
+
         if (!state.currentRoute.paths.length) {
-            const firstTitle = Object.values(state.entriesTree.children)[0]?.entry?.title;
+            const firstPageBreadcrumbs = findFirstPageBreadcrumbs(entriesTree);
+            console.log({firstPageBreadcrumbs});
 
             const defaultPath: ReadonlyArray<string> | undefined =
-                inputs.defaultPath ?? (firstTitle ? [firstTitle] : undefined);
+                inputs.defaultPath ??
+                (firstPageBreadcrumbs.length ? firstPageBreadcrumbs : undefined);
 
             if (defaultPath && defaultPath.length) {
                 const newRoute: Pick<ElementBookFullRoute, 'paths'> = {
@@ -82,9 +87,9 @@ export const BookApp = defineBookElement<{
             }
         }
 
-        const currentEntry: ElementBookEntry = findEntryByTitles(
+        const currentEntry: ElementBookEntry = findEntryByBreadcrumbs(
             state.currentRoute.paths,
-            state.entriesTree,
+            entriesTree,
         ).entry;
 
         return html`
@@ -96,7 +101,7 @@ export const BookApp = defineBookElement<{
             >
                 <${BookNav}
                     ${assign(BookNav, {
-                        tree: state.entriesTree,
+                        tree: entriesTree,
                         router: state.router,
                     })}
                 ></${BookNav}>

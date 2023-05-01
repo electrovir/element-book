@@ -22,23 +22,23 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/common": "^13.1.0",
+        "@augment-vir/common": "^13.2.1",
         "spa-router-vir": "^2.0.0",
         "typed-event-target": "^1.2.0"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^13.1.0",
+        "@augment-vir/browser-testing": "^13.2.1",
         "@open-wc/testing": "^3.1.7",
         "@types/mocha": "^10.0.1",
-        "@web/dev-server-esbuild": "^0.3.3",
+        "@web/dev-server-esbuild": "^0.3.4",
         "@web/test-runner": "^0.15.1",
         "@web/test-runner-commands": "^0.6.5",
         "@web/test-runner-playwright": "^0.9.0",
         "@web/test-runner-visual-regression": "^0.7.0",
-        "element-vir": "^9.2.2",
+        "element-vir": "^11.0.0",
         "istanbul-smart-text-reporter": "^1.1.1",
-        "type-fest": "^3.6.1",
-        "typescript": "^4.9.5"
+        "type-fest": "^3.7.1",
+        "typescript": "^5.0.2"
     },
     "peerDependencies": {
         "element-vir": "^>=9.x"

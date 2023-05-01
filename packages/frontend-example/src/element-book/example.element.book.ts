@@ -1,3 +1,4 @@
+import {html, listen} from 'element-vir';
 import {
     createExample,
     defineElementBookPage,
@@ -15,13 +16,33 @@ export const entries = [
         parent: section,
         examples: [
             createExample({
+                title: 'example 1',
                 render() {
                     return 'hi';
                 },
             }),
             createExample({
+                title: 'example 2',
                 render() {
                     return 'hi 2';
+                },
+            }),
+            createExample({
+                title: 'example 2',
+                stateInit: {
+                    yo: 4,
+                },
+                render({state, updateState}) {
+                    return html`
+                        state: ${state.yo}
+                        <button
+                            ${listen('click', () => {
+                                updateState({yo: state.yo + 1});
+                            })}
+                        >
+                            click
+                        </button>
+                    `;
                 },
             }),
         ],
@@ -29,6 +50,13 @@ export const entries = [
     defineElementBookPage({
         title: 'test 2',
         parent: section2,
-        examples: [],
+        examples: [
+            createExample({
+                title: 'example 1',
+                render() {
+                    return 'hi';
+                },
+            }),
+        ],
     }),
 ];

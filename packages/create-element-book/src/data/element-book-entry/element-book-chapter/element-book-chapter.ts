@@ -1,6 +1,5 @@
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 import {ElementBookSection} from '../element-book-section/element-book-section';
-import {addEntry} from '../entry-storage/entry-storage';
 
 export type ElementBookChapter = {
     type: ElementBookEntryTypeEnum.Chapter;
@@ -12,13 +11,14 @@ export function defineElementBookChapter(
     title: string,
     parent?: ElementBookChapter['parent'],
 ): ElementBookChapter {
+    if (!title) {
+        throw new Error(`Cannot have an element-book chapter with an empty title.`);
+    }
     const chapter: ElementBookChapter = {
         type: ElementBookEntryTypeEnum.Chapter,
         title,
         parent,
     };
-
-    addEntry(chapter);
 
     return chapter;
 }

@@ -1,5 +1,5 @@
 import {assign, css, defineElementNoInputs, html} from 'element-vir';
-import {BookApp} from '../../create-element-book';
+import {ElementBookApp} from '../../create-element-book';
 import {entries} from '../../element-book/example.element.book';
 
 export const VirApp = defineElementNoInputs({
@@ -9,13 +9,12 @@ export const VirApp = defineElementNoInputs({
             display: block;
             height: 100%;
             width: 100%;
-            padding: 64px;
             box-sizing: border-box;
         }
     `,
     renderCallback: () => {
         return html`
-            <${BookApp} ${assign(BookApp, {entries})}></${BookApp}>
+            <${ElementBookApp} ${assign(ElementBookApp, {entries})}></${ElementBookApp}>
         `;
     },
 });
