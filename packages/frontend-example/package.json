@@ -3,8 +3,10 @@
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "scripts": {
+        "build": "virmator frontend build",
         "compile": "npm run test:types",
         "compile:clean": "npm run compile",
+        "preview": "virmator frontend preview",
         "start": "virmator frontend",
         "test:types": "tsc --noEmit"
     },

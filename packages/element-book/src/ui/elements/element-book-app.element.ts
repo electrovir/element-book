@@ -73,7 +73,6 @@ export const ElementBookApp = defineElement<{
 
         if (!state.currentRoute.paths.length) {
             const firstPageBreadcrumbs = findFirstPageBreadcrumbs(entriesTree);
-            console.log({firstPageBreadcrumbs});
 
             const defaultPath: ReadonlyArray<string> | undefined =
                 inputs.defaultPath ??
