@@ -109,6 +109,7 @@
         `}):[]}const $e=z()({tagName:"element-book-breadcrumbs",styles:x`
         :host {
             display: flex;
+            color: #999;
         }
     `,renderCallback:({inputs:t})=>t.currentRoute.paths.map((e,r)=>{const n=r>=t.currentRoute.paths.length-1?"":$`
                       &gt;
