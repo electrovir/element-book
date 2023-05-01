@@ -1,14 +1,15 @@
 import {extractErrorMessage} from '@augment-vir/common';
+import {html, renderIf} from 'element-vir';
 import {ElementBookPageExample} from '../../../data/element-book-entry/element-book-page/element-book-page-example';
-import {defineBookElement} from '../define-book-element';
+import {defineElementBookElement} from '../define-book-element';
 
 const unsetInternalState = Symbol('unset-internal-state');
 
-export const BookExampleViewer = defineBookElement<{
+export const ElementBookExampleViewer = defineElementBookElement<{
     example: ElementBookPageExample;
     parentBreadcrumbs: ReadonlyArray<string>;
 }>()({
-    tagName: 'book-example-viewer',
+    tagName: 'element-book-example-viewer',
     stateInit: {
         internalState: unsetInternalState as any,
     },
@@ -31,7 +32,17 @@ export const BookExampleViewer = defineBookElement<{
                     });
                 },
             });
-            return output;
+            return html`
+                ${renderIf(
+                    !!inputs.example.styles,
+                    html`
+                        <style>
+                            ${inputs.example.styles}
+                        </style>
+                    `,
+                )}
+                ${output}
+            `;
         } catch (error) {
             console.error(error);
             return `${fullExampleBreadcrumbs.join(' > ')} failed: ${extractErrorMessage(error)}`;

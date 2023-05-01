@@ -1,9 +1,8 @@
 import {MaybePromise} from '@augment-vir/common';
-import {ReadonlyDeep} from 'type-fest';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 import {doesNodeHaveEntryType, EntryTreeNode, listTitleBreadcrumbs} from './entry-tree';
 
-export function findFirstPageBreadcrumbs(entryTree: ReadonlyDeep<EntryTreeNode>): string[] {
+export function findFirstPageBreadcrumbs(entryTree: Readonly<EntryTreeNode>): string[] {
     let pageEntry: EntryTreeNode<ElementBookEntryTypeEnum.Page> | undefined;
     walkEntryTree(entryTree, (node) => {
         if (doesNodeHaveEntryType(node, ElementBookEntryTypeEnum.Page)) {
@@ -27,8 +26,8 @@ export function findFirstPageBreadcrumbs(entryTree: ReadonlyDeep<EntryTreeNode>)
  * promise. Otherwise, it will not return a promise.
  */
 export function walkEntryTree<CallbackReturn extends MaybePromise<void | boolean>>(
-    startNode: ReadonlyDeep<EntryTreeNode>,
-    callback: (node: ReadonlyDeep<EntryTreeNode>) => CallbackReturn,
+    startNode: Readonly<EntryTreeNode>,
+    callback: (node: Readonly<EntryTreeNode>) => CallbackReturn,
 ): CallbackReturn {
     // this inner function is for easier typing purposes
     function innerWalk(): MaybePromise<void | boolean> {

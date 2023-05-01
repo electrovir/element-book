@@ -3,9 +3,9 @@ import {defineElementBookChapter} from '../element-book-chapter/element-book-cha
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 import {defineElementBookPage} from '../element-book-page/element-book-page';
 import {
+    EntryTreeNode,
     createEmptyEntryTreeRoot,
     doesNodeHaveEntryType,
-    EntryTreeNode,
     listTitleBreadcrumbs,
 } from './entry-tree';
 

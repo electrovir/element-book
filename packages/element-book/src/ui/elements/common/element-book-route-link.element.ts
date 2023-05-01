@@ -1,13 +1,14 @@
-import {css, defineElement, html, listen} from 'element-vir';
+import {css, html, listen} from 'element-vir';
 import {shouldMouseEventTriggerRoutes} from 'spa-router-vir';
 import {ElementBookFullRoute, ElementBookRouter} from '../../../routing/element-book-routing';
 import {ChangeRouteEvent} from '../../events/change-route.event';
+import {defineElementBookElement} from '../define-book-element';
 
-export const VirElementBookRouteLink = defineElement<{
+export const ElementBookRouteLink = defineElementBookElement<{
     route: Partial<ElementBookFullRoute>;
     router: ElementBookRouter | undefined;
 }>()({
-    tagName: 'vir-route-link',
+    tagName: 'element-book-route-link',
     cssVars: {
         anchorPadding: '',
     },

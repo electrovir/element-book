@@ -1,5 +1,5 @@
 import {createExample, defineElementBookChapter, defineElementBookPage} from 'element-book';
-import {html, listen} from 'element-vir';
+import {css, html, listen} from 'element-vir';
 
 const chapter1 = defineElementBookChapter({title: 'my chapter 1'});
 const chapter2 = defineElementBookChapter({title: 'my chapter 2'});
@@ -19,6 +19,7 @@ export const entries = [
             }),
             createExample({
                 title: 'example 2',
+                hideControls: true,
                 render() {
                     return 'hi 2';
                 },
@@ -28,6 +29,20 @@ export const entries = [
                 stateInit: {
                     yo: 4,
                 },
+                styles: css`
+                    button {
+                        border: 2px solid green;
+                        background-color: white;
+                        border-radius: 4px;
+                        cursor: pointer;
+                    }
+
+                    :host {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+                `,
                 render({state, updateState}) {
                     return html`
                         state: ${state.yo}
@@ -49,6 +64,14 @@ export const entries = [
         examples: [
             createExample({
                 title: 'example 1',
+                hideControls: true,
+                render() {
+                    return 'hi';
+                },
+            }),
+            createExample({
+                title: 'example 2',
+                hideControls: true,
                 render() {
                     return 'hi';
                 },

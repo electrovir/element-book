@@ -12,8 +12,8 @@ import {
     emptyElementBookFullRoute,
 } from '../../routing/element-book-routing';
 import {ChangeRouteEvent} from '../events/change-route.event';
-import {BookNav} from './book-nav.element';
-import {BookEntryDisplay} from './entry-display/book-entry-display.element';
+import {ElementBookNav} from './element-book-nav.element';
+import {ElementBookEntryDisplay} from './entry-display/element-book-entry-display.element';
 
 export const ElementBookApp = defineElement<{
     entries: ReadonlyArray<ElementBookEntry>;
@@ -39,7 +39,7 @@ export const ElementBookApp = defineElement<{
             display: flex;
         }
 
-        ${BookEntryDisplay} {
+        ${ElementBookEntryDisplay} {
             flex-grow: 1;
         }
     `,
@@ -99,18 +99,19 @@ export const ElementBookApp = defineElement<{
                     updateRoutes(event.detail);
                 })}
             >
-                <${BookNav}
-                    ${assign(BookNav, {
+                <${ElementBookNav}
+                    ${assign(ElementBookNav, {
                         tree: entriesTree,
                         router: state.router,
+                        selectedPath: state.currentRoute.paths,
                     })}
-                ></${BookNav}>
-                <${BookEntryDisplay}
-                    ${assign(BookEntryDisplay, {
+                ></${ElementBookNav}>
+                <${ElementBookEntryDisplay}
+                    ${assign(ElementBookEntryDisplay, {
                         currentRoute: state.currentRoute,
                         currentEntry,
                     })}
-                ></${BookEntryDisplay}>
+                ></${ElementBookEntryDisplay}>
             </div>
         `;
     },

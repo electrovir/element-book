@@ -1,5 +1,4 @@
 import {isLengthAtLeast} from '@augment-vir/common';
-import {ReadonlyDeep} from 'type-fest';
 import {ElementBookEntry} from '../element-book-entry';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 
@@ -86,8 +85,8 @@ export function listTitleBreadcrumbs(entry: ElementBookEntry, includeSelf?: bool
 
 export function findEntryByBreadcrumbs(
     titles: ReadonlyArray<string>,
-    tree: ReadonlyDeep<EntryTreeNode>,
-): ReadonlyDeep<EntryTreeNode> {
+    tree: Readonly<EntryTreeNode>,
+): Readonly<EntryTreeNode> {
     if (!isLengthAtLeast(titles, 1)) {
         return tree;
     }

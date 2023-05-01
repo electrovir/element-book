@@ -1,12 +1,11 @@
 import {css, html} from 'element-vir';
-import {ReadonlyDeep} from 'type-fest';
 import {ElementBookFullRoute} from '../../routing/element-book-routing';
-import {defineBookElement} from './define-book-element';
+import {defineElementBookElement} from './define-book-element';
 
-export const BookBreadcrumbs = defineBookElement<{
-    currentRoute: ReadonlyDeep<ElementBookFullRoute>;
+export const ElementBookBreadcrumbs = defineElementBookElement<{
+    currentRoute: Readonly<ElementBookFullRoute>;
 }>()({
-    tagName: 'book-breadcrumbs',
+    tagName: 'element-book-breadcrumbs',
     styles: css`
         :host {
             display: flex;
