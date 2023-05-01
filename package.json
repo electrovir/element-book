@@ -19,7 +19,7 @@
         "./packages/*"
     ],
     "scripts": {
-        "build": "cd packages/frontend-example && npm run build",
+        "build": "npm run compile && cd packages/frontend-example && npm run build",
         "compile": "tsc-mono for-each npm run compile",
         "compile:clean": "bash bash-scripts/clean-compile.sh",
         "docs:update": "virmator code-in-markdown",
