@@ -1,6 +1,6 @@
 import {ElementBookApp} from 'element-book';
 import {assign, css, defineElementNoInputs, html} from 'element-vir';
-import {entries} from '../../element-book-example/example.element.book';
+import {entries} from '../../element-book-example/example.book';
 
 export const VirApp = defineElementNoInputs({
     tagName: 'vir-app',

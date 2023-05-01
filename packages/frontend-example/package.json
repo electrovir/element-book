@@ -1,6 +1,7 @@
 {
     "name": "@element-book/frontend-example",
     "private": true,
+    "license": "(MIT or CC0 1.0)",
     "scripts": {
         "compile": "npm run test:types",
         "compile:clean": "npm run compile",

@@ -2,17 +2,21 @@ import {assertTypeOf, itCases} from '@augment-vir/browser-testing';
 import {defineElementBookChapter} from '../element-book-chapter/element-book-chapter';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 import {defineElementBookPage} from '../element-book-page/element-book-page';
-import {defineElementBookSection} from '../element-book-section/element-book-section';
 import {
-    EntryTreeNode,
+    createEmptyEntryTreeRoot,
     doesNodeHaveEntryType,
-    entryTreeRootNode,
+    EntryTreeNode,
     listTitleBreadcrumbs,
 } from './entry-tree';
 
 describe(listTitleBreadcrumbs.name, () => {
-    const exampleSection = defineElementBookSection('section title');
-    const exampleChapter = defineElementBookChapter('chapter title', exampleSection);
+    const exampleTopLevelChapter = defineElementBookChapter({
+        title: 'top level title',
+    });
+    const exampleChapter = defineElementBookChapter({
+        title: 'chapter title',
+        parent: exampleTopLevelChapter,
+    });
     const examplePage = defineElementBookPage({
         examples: [],
         title: 'page title',
@@ -22,20 +26,20 @@ describe(listTitleBreadcrumbs.name, () => {
     itCases(listTitleBreadcrumbs, [
         {
             it: 'finds nothing when entry has no parent',
-            inputs: [exampleSection],
+            inputs: [exampleTopLevelChapter],
             expect: [],
         },
         {
             it: 'finds a parent',
             inputs: [exampleChapter],
-            expect: [exampleSection.title],
+            expect: [exampleTopLevelChapter.title],
         },
         {
             it: 'finds multiple ancestors',
             inputs: [examplePage],
             expect: [
                 exampleChapter.title,
-                exampleSection.title,
+                exampleTopLevelChapter.title,
             ],
         },
         {
@@ -46,7 +50,7 @@ describe(listTitleBreadcrumbs.name, () => {
             ],
             expect: [
                 exampleChapter.title,
-                exampleSection.title,
+                exampleTopLevelChapter.title,
                 examplePage.title,
             ],
         },
@@ -55,17 +59,19 @@ describe(listTitleBreadcrumbs.name, () => {
 
 describe(doesNodeHaveEntryType.name, () => {
     it('type guards', () => {
-        assertTypeOf(entryTreeRootNode).not.toEqualTypeOf<
+        const emptyTreeRootNode = createEmptyEntryTreeRoot();
+
+        assertTypeOf(emptyTreeRootNode).not.toEqualTypeOf<
             EntryTreeNode<ElementBookEntryTypeEnum.Page>
         >();
-        if (doesNodeHaveEntryType(entryTreeRootNode, ElementBookEntryTypeEnum.Page)) {
-            assertTypeOf(entryTreeRootNode).toEqualTypeOf<
+        if (doesNodeHaveEntryType(emptyTreeRootNode, ElementBookEntryTypeEnum.Page)) {
+            assertTypeOf(emptyTreeRootNode).toEqualTypeOf<
                 EntryTreeNode<ElementBookEntryTypeEnum.Page>
             >();
-            assertTypeOf(entryTreeRootNode.entry.type).toEqualTypeOf<
+            assertTypeOf(emptyTreeRootNode.entry.type).toEqualTypeOf<
                 typeof ElementBookEntryTypeEnum.Page
             >();
-            assertTypeOf(entryTreeRootNode).not.toEqualTypeOf<
+            assertTypeOf(emptyTreeRootNode).not.toEqualTypeOf<
                 EntryTreeNode<ElementBookEntryTypeEnum.Root>
             >();
         }

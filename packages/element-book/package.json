@@ -1,5 +1,19 @@
 {
     "name": "element-book",
+    "version": "0.0.0",
+    "keywords": [
+        "book",
+        "design system",
+        "design",
+        "element-vir",
+        "element",
+        "es module",
+        "esm",
+        "lit-element",
+        "lit",
+        "storybook",
+        "system"
+    ],
     "homepage": "https://github.com/electrovir/element-book",
     "bugs": {
         "url": "https://github.com/electrovir/element-book/issues"
@@ -8,7 +22,7 @@
         "type": "git",
         "url": "https://github.com/electrovir/element-book"
     },
-    "license": "MIT",
+    "license": "(MIT or CC0 1.0)",
     "author": {
         "name": "electrovir",
         "url": "https://github.com/electrovir"
@@ -25,6 +39,7 @@
     },
     "dependencies": {
         "@augment-vir/common": "^13.3.0",
+        "element-vir": "^12.2.0",
         "spa-router-vir": "^2.0.0",
         "typed-event-target": "^1.2.0"
     },
@@ -37,12 +52,8 @@
         "@web/test-runner-commands": "^0.7.0",
         "@web/test-runner-playwright": "^0.10.0",
         "@web/test-runner-visual-regression": "^0.8.0",
-        "element-vir": "^12.2.0",
         "istanbul-smart-text-reporter": "^1.1.1",
         "type-fest": "^3.9.0",
         "typescript": "^5.0.4"
-    },
-    "peerDependencies": {
-        "element-vir": "^>=9.x"
     }
 }

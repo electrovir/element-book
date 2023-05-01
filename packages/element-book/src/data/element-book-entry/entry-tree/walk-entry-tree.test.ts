@@ -1,16 +1,18 @@
 import {assertTypeOf} from '@augment-vir/browser-testing';
-import {entryTreeRootNode} from './entry-tree';
+import {createEmptyEntryTreeRoot} from './entry-tree';
 import {walkEntryTree} from './walk-entry-tree';
 
 describe(walkEntryTree.name, () => {
     it('has proper types', async () => {
+        const emptyTreeRootNode = createEmptyEntryTreeRoot();
+
         assertTypeOf(
-            walkEntryTree(entryTreeRootNode, () => {
+            walkEntryTree(emptyTreeRootNode, () => {
                 return true;
             }),
         ).toEqualTypeOf<boolean>();
         assertTypeOf(
-            walkEntryTree(entryTreeRootNode, async () => {
+            walkEntryTree(emptyTreeRootNode, async () => {
                 return true;
             }),
         ).toEqualTypeOf<Promise<boolean>>();

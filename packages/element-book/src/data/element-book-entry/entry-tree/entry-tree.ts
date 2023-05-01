@@ -1,4 +1,4 @@
-import {ensureType, isLengthAtLeast} from '@augment-vir/common';
+import {isLengthAtLeast} from '@augment-vir/common';
 import {ReadonlyDeep} from 'type-fest';
 import {ElementBookEntry} from '../element-book-entry';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
@@ -15,19 +15,21 @@ export type EntryTreeNode<EntryType extends ElementBookEntryTypeEnum = ElementBo
     children: Record<string, EntryTreeNode>;
 };
 
-export const entryTreeRootNode: Readonly<EntryTreeNode> = ensureType<
-    Readonly<EntryTreeNode<ElementBookEntryTypeEnum.Root>>
->({
-    entry: {
-        type: ElementBookEntryTypeEnum.Root,
-        title: 'element book tree root',
-        parent: undefined,
-    },
-    children: {} as Record<string, EntryTreeNode>,
-});
+export function createEmptyEntryTreeRoot(): EntryTreeNode {
+    const rootNode: Readonly<EntryTreeNode<ElementBookEntryTypeEnum.Root>> = {
+        entry: {
+            type: ElementBookEntryTypeEnum.Root,
+            title: 'element book tree root',
+            parent: undefined,
+        },
+        children: {} as Record<string, EntryTreeNode>,
+    };
+
+    return rootNode;
+}
 
 export function entriesToTree(entries: ReadonlyArray<ElementBookEntry>) {
-    const tree = entryTreeRootNode;
+    const tree = createEmptyEntryTreeRoot();
 
     entries.forEach((newEntry) => {
         const immediateParent = traverseToImmediateParent(newEntry, tree);

@@ -1,15 +1,15 @@
-import {createExample, defineElementBookPage, defineElementBookSection} from 'element-book';
+import {createExample, defineElementBookChapter, defineElementBookPage} from 'element-book';
 import {html, listen} from 'element-vir';
 
-const section = defineElementBookSection('my section');
-const section2 = defineElementBookSection('my section 2');
+const chapter1 = defineElementBookChapter({title: 'my chapter 1'});
+const chapter2 = defineElementBookChapter({title: 'my chapter 2'});
 
 export const entries = [
-    section,
-    section2,
+    chapter1,
+    chapter2,
     defineElementBookPage({
         title: 'test',
-        parent: section,
+        parent: chapter1,
         examples: [
             createExample({
                 title: 'example 1',
@@ -24,7 +24,7 @@ export const entries = [
                 },
             }),
             createExample({
-                title: 'example 2',
+                title: 'example 3',
                 stateInit: {
                     yo: 4,
                 },
@@ -45,7 +45,7 @@ export const entries = [
     }),
     defineElementBookPage({
         title: 'test 2',
-        parent: section2,
+        parent: chapter2,
         examples: [
             createExample({
                 title: 'example 1',

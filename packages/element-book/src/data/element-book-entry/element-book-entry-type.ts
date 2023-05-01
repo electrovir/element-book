@@ -1,10 +1,8 @@
 export enum ElementBookEntryTypeEnum {
-    /** A group of chapters or pages */
-    Section = 'section',
-    /** A group of pages */
+    /** A group of pages or sub-chapters. */
     Chapter = 'chapter',
-    /** An individual element or specific example of an element. */
+    /** An individual book page full of element examples. */
     Page = 'page',
-    /** Tree root. Do not use this in user code. */
+    /** Tree root. Not for external use. */
     Root = 'root',
 }
