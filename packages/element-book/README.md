@@ -4,7 +4,7 @@ An [`element-vir`](https://npmjs.com/element-vir) drop-in element for building, 
 
 Currently in MVP form. Functional, but WIP.
 
-(Example link here.)[https://electrovir.github.io/element-book/]
+[Example here.](https://electrovir.github.io/element-book/)
 
 # Installation
 
