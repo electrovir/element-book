@@ -9,6 +9,7 @@ export const ElementBookBreadcrumbs = defineElementBookElement<{
     styles: css`
         :host {
             display: flex;
+            color: #999;
         }
     `,
     renderCallback: ({inputs}) => {
