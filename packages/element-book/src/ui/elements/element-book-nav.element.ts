@@ -25,11 +25,14 @@ export const ElementBookNav = defineElementBookElement<{
         }
 
         .title-row:hover {
-            background-color: ${colorThemeCssVars['element-book-nav-hover-color'].value};
+            background-color: ${colorThemeCssVars['element-book-nav-hover-background-color'].value};
+            color: ${colorThemeCssVars['element-book-nav-hover-foreground-color'].value};
         }
 
         .title-row:active {
-            background-color: ${colorThemeCssVars['element-book-nav-active-color'].value};
+            background-color: ${colorThemeCssVars['element-book-nav-active-background-color']
+                .value};
+            color: ${colorThemeCssVars['element-book-nav-active-foreground-color'].value};
         }
 
         .title-row {
@@ -50,7 +53,9 @@ export const ElementBookNav = defineElementBookElement<{
 
         .selected,
         .selected:hover {
-            background-color: ${colorThemeCssVars['element-book-nav-selected-color'].value};
+            background-color: ${colorThemeCssVars['element-book-nav-selected-background-color']
+                .value};
+            color: ${colorThemeCssVars['element-book-nav-selected-foreground-color'].value};
             pointer-events: none;
         }
 

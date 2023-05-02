@@ -9,5 +9,6 @@ module.exports = {
         ...baseConfig.words,
         'colorjs',
         'exitcrash',
+        'APCA',
     ],
 };

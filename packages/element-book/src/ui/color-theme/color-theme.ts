@@ -3,11 +3,13 @@ import {CSSResult} from 'lit';
 import {SingleCssVarDefinition, defineCssVars, setCssVarValue} from 'lit-css-vars';
 import {NestedType} from '../../augments/type';
 
+export type ColorPair = {background: CSSResult; foreground: CSSResult};
+
 export type ColorTheme = {
     nav: {
-        hover: CSSResult;
-        active: CSSResult;
-        selected: CSSResult;
+        hover: ColorPair;
+        active: ColorPair;
+        selected: ColorPair;
     };
 };
 
@@ -20,16 +22,28 @@ type CssResultToCssVar<StartingPoint> = {
 type ColorThemeCssVars = CssResultToCssVar<ColorTheme>;
 
 export const colorThemeCssVars = defineCssVars({
-    'element-book-nav-hover-color': 'grey',
-    'element-book-nav-active-color': 'grey',
-    'element-book-nav-selected-color': 'grey',
+    'element-book-nav-hover-background-color': 'grey',
+    'element-book-nav-hover-foreground-color': 'grey',
+    'element-book-nav-active-background-color': 'grey',
+    'element-book-nav-active-foreground-color': 'grey',
+    'element-book-nav-selected-background-color': 'grey',
+    'element-book-nav-selected-foreground-color': 'grey',
 });
 
 const colorThemeCssVarMapping: ColorThemeCssVars = {
     nav: {
-        hover: colorThemeCssVars['element-book-nav-hover-color'],
-        active: colorThemeCssVars['element-book-nav-active-color'],
-        selected: colorThemeCssVars['element-book-nav-selected-color'],
+        hover: {
+            background: colorThemeCssVars['element-book-nav-hover-background-color'],
+            foreground: colorThemeCssVars['element-book-nav-hover-foreground-color'],
+        },
+        active: {
+            background: colorThemeCssVars['element-book-nav-active-background-color'],
+            foreground: colorThemeCssVars['element-book-nav-active-foreground-color'],
+        },
+        selected: {
+            background: colorThemeCssVars['element-book-nav-selected-background-color'],
+            foreground: colorThemeCssVars['element-book-nav-selected-foreground-color'],
+        },
     },
 };
 

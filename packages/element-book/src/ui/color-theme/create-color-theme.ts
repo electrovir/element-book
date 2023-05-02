@@ -1,6 +1,7 @@
 import {mapObjectValues} from '@augment-vir/common';
 import Color from 'colorjs.io';
 import {CSSResult, unsafeCSS} from 'lit';
+import {RequireExactlyOne} from 'type-fest';
 import {NestedType} from '../../augments/type';
 import {ColorTheme} from './color-theme';
 
@@ -26,6 +27,23 @@ function colorsObjectToCssResult<const Colors extends NestedColors>(
 
 export const defaultThemeStartColor = 'dodgerblue';
 
+function calculateTextColor(color: Color): Color {
+    const onWhite = Math.abs(color.contrast('white', 'APCA'));
+    const onBlack = Math.abs(color.contrast('black', 'APCA'));
+    const textColorString = onWhite > onBlack ? 'white' : 'black';
+    return new Color(textColorString);
+}
+
+function createColorPair({
+    background,
+    foreground,
+}: RequireExactlyOne<{background: Color; foreground: Color}>) {
+    return {
+        background: background ?? calculateTextColor(foreground),
+        foreground: foreground ?? calculateTextColor(background),
+    };
+}
+
 export function createTheme(startColorString: string = defaultThemeStartColor): ColorTheme {
     // as cast because colorjs.io's types for itself are wrong
     const original = new Color(startColorString) as Color & {
@@ -33,9 +51,9 @@ export function createTheme(startColorString: string = defaultThemeStartColor): 
     };
     const colors = {
         nav: {
-            hover: original.clone().set({'hsl.l': 95}),
-            active: original.clone().set({'hsl.l': 90}),
-            selected: original.clone().set({'hsl.l': 80}),
+            hover: createColorPair({background: original.clone().set({'hsl.l': 93})}),
+            active: createColorPair({background: original.clone().set({'hsl.l': 90})}),
+            selected: createColorPair({background: original.clone().set({'hsl.l': 85})}),
         },
     } as const;
 
