@@ -4,6 +4,7 @@
         "*.test.ts",
         "dist/**"
     ],
+    "exitcrash": false,
     "ext": "js,json,html,css,ts,tsx,jsx",
     "exec": "cd packages/element-book && npm run compile"
 }

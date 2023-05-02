@@ -11,19 +11,28 @@ import {
     ElementBookRouter,
     emptyElementBookFullRoute,
 } from '../../routing/element-book-routing';
+import {ColorTheme, setThemeCssVars} from '../color-theme/color-theme';
+import {createTheme} from '../color-theme/create-color-theme';
 import {ChangeRouteEvent} from '../events/change-route.event';
 import {ElementBookNav} from './element-book-nav.element';
 import {ElementBookEntryDisplay} from './entry-display/element-book-entry-display.element';
 
+type ColorThemeState = {original: string | undefined; theme: ColorTheme};
+
 export const ElementBookApp = defineElement<{
     entries: ReadonlyArray<ElementBookEntry>;
-    baseRoute?: string;
-    defaultPath?: ReadonlyArray<string>;
+    baseRoute?: string | undefined;
+    defaultPath?: ReadonlyArray<string> | undefined;
+    themeColor?: string | undefined;
 }>()({
     tagName: 'element-book-app',
     stateInit: {
         currentRoute: emptyElementBookFullRoute,
         router: undefined as undefined | ElementBookRouter,
+        colors: {
+            original: undefined,
+            theme: createTheme(undefined),
+        } as ColorThemeState,
     },
     styles: css`
         :host {
@@ -43,7 +52,7 @@ export const ElementBookApp = defineElement<{
             flex-grow: 1;
         }
     `,
-    initCallback({updateState, state, inputs}) {
+    initCallback({updateState, state, inputs, host}) {
         if (inputs.baseRoute && !state.router) {
             const router = createElementBookRouter(inputs.baseRoute);
             updateState({router});
@@ -54,8 +63,21 @@ export const ElementBookApp = defineElement<{
                 });
             });
         }
+
+        setThemeCssVars(host, state.colors.theme);
     },
-    renderCallback: ({state, inputs, updateState}) => {
+    renderCallback: ({state, inputs, host, updateState}) => {
+        if (inputs.themeColor !== state.colors?.original) {
+            const newTheme = createTheme(inputs.themeColor);
+            updateState({
+                colors: {
+                    original: inputs.themeColor,
+                    theme: newTheme,
+                },
+            });
+            setThemeCssVars(host, newTheme);
+        }
+
         function updateRoutes(newRoute: Partial<ElementBookFullRoute>) {
             if (state.router) {
                 state.router.setRoutes(newRoute);

@@ -14,6 +14,7 @@ export const ElementBookRouteLink = defineElementBookElement<{
     },
     styles: ({cssVarValues}) => css`
         a {
+            box-sizing: border-box;
             display: block;
             padding: ${cssVarValues.anchorPadding};
             text-decoration: inherit;

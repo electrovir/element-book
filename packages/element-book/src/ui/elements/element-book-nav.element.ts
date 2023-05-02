@@ -1,8 +1,12 @@
 import {areJsonEqual} from '@augment-vir/common';
-import {assign, classMap, css, html} from 'element-vir';
+import {VirIcon, virIconColorCssVars} from '@electrovir/icon-element';
+import {assign, classMap, css, html, renderIf} from 'element-vir';
 import {TemplateResult} from 'lit';
+import {ElementBookEntryTypeEnum} from '../../data/element-book-entry/element-book-entry-type';
 import {EntryTreeNode} from '../../data/element-book-entry/entry-tree/entry-tree';
 import {ElementBookRouter} from '../../routing/element-book-routing';
+import {colorThemeCssVars} from '../color-theme/color-theme';
+import {Element16Icon} from '../icons/element-16.icon';
 import {ElementBookRouteLink} from './common/element-book-route-link.element';
 import {defineElementBookElement} from './define-book-element';
 
@@ -21,7 +25,11 @@ export const ElementBookNav = defineElementBookElement<{
         }
 
         .title-row:hover {
-            background-color: #ccc;
+            background-color: ${colorThemeCssVars['element-book-nav-hover-color'].value};
+        }
+
+        .title-row:active {
+            background-color: ${colorThemeCssVars['element-book-nav-active-color'].value};
         }
 
         .title-row {
@@ -40,8 +48,21 @@ export const ElementBookNav = defineElementBookElement<{
             margin: 0;
         }
 
-        .selected {
-            background-color: #ddd;
+        .selected,
+        .selected:hover {
+            background-color: ${colorThemeCssVars['element-book-nav-selected-color'].value};
+            pointer-events: none;
+        }
+
+        .title-text {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            ${virIconColorCssVars['vir-icon-color'].name}: dodgerblue;
+        }
+
+        ${VirIcon} {
+            display: inline-flex;
         }
     `,
     renderCallback({inputs}) {
@@ -89,6 +110,8 @@ function createNavigationTree({
             router,
         });
 
+        const hasExamples: boolean = child.entry.type === ElementBookEntryTypeEnum.Page;
+
         return html`
             <div class="nav-tree-entry" style="--indent: ${indent};">
                 <li class=${child.entry.type}>
@@ -104,7 +127,17 @@ function createNavigationTree({
                             selected: areJsonEqual(selectedPath, childPath),
                         })}
                     >
-                        ${child.entry.title}
+                        <div class="title-text">
+                            ${renderIf(
+                                hasExamples,
+                                html`
+                                    <${VirIcon}
+                                        ${assign(VirIcon, {icon: Element16Icon})}
+                                    ></${VirIcon}>
+                                `,
+                            )}
+                            ${child.entry.title}
+                        </div>
                     </${ElementBookRouteLink}>
                 </li>
                 ${childTemplates}
