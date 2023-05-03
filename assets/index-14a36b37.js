@@ -120,7 +120,7 @@ var Ro=Object.defineProperty;var To=(t,e,r)=>e in t?Ro(t,e,{enumerable:!0,config
         }
 
         .title-row {
-            padding-right: 24px;
+            padding-right: 16px;
             display: block;
             ${ze.cssVarNames.anchorPadding}: 4px 24px 4px calc(calc(16px * var(--indent, 0)) + 24px);
         }
@@ -335,6 +335,7 @@ var Ro=Object.defineProperty;var To=(t,e,r)=>e in t?Ro(t,e,{enumerable:!0,config
         }
 
         ${dt} {
+            flex-shrink: 0;
             position: sticky;
             overflow-x: hidden;
             overflow-y: auto;
