@@ -29,6 +29,12 @@ function createExamplePage(index: number, parent: ElementBookChapter) {
                 },
             }),
             createExample({
+                title: 'example 2.5',
+                render() {
+                    return 'hi 2';
+                },
+            }),
+            createExample({
                 title: 'example 3',
                 stateInit: {
                     yo: 4,

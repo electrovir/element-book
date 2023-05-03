@@ -7,7 +7,7 @@ export type ElementBookPage = {
     type: ElementBookEntryTypeEnum.Page;
     title: string;
     parent?: ElementBookChapter | undefined;
-    examples: ReadonlyArray<ElementBookPageExample>;
+    examples: ReadonlyArray<ElementBookPageExample<any>>;
 };
 
 export function defineElementBookPage(pageSetup: Omit<ElementBookPage, 'type'>): ElementBookPage {

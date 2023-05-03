@@ -1,7 +1,7 @@
 import {PropertyInitMapBase, TypedEvent} from 'element-vir';
 import {CSSResult} from 'lit';
 
-export type ElementBookPageExample<StateInit extends PropertyInitMapBase = any> = {
+export type ElementBookPageExample<StateInit extends PropertyInitMapBase = {}> = {
     title: string;
     /** Initialize the state for this example. */
     stateInit?: StateInit;
