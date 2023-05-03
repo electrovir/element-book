@@ -17,7 +17,7 @@ export function findFirstPageBreadcrumbs(entryTree: Readonly<EntryTreeNode>): st
         return [];
     }
 
-    return listBreadcrumbs(pageEntry.entry).concat(pageEntry.breadcrumb);
+    return listBreadcrumbs(pageEntry.entry).reverse().concat(pageEntry.breadcrumb);
 }
 
 /**

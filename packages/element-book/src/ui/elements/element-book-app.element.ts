@@ -1,3 +1,4 @@
+import {extractErrorMessage} from '@augment-vir/common';
 import {assign, css, defineElement, html, listen} from 'element-vir';
 import {ElementBookEntry} from '../../data/element-book-entry/element-book-entry';
 import {
@@ -83,79 +84,83 @@ export const ElementBookApp = defineElement<{
         setThemeCssVars(host, state.colors.theme);
     },
     renderCallback: ({state, inputs, host, updateState}) => {
-        if (inputs.themeColor !== state.colors?.original) {
-            const newTheme = createTheme(inputs.themeColor);
-            updateState({
-                colors: {
-                    original: inputs.themeColor,
-                    theme: newTheme,
-                },
-            });
-            setThemeCssVars(host, newTheme);
-        }
-
-        function updateRoutes(newRoute: Partial<ElementBookFullRoute>) {
-            if (state.router) {
-                state.router.setRoutes(newRoute);
-            } else {
+        try {
+            if (inputs.themeColor !== state.colors?.original) {
+                const newTheme = createTheme(inputs.themeColor);
                 updateState({
-                    currentRoute: {
-                        ...state.currentRoute,
-                        ...newRoute,
+                    colors: {
+                        original: inputs.themeColor,
+                        theme: newTheme,
                     },
                 });
+                setThemeCssVars(host, newTheme);
             }
-        }
 
-        const entriesTree = entriesToTree(inputs.entries);
-
-        if (!findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree)) {
-            const firstPageBreadcrumbs = findFirstPageBreadcrumbs(entriesTree);
-
-            const defaultPath: ReadonlyArray<string> | undefined =
-                inputs.defaultPath ??
-                (firstPageBreadcrumbs.length ? firstPageBreadcrumbs : undefined);
-
-            if (defaultPath && defaultPath.length) {
-                const newRoute: Pick<ElementBookFullRoute, 'paths'> = {
-                    paths: defaultPath,
-                };
-                updateRoutes(newRoute);
+            function updateRoutes(newRoute: Partial<ElementBookFullRoute>) {
+                if (state.router) {
+                    state.router.setRoutes(newRoute);
+                } else {
+                    updateState({
+                        currentRoute: {
+                            ...state.currentRoute,
+                            ...newRoute,
+                        },
+                    });
+                }
             }
-        }
 
-        const currentNode = findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree);
+            const entriesTree = entriesToTree(inputs.entries);
 
-        if (!currentNode) {
+            if (!findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree)) {
+                const firstPageBreadcrumbs = findFirstPageBreadcrumbs(entriesTree);
+
+                const defaultPath: ReadonlyArray<string> | undefined =
+                    inputs.defaultPath ??
+                    (firstPageBreadcrumbs.length ? firstPageBreadcrumbs : undefined);
+
+                if (defaultPath && defaultPath.length) {
+                    const newRoute: Pick<ElementBookFullRoute, 'paths'> = {
+                        paths: defaultPath,
+                    };
+                    updateRoutes(newRoute);
+                }
+            }
+
+            const currentNode = findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree);
+
+            if (!currentNode) {
+                throw new Error(`Tried to self-correct for invalid path ${state.currentRoute.paths.join(
+                    '/',
+                )}
+                        but failed to do so.`);
+            }
+
             return html`
-                <p class="error">
-                    Tried to self-correct for invalid path ${state.currentRoute.paths.join('/')} but
-                    failed to do so.
-                </p>
+                <div
+                    class="root"
+                    ${listen(ChangeRouteEvent, (event) => {
+                        updateRoutes(event.detail);
+                    })}
+                >
+                    <${ElementBookNav}
+                        ${assign(ElementBookNav, {
+                            tree: entriesTree,
+                            router: state.router,
+                            selectedPath: state.currentRoute.paths,
+                        })}
+                    ></${ElementBookNav}>
+                    <${ElementBookEntryDisplay}
+                        ${assign(ElementBookEntryDisplay, {
+                            currentRoute: state.currentRoute,
+                            currentNode,
+                        })}
+                    ></${ElementBookEntryDisplay}>
+                </div>
+            `;
+        } catch (error) {
+            return html`
+                <p class="error">${extractErrorMessage(error)}</p>
             `;
         }
-
-        return html`
-            <div
-                class="root"
-                ${listen(ChangeRouteEvent, (event) => {
-                    updateRoutes(event.detail);
-                })}
-            >
-                <${ElementBookNav}
-                    ${assign(ElementBookNav, {
-                        tree: entriesTree,
-                        router: state.router,
-                        selectedPath: state.currentRoute.paths,
-                    })}
-                ></${ElementBookNav}>
-                <${ElementBookEntryDisplay}
-                    ${assign(ElementBookEntryDisplay, {
-                        currentRoute: state.currentRoute,
-                        currentNode,
-                    })}
-                ></${ElementBookEntryDisplay}>
-            </div>
-        `;
     },
 });

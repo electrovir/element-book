@@ -1,5 +1,6 @@
 import {VirIcon} from '@electrovir/icon-element';
-import {assign, css, html, renderIf} from 'element-vir';
+import {HTMLTemplateResult, assign, css, html, renderIf} from 'element-vir';
+import {isElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
 import {ElementBookEntryTypeEnum} from '../../../data/element-book-entry/element-book-entry-type';
 import {ElementBookPage} from '../../../data/element-book-entry/element-book-page/element-book-page';
 import {
@@ -53,31 +54,11 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
         }
     `,
     renderCallback: ({inputs}) => {
-        const descendantPages = extractAllDescendantPages(inputs.currentNode);
+        const nestedPages = extractNestedPages(inputs.currentNode);
+
 
         const entryBreadcrumbs = listBreadcrumbs(inputs.currentNode.entry, true);
-        const showPageTitles = inputs.currentNode.entry.type !== ElementBookEntryTypeEnum.Page;
-        const exampleTemplates = descendantPages.map((descendantPage) => {
-            return html`
-                <div class="page-examples">
-                    ${renderIf(
-                        showPageTitles,
-                        html`
-                            <h2>
-                                <${VirIcon} ${assign(VirIcon, {icon: Element24Icon})}></${VirIcon}>
-                                ${descendantPage.title}
-                            </h2>
-                        `,
-                    )}
-                    <${ElementBookPageExamples}
-                        ${assign(ElementBookPageExamples, {
-                            page: descendantPage,
-                            parentBreadcrumbs: entryBreadcrumbs,
-                        })}
-                    ></${ElementBookPageExamples}>
-                </div>
-            `;
-        });
+        const exampleTemplates = createNestedPagesTemplates(nestedPages, entryBreadcrumbs, true);
 
         return html`
             <div class="title-bar">
@@ -90,9 +71,73 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
     },
 });
 
-function extractAllDescendantPages(node: Readonly<EntryTreeNode>): ElementBookPage[] {
+type NestedPages = ReadonlyArray<ElementBookPage | Record<string, NestedPages>>;
+
+function createNestedPagesTemplates(
+    nestedPages: NestedPages,
+    parentBreadcrumbs: ReadonlyArray<string>,
+    isTopLevel: boolean,
+): HTMLTemplateResult[] {
+    const showTitles =
+        !isTopLevel &&
+        (nestedPages.length !== 1 || nestedPages[0]?.type !== ElementBookEntryTypeEnum.Page);
+
+    return nestedPages
+        .map((nesting) => {
+            if (isElementBookEntry(nesting, ElementBookEntryTypeEnum.Page)) {
+                return html`
+                    <div class="page-examples">
+                        ${renderIf(
+                            showTitles,
+                            html`
+                                <h2>
+                                    <${VirIcon}
+                                        ${assign(VirIcon, {icon: Element24Icon})}
+                                    ></${VirIcon}>
+                                    ${nesting.title}
+                                </h2>
+                            `,
+                        )}
+                        <${ElementBookPageExamples}
+                            ${assign(ElementBookPageExamples, {
+                                page: nesting,
+                                parentBreadcrumbs: parentBreadcrumbs,
+                            })}
+                        ></${ElementBookPageExamples}>
+                    </div>
+                `;
+            } else {
+                return Object.entries(nesting).map(
+                    ([
+                        title,
+                        nextNesting,
+                    ]) => {
+                        return html`
+                            ${renderIf(
+                                showTitles,
+                                html`
+                                    <h1>${title}</h1>
+                                `,
+                            )}
+                            ${createNestedPagesTemplates(nextNesting, parentBreadcrumbs, false)}
+                        `;
+                    },
+                );
+            }
+        })
+        .flat();
+}
+
+function extractNestedPages(node: Readonly<EntryTreeNode>): NestedPages {
     if (node.entry.type === ElementBookEntryTypeEnum.Page) {
         return [node.entry];
     }
-    return Object.values(node.children).map(extractAllDescendantPages).flat();
+
+    const nestedPages = [
+        {
+            [node.entry.title]: Object.values(node.children).map(extractNestedPages).flat(),
+        },
+    ];
+
+    return nestedPages;
 }

@@ -1,13 +1,19 @@
-import {createExample, defineElementBookChapter, defineElementBookPage} from 'element-book';
+import {
+    ElementBookChapter,
+    createExample,
+    defineElementBookChapter,
+    defineElementBookPage,
+} from 'element-book';
 import {css, html, listen} from 'element-vir';
 
-const chapter1 = defineElementBookChapter({title: 'my chapter 1'});
-const chapter2 = defineElementBookChapter({title: 'my chapter 2'});
+const chapter1 = defineElementBookChapter({title: 'My Chapter 1'});
+const chapter2 = defineElementBookChapter({title: 'My Chapter 2'});
+const subChapter = defineElementBookChapter({title: 'Sub Chapter 1', parent: chapter1});
 
-function createExamplePage(index: number) {
+function createExamplePage(index: number, parent: ElementBookChapter) {
     return defineElementBookPage({
         title: `test ${index}`,
-        parent: chapter1,
+        parent,
         examples: [
             createExample({
                 title: 'example 1',
@@ -60,11 +66,12 @@ function createExamplePage(index: number) {
 
 export const entries = [
     chapter1,
-    chapter2,
-    createExamplePage(0),
+    createExamplePage(0, chapter1),
+    subChapter,
     ...Array(100)
         .fill(0)
-        .map((_value, index) => createExamplePage(index + 1)),
+        .map((_value, index) => createExamplePage(index + 1, subChapter)),
+    chapter2,
     defineElementBookPage({
         title: 'test 2',
         parent: chapter2,

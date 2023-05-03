@@ -30,7 +30,7 @@ export function createEmptyEntryTreeRoot(): EntryTreeNode {
 }
 
 export function titleToBreadcrumb(title: string): string {
-    return collapseWhiteSpace(title).replaceAll(/\s/g, '-');
+    return collapseWhiteSpace(title).toLowerCase().replaceAll(/\s/g, '-');
 }
 
 export function entriesToTree(entries: ReadonlyArray<ElementBookEntry>) {
