@@ -1,6 +1,6 @@
 {
     "name": "@element-book/root",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "private": true,
     "homepage": "https://github.com/electrovir/element-book",
     "bugs": {
@@ -33,11 +33,6 @@
         "test:format": "virmator format check",
         "test:spelling": "virmator spellcheck",
         "test:types": "tsc-mono for-each tsc --noEmit"
-    },
-    "dependencies": {
-        "@electrovir/icon-element": "^0.0.1",
-        "colorjs.io": "^0.4.3",
-        "lit-css-vars": "^2.0.2"
     },
     "devDependencies": {
         "cspell": "^6.31.1",

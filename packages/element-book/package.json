@@ -1,6 +1,6 @@
 {
     "name": "element-book",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "keywords": [
         "book",
         "design system",
@@ -39,7 +39,10 @@
     },
     "dependencies": {
         "@augment-vir/common": "^13.3.0",
+        "@electrovir/icon-element": "^0.0.1",
+        "colorjs.io": "^0.4.3",
         "element-vir": "^12.2.0",
+        "lit-css-vars": "^2.0.2",
         "spa-router-vir": "^2.0.0",
         "typed-event-target": "^1.2.0"
     },
