@@ -1,11 +1,15 @@
 import {extractErrorMessage} from '@augment-vir/common';
 import {assign, css, defineElement, html, listen} from 'element-vir';
-import {ElementBookEntry} from '../../data/element-book-entry/element-book-entry';
+import {
+    ElementBookEntry,
+    isElementBookEntry,
+} from '../../data/element-book-entry/element-book-entry';
+import {ElementBookEntryTypeEnum} from '../../data/element-book-entry/element-book-entry-type';
 import {
     entriesToTree,
     findEntryByBreadcrumbs,
+    listBreadcrumbs,
 } from '../../data/element-book-entry/entry-tree/entry-tree';
-import {findFirstPageBreadcrumbs} from '../../data/element-book-entry/entry-tree/walk-entry-tree';
 import {createElementBookRouter} from '../../routing/create-element-book-router';
 import {
     ElementBookFullRoute,
@@ -111,12 +115,20 @@ export const ElementBookApp = defineElement<{
 
             const entriesTree = entriesToTree(inputs.entries);
 
-            if (!findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree)) {
-                const firstPageBreadcrumbs = findFirstPageBreadcrumbs(entriesTree);
+            const initialNode = findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree);
+            if (
+                !initialNode ||
+                isElementBookEntry(initialNode.entry, ElementBookEntryTypeEnum.Root)
+            ) {
+                const firstChild = Object.values(entriesTree.children)[0];
+                if (!firstChild) {
+                    throw new Error(`No entries exist.`);
+                }
+                const firstEntryBreadcrumbs = listBreadcrumbs(firstChild.entry, true);
 
                 const defaultPath: ReadonlyArray<string> | undefined =
                     inputs.defaultPath ??
-                    (firstPageBreadcrumbs.length ? firstPageBreadcrumbs : undefined);
+                    (firstEntryBreadcrumbs.length ? firstEntryBreadcrumbs : undefined);
 
                 if (defaultPath && defaultPath.length) {
                     const newRoute: Pick<ElementBookFullRoute, 'paths'> = {

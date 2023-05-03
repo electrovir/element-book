@@ -1,24 +1,5 @@
 import {MaybePromise} from '@augment-vir/common';
-import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
-import {doesNodeHaveEntryType, EntryTreeNode, listBreadcrumbs} from './entry-tree';
-
-export function findFirstPageBreadcrumbs(entryTree: Readonly<EntryTreeNode>): string[] {
-    let pageEntry: EntryTreeNode<ElementBookEntryTypeEnum.Page> | undefined;
-    walkEntryTree(entryTree, (node) => {
-        if (doesNodeHaveEntryType(node, ElementBookEntryTypeEnum.Page)) {
-            pageEntry = node;
-            return false;
-        }
-
-        return;
-    });
-
-    if (!pageEntry) {
-        return [];
-    }
-
-    return listBreadcrumbs(pageEntry.entry).reverse().concat(pageEntry.breadcrumb);
-}
+import {EntryTreeNode} from './entry-tree';
 
 /**
  * Walk the whole given tree, calling callback on each node. If callback returns the boolean false

@@ -56,7 +56,6 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
     renderCallback: ({inputs}) => {
         const nestedPages = extractNestedPages(inputs.currentNode);
 
-
         const entryBreadcrumbs = listBreadcrumbs(inputs.currentNode.entry, true);
         const exampleTemplates = createNestedPagesTemplates(nestedPages, entryBreadcrumbs, true);
 
