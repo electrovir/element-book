@@ -66,6 +66,7 @@ export const ElementBookApp = defineElement<{
         }
 
         ${ElementBookNav} {
+            flex-shrink: 0;
             position: sticky;
             overflow-x: hidden;
             overflow-y: auto;

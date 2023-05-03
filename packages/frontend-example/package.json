@@ -1,6 +1,6 @@
 {
     "name": "@element-book/frontend-example",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "scripts": {
