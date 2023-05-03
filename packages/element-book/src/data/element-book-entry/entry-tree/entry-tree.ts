@@ -1,4 +1,4 @@
-import {isLengthAtLeast} from '@augment-vir/common';
+import {collapseWhiteSpace, isLengthAtLeast} from '@augment-vir/common';
 import {ElementBookEntry} from '../element-book-entry';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 
@@ -11,6 +11,7 @@ export function doesNodeHaveEntryType<EntryType extends ElementBookEntryTypeEnum
 
 export type EntryTreeNode<EntryType extends ElementBookEntryTypeEnum = ElementBookEntryTypeEnum> = {
     entry: Extract<ElementBookEntry, {type: EntryType}>;
+    breadcrumb: string;
     children: Record<string, EntryTreeNode>;
 };
 
@@ -21,10 +22,15 @@ export function createEmptyEntryTreeRoot(): EntryTreeNode {
             title: 'element book tree root',
             parent: undefined,
         },
+        breadcrumb: '',
         children: {} as Record<string, EntryTreeNode>,
     };
 
     return rootNode;
+}
+
+export function titleToBreadcrumb(title: string): string {
+    return collapseWhiteSpace(title).replaceAll(/\s/g, '-');
 }
 
 export function entriesToTree(entries: ReadonlyArray<ElementBookEntry>) {
@@ -32,72 +38,76 @@ export function entriesToTree(entries: ReadonlyArray<ElementBookEntry>) {
 
     entries.forEach((newEntry) => {
         const immediateParent = traverseToImmediateParent(newEntry, tree);
+        const breadcrumb = titleToBreadcrumb(newEntry.title);
 
-        if (newEntry.title in immediateParent.children) {
+        if (breadcrumb in immediateParent.children) {
             throw new Error(
-                `Cannot create duplicate entry titled '${newEntry.title}' in parent '${immediateParent.entry.title}'.`,
+                `Cannot create duplicate entry '${breadcrumb}' in parent '${immediateParent.breadcrumb}'.`,
             );
         }
 
         const newNode: EntryTreeNode = {
             children: {},
+            breadcrumb,
             entry: newEntry,
         };
 
-        immediateParent.children[newEntry.title] = newNode;
+        immediateParent.children[breadcrumb] = newNode;
     });
 
     return tree;
 }
 
-export function traverseToImmediateParent(
+function traverseToImmediateParent(
     entry: Readonly<ElementBookEntry>,
     currentTree: Readonly<EntryTreeNode>,
 ) {
-    const topDownAncestryChain = listTitleBreadcrumbs(entry)
+    const topDownAncestryChain = listBreadcrumbs(entry)
         // reverse so we get the top most ancestor first in the list
         .reverse();
-    const immediateParentNode = topDownAncestryChain.reduce((currentParent, currentTitle) => {
-        const nextParent = currentParent.children[currentTitle];
-        if (!nextParent) {
+    const immediateParentNode = topDownAncestryChain.reduce((currentAncestor, nextBreadcrumb) => {
+        const nextAncestor = currentAncestor.children[nextBreadcrumb];
+        if (!nextAncestor) {
             throw new Error(
-                `Failed to find parent ElementBookEntry by name of '${currentTitle}' in entry '${currentParent.entry.title}'`,
+                `Failed to find parent ElementBookEntry by name of '${nextBreadcrumb}' in entry '${currentAncestor.entry.title}'`,
             );
         }
-        return nextParent;
+        return nextAncestor;
     }, currentTree);
 
     return immediateParentNode;
 }
 
-export function listTitleBreadcrumbs(entry: ElementBookEntry, includeSelf?: boolean): string[] {
+export function listBreadcrumbs(entry: ElementBookEntry, includeSelf?: boolean): string[] {
+    const entryBreadcrumb = titleToBreadcrumb(entry.title);
+
     if (entry.parent) {
         return [
-            entry.parent.title,
-            ...listTitleBreadcrumbs(entry.parent, false),
-        ].concat(includeSelf ? [entry.title] : []);
+            titleToBreadcrumb(entry.parent.title),
+            ...listBreadcrumbs(entry.parent, false),
+        ].concat(includeSelf ? [entryBreadcrumb] : []);
     } else if (includeSelf) {
-        return [entry.title];
+        return [entryBreadcrumb];
     } else {
         return [];
     }
 }
 
 export function findEntryByBreadcrumbs(
-    titles: ReadonlyArray<string>,
+    breadcrumbs: ReadonlyArray<string>,
     tree: Readonly<EntryTreeNode>,
-): Readonly<EntryTreeNode> {
-    if (!isLengthAtLeast(titles, 1)) {
+): Readonly<EntryTreeNode> | undefined {
+    if (!isLengthAtLeast(breadcrumbs, 1)) {
         return tree;
     }
 
-    const nextEntryTitle = titles[0];
+    const nextBreadcrumb = breadcrumbs[0];
 
-    const nextTree = tree.children[nextEntryTitle];
+    const nextTree = tree.children[nextBreadcrumb];
 
     if (!nextTree) {
-        throw new Error(`Failed to find '${tree.entry.title}' > '${nextEntryTitle}'.`);
+        return undefined;
     }
 
-    return findEntryByBreadcrumbs(titles.slice(1), nextTree);
+    return findEntryByBreadcrumbs(breadcrumbs.slice(1), nextTree);
 }

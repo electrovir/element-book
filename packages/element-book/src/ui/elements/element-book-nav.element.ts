@@ -1,5 +1,5 @@
 import {areJsonEqual} from '@augment-vir/common';
-import {VirIcon, virIconColorCssVars} from '@electrovir/icon-element';
+import {VirIcon} from '@electrovir/icon-element';
 import {assign, classMap, css, html, renderIf} from 'element-vir';
 import {TemplateResult} from 'lit';
 import {ElementBookEntryTypeEnum} from '../../data/element-book-entry/element-book-entry-type';
@@ -36,6 +36,7 @@ export const ElementBookNav = defineElementBookElement<{
         }
 
         .title-row {
+            padding-right: 24px;
             display: block;
             ${ElementBookRouteLink.cssVarNames
                 .anchorPadding}: 4px 24px 4px calc(calc(16px * var(--indent, 0)) + 24px);
@@ -60,14 +61,16 @@ export const ElementBookNav = defineElementBookElement<{
         }
 
         .title-text {
+            white-space: nowrap;
+            text-overflow: ellipsis;
             display: inline-flex;
             gap: 8px;
             align-items: center;
-            ${virIconColorCssVars['vir-icon-color'].name}: dodgerblue;
         }
 
         ${VirIcon} {
             display: inline-flex;
+            color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
         }
     `,
     renderCallback({inputs}) {
@@ -105,7 +108,7 @@ function createNavigationTree({
     }
 
     return Object.values(tree.children).map((child) => {
-        const childPath = rootPath.concat(child.entry.title);
+        const childPath = rootPath.concat(child.breadcrumb);
 
         const childTemplates = createNavigationTree({
             indent: indent + 1,

@@ -1,17 +1,21 @@
-import {assign, classMap, css, html, renderIf} from 'element-vir';
-import {ElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
+import {VirIcon} from '@electrovir/icon-element';
+import {assign, css, html, renderIf} from 'element-vir';
 import {ElementBookEntryTypeEnum} from '../../../data/element-book-entry/element-book-entry-type';
-import {ElementBookPageExample} from '../../../data/element-book-entry/element-book-page/element-book-page-example';
-import {listTitleBreadcrumbs} from '../../../data/element-book-entry/entry-tree/entry-tree';
+import {ElementBookPage} from '../../../data/element-book-entry/element-book-page/element-book-page';
+import {
+    EntryTreeNode,
+    listBreadcrumbs,
+} from '../../../data/element-book-entry/entry-tree/entry-tree';
 import {ElementBookFullRoute} from '../../../routing/element-book-routing';
+import {colorThemeCssVars} from '../../color-theme/color-theme';
+import {Element24Icon} from '../../icons/element-24.icon';
 import {defineElementBookElement} from '../define-book-element';
 import {ElementBookBreadcrumbs} from '../element-book-breadcrumbs.element';
-import {ElementBookExampleControls} from './element-book-example-controls.element';
-import {ElementBookExampleViewer} from './element-book-example-viewer.element';
+import {ElementBookPageExamples} from './element-book-page-examples.element';
 
 export const ElementBookEntryDisplay = defineElementBookElement<{
     currentRoute: Readonly<ElementBookFullRoute>;
-    currentEntry: Readonly<ElementBookEntry>;
+    currentNode: Readonly<EntryTreeNode>;
 }>()({
     tagName: 'element-book-entry-display',
     styles: css`
@@ -21,36 +25,59 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
         }
 
         .title-bar {
+            position: sticky;
+            top: 0;
             border-bottom: 1px solid #f8f8f8;
             padding: 4px 8px;
+            background-color: white;
         }
 
-        .examples-wrapper {
+        .all-examples-wrapper {
             padding: 32px;
             display: flex;
-            gap: 32px;
-            flex-wrap: wrap;
-        }
-
-        .individual-example-wrapper {
-            display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 64px;
         }
 
-        .hidden-controls {
-            pointer-events: none;
-            visibility: hidden;
+        h2 {
+            margin: 0;
+            margin-bottom: 24px;
+            padding: 0;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        ${VirIcon} {
+            color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
         }
     `,
     renderCallback: ({inputs}) => {
-        const examples =
-            inputs.currentEntry.type === ElementBookEntryTypeEnum.Page
-                ? inputs.currentEntry.examples
-                : [];
+        const descendantPages = extractAllDescendantPages(inputs.currentNode);
 
-        const entryBreadcrumbs = listTitleBreadcrumbs(inputs.currentEntry, true);
-        const exampleTemplates = makeExampleTemplates(examples, entryBreadcrumbs);
+        const entryBreadcrumbs = listBreadcrumbs(inputs.currentNode.entry, true);
+        const showPageTitles = inputs.currentNode.entry.type !== ElementBookEntryTypeEnum.Page;
+        const exampleTemplates = descendantPages.map((descendantPage) => {
+            return html`
+                <div class="page-examples">
+                    ${renderIf(
+                        showPageTitles,
+                        html`
+                            <h2>
+                                <${VirIcon} ${assign(VirIcon, {icon: Element24Icon})}></${VirIcon}>
+                                ${descendantPage.title}
+                            </h2>
+                        `,
+                    )}
+                    <${ElementBookPageExamples}
+                        ${assign(ElementBookPageExamples, {
+                            page: descendantPage,
+                            parentBreadcrumbs: entryBreadcrumbs,
+                        })}
+                    ></${ElementBookPageExamples}>
+                </div>
+            `;
+        });
 
         return html`
             <div class="title-bar">
@@ -58,36 +85,14 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
                     ${assign(ElementBookBreadcrumbs, {currentRoute: inputs.currentRoute})}
                 ></${ElementBookBreadcrumbs}>
             </div>
-            <div class="examples-wrapper">${exampleTemplates}</div>
+            <div class="all-examples-wrapper">${exampleTemplates}</div>
         `;
     },
 });
 
-function makeExampleTemplates(
-    examples: ReadonlyArray<Readonly<ElementBookPageExample>>,
-    parentBreadcrumbs: ReadonlyArray<string>,
-) {
-    const allControlsHidden = examples.every((example) => example.hideControls);
-
-    return examples.map((example) => {
-        return html`
-            <div class="individual-example-wrapper">
-                ${renderIf(
-                    !allControlsHidden,
-                    html`
-                        <${ElementBookExampleControls}
-                            class=${classMap({'hidden-controls': !!example.hideControls})}
-                            ${assign(ElementBookExampleControls, {example})}
-                        ></${ElementBookExampleControls}>
-                    `,
-                )}
-                <${ElementBookExampleViewer}
-                    ${assign(ElementBookExampleViewer, {
-                        example,
-                        parentBreadcrumbs,
-                    })}
-                ></${ElementBookExampleViewer}>
-            </div>
-        `;
-    });
+function extractAllDescendantPages(node: Readonly<EntryTreeNode>): ElementBookPage[] {
+    if (node.entry.type === ElementBookEntryTypeEnum.Page) {
+        return [node.entry];
+    }
+    return Object.values(node.children).map(extractAllDescendantPages).flat();
 }

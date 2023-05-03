@@ -1,6 +1,6 @@
 import {ElementBookChapter} from '../element-book-chapter/element-book-chapter';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
-import {listTitleBreadcrumbs} from '../entry-tree/entry-tree';
+import {listBreadcrumbs} from '../entry-tree/entry-tree';
 import {ElementBookPageExample} from './element-book-page-example';
 
 export type ElementBookPage = {
@@ -19,7 +19,7 @@ export function defineElementBookPage(pageSetup: Omit<ElementBookPage, 'type'>):
         ...pageSetup,
     };
 
-    const pageBreadcrumbs = listTitleBreadcrumbs(page, true);
+    const pageBreadcrumbs = listBreadcrumbs(page, true);
 
     const exampleTitlesSet = new Set<string>();
 

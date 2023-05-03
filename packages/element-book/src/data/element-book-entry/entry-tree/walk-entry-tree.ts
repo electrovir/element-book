@@ -1,6 +1,6 @@
 import {MaybePromise} from '@augment-vir/common';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
-import {doesNodeHaveEntryType, EntryTreeNode, listTitleBreadcrumbs} from './entry-tree';
+import {doesNodeHaveEntryType, EntryTreeNode, listBreadcrumbs} from './entry-tree';
 
 export function findFirstPageBreadcrumbs(entryTree: Readonly<EntryTreeNode>): string[] {
     let pageEntry: EntryTreeNode<ElementBookEntryTypeEnum.Page> | undefined;
@@ -17,7 +17,7 @@ export function findFirstPageBreadcrumbs(entryTree: Readonly<EntryTreeNode>): st
         return [];
     }
 
-    return listTitleBreadcrumbs(pageEntry.entry).concat(pageEntry.entry.title);
+    return listBreadcrumbs(pageEntry.entry).concat(pageEntry.breadcrumb);
 }
 
 /**

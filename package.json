@@ -1,6 +1,6 @@
 {
     "name": "@element-book/root",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "private": true,
     "homepage": "https://github.com/electrovir/element-book",
     "bugs": {
@@ -26,7 +26,7 @@
         "format": "virmator format",
         "publish": "virmator publish \"npm run test:all\"",
         "start": "npm run compile && concurrently \"cd packages/frontend-example && npm run start\" \"nodemon --config configs/nodemon.json\"",
-        "test": "tsc --build tsconfig.build.json && npm run test --workspaces -s --if-present",
+        "test": "npm run test --workspaces -s --if-present",
         "test:all": "npm run compile:clean && concurrently --kill-others-on-fail \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
         "test:coverage": "npm run test:coverage --workspaces -s --if-present",
         "test:docs": "virmator code-in-markdown check",

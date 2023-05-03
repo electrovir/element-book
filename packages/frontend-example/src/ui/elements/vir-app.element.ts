@@ -6,9 +6,18 @@ export const VirApp = defineElementNoInputs({
     tagName: 'vir-app',
     styles: css`
         :host {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
             height: 100%;
             width: 100%;
+            box-sizing: border-box;
+        }
+
+        ${ElementBookApp} {
+            flex-grow: 1;
+            overflow: hidden;
+            max-width: 100%;
             box-sizing: border-box;
         }
     `,
@@ -34,6 +43,7 @@ export const VirApp = defineElementNoInputs({
                 ${assign(ElementBookApp, {
                     entries,
                     themeColor: state.themeColor,
+                    baseRoute: '/',
                 })}
             ></${ElementBookApp}>
         `;

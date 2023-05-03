@@ -55,6 +55,9 @@ export function createTheme(startColorString: string = defaultThemeStartColor): 
             active: createColorPair({background: original.clone().set({'hsl.l': 90})}),
             selected: createColorPair({background: original.clone().set({'hsl.l': 85})}),
         },
+        accent: {
+            icon: original.clone().set({'hsl.l': 40}),
+        },
     } as const;
 
     const convertedToCssResults = colorsObjectToCssResult(colors);

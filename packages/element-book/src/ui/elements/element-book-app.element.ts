@@ -42,14 +42,30 @@ export const ElementBookApp = defineElement<{
             font-family: sans-serif;
         }
 
+        .error {
+            color: red;
+        }
+
         .root {
-            height: 100%;
-            width: 100%;
+            max-height: 100%;
+            max-width: 100%;
             display: flex;
+            position: relative;
         }
 
         ${ElementBookEntryDisplay} {
             flex-grow: 1;
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        ${ElementBookNav} {
+            position: sticky;
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-height: 100%;
+            top: 0;
         }
     `,
     initCallback({updateState, state, inputs, host}) {
@@ -93,7 +109,7 @@ export const ElementBookApp = defineElement<{
 
         const entriesTree = entriesToTree(inputs.entries);
 
-        if (!state.currentRoute.paths.length) {
+        if (!findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree)) {
             const firstPageBreadcrumbs = findFirstPageBreadcrumbs(entriesTree);
 
             const defaultPath: ReadonlyArray<string> | undefined =
@@ -108,10 +124,16 @@ export const ElementBookApp = defineElement<{
             }
         }
 
-        const currentEntry: ElementBookEntry = findEntryByBreadcrumbs(
-            state.currentRoute.paths,
-            entriesTree,
-        ).entry;
+        const currentNode = findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree);
+
+        if (!currentNode) {
+            return html`
+                <p class="error">
+                    Tried to self-correct for invalid path ${state.currentRoute.paths.join('/')} but
+                    failed to do so.
+                </p>
+            `;
+        }
 
         return html`
             <div
@@ -130,7 +152,7 @@ export const ElementBookApp = defineElement<{
                 <${ElementBookEntryDisplay}
                     ${assign(ElementBookEntryDisplay, {
                         currentRoute: state.currentRoute,
-                        currentEntry,
+                        currentNode,
                     })}
                 ></${ElementBookEntryDisplay}>
             </div>

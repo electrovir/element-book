@@ -6,10 +6,11 @@ import {
     EntryTreeNode,
     createEmptyEntryTreeRoot,
     doesNodeHaveEntryType,
-    listTitleBreadcrumbs,
+    listBreadcrumbs,
+    titleToBreadcrumb,
 } from './entry-tree';
 
-describe(listTitleBreadcrumbs.name, () => {
+describe(listBreadcrumbs.name, () => {
     const exampleTopLevelChapter = defineElementBookChapter({
         title: 'top level title',
     });
@@ -23,7 +24,7 @@ describe(listTitleBreadcrumbs.name, () => {
         parent: exampleChapter,
     });
 
-    itCases(listTitleBreadcrumbs, [
+    itCases(listBreadcrumbs, [
         {
             it: 'finds nothing when entry has no parent',
             inputs: [exampleTopLevelChapter],
@@ -32,7 +33,7 @@ describe(listTitleBreadcrumbs.name, () => {
         {
             it: 'finds a parent',
             inputs: [exampleChapter],
-            expect: [exampleTopLevelChapter.title],
+            expect: [exampleTopLevelChapter.title].map(titleToBreadcrumb),
         },
         {
             it: 'finds multiple ancestors',
@@ -40,7 +41,7 @@ describe(listTitleBreadcrumbs.name, () => {
             expect: [
                 exampleChapter.title,
                 exampleTopLevelChapter.title,
-            ],
+            ].map(titleToBreadcrumb),
         },
         {
             it: 'includes title of given entry when includeSelf is true',
@@ -52,7 +53,7 @@ describe(listTitleBreadcrumbs.name, () => {
                 exampleChapter.title,
                 exampleTopLevelChapter.title,
                 examplePage.title,
-            ],
+            ].map(titleToBreadcrumb),
         },
     ]);
 });

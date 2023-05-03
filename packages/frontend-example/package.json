@@ -1,6 +1,6 @@
 {
     "name": "@element-book/frontend-example",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "scripts": {
@@ -12,6 +12,7 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
+        "@augment-vir/browser": "^13.3.0",
         "element-book": "*",
         "element-vir": "^12.2.0"
     },

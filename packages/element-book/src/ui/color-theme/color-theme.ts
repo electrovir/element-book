@@ -11,6 +11,9 @@ export type ColorTheme = {
         active: ColorPair;
         selected: ColorPair;
     };
+    accent: {
+        icon: CSSResult;
+    };
 };
 
 type CssResultToCssVar<StartingPoint> = {
@@ -28,6 +31,7 @@ export const colorThemeCssVars = defineCssVars({
     'element-book-nav-active-foreground-color': 'grey',
     'element-book-nav-selected-background-color': 'grey',
     'element-book-nav-selected-foreground-color': 'grey',
+    'element-book-accent-icon-color': 'grey',
 });
 
 const colorThemeCssVarMapping: ColorThemeCssVars = {
@@ -44,6 +48,9 @@ const colorThemeCssVarMapping: ColorThemeCssVars = {
             background: colorThemeCssVars['element-book-nav-selected-background-color'],
             foreground: colorThemeCssVars['element-book-nav-selected-foreground-color'],
         },
+    },
+    accent: {
+        icon: colorThemeCssVars['element-book-accent-icon-color'],
     },
 };
 

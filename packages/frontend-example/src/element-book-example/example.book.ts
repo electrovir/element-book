@@ -4,11 +4,9 @@ import {css, html, listen} from 'element-vir';
 const chapter1 = defineElementBookChapter({title: 'my chapter 1'});
 const chapter2 = defineElementBookChapter({title: 'my chapter 2'});
 
-export const entries = [
-    chapter1,
-    chapter2,
-    defineElementBookPage({
-        title: 'test',
+function createExamplePage(index: number) {
+    return defineElementBookPage({
+        title: `test ${index}`,
         parent: chapter1,
         examples: [
             createExample({
@@ -57,7 +55,16 @@ export const entries = [
                 },
             }),
         ],
-    }),
+    });
+}
+
+export const entries = [
+    chapter1,
+    chapter2,
+    createExamplePage(0),
+    ...Array(100)
+        .fill(0)
+        .map((_value, index) => createExamplePage(index + 1)),
     defineElementBookPage({
         title: 'test 2',
         parent: chapter2,
@@ -79,3 +86,5 @@ export const entries = [
         ],
     }),
 ];
+
+console.log({entries});
