@@ -7,15 +7,13 @@ const unsetInternalState = Symbol('unset-internal-state');
 
 export const ElementBookExampleViewer = defineElementBookElement<{
     example: ElementBookPageExample;
-    parentBreadcrumbs: ReadonlyArray<string>;
+    breadcrumbs: ReadonlyArray<string>;
 }>()({
     tagName: 'element-book-example-viewer',
     stateInit: {
         internalState: unsetInternalState as any,
     },
     renderCallback({state, inputs, updateState}) {
-        const fullExampleBreadcrumbs = inputs.parentBreadcrumbs.concat(inputs.example.title);
-
         if (state.internalState === unsetInternalState) {
             updateState({internalState: inputs.example.stateInit});
         }
@@ -45,7 +43,7 @@ export const ElementBookExampleViewer = defineElementBookElement<{
             `;
         } catch (error) {
             console.error(error);
-            return `${fullExampleBreadcrumbs.join(' > ')} failed: ${extractErrorMessage(error)}`;
+            return `${inputs.breadcrumbs.join(' > ')} failed: ${extractErrorMessage(error)}`;
         }
     },
 });
