@@ -348,7 +348,7 @@ var wo=Object.defineProperty;var vo=(t,e,r)=>e in t?wo(t,e,{enumerable:!0,config
                 </div>
             `}catch(a){return v`
                 <p class="error">${_r(a)}</p>
-            `}}}),$r=Cr({title:"My Chapter 1"}),Gn=Cr({title:"My Chapter 2"}),qn=Cr({title:"Sub Chapter 1",parent:$r});function Jn(t,e){return ns({title:`test ${t}`,parent:e,examples:[{title:"example 1",render(){return"hi"}},{title:"example 2",hideControls:!0,render(){return"hi 2"}},{title:"example 3",stateInit:{yo:4},styles:W`
+            `}}}),$r=Cr({title:"My Chapter 1"}),Gn=Cr({title:"My Chapter 2"}),qn=Cr({title:"Sub Chapter 1",parent:$r});function Jn(t,e){return ns({title:`test ${t}`,parent:e,examples:[{title:"example 1",render(){return"hi"}},{title:"example 2",hideControls:!0,render(){return"hi 2"}},{title:"example 2.5",render(){return"hi 2"}},{title:"example 3",stateInit:{yo:4},styles:W`
                     button {
                         border: 2px solid green;
                         background-color: white;
