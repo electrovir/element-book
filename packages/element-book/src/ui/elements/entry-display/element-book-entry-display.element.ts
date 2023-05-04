@@ -77,9 +77,7 @@ function createNestedPagesTemplates(
     parentBreadcrumbs: ReadonlyArray<string>,
     isTopLevel: boolean,
 ): HTMLTemplateResult[] {
-    const showTitles =
-        !isTopLevel &&
-        (nestedPages.length !== 1 || nestedPages[0]?.type !== ElementBookEntryTypeEnum.Page);
+    const showTitles = !isTopLevel;
 
     return nestedPages
         .map((nesting) => {
