@@ -31,6 +31,7 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
             border-bottom: 1px solid #f8f8f8;
             padding: 4px 8px;
             background-color: white;
+            z-index: 9999999999;
         }
 
         .all-examples-wrapper {
