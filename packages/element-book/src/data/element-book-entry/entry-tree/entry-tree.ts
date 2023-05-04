@@ -15,11 +15,11 @@ export type EntryTreeNode<EntryType extends ElementBookEntryTypeEnum = ElementBo
     children: Record<string, EntryTreeNode>;
 };
 
-export function createEmptyEntryTreeRoot(): EntryTreeNode {
+export function createEmptyEntryTreeRoot(title: string | undefined): EntryTreeNode {
     const rootNode: Readonly<EntryTreeNode<ElementBookEntryTypeEnum.Root>> = {
         entry: {
             type: ElementBookEntryTypeEnum.Root,
-            title: 'element book tree root',
+            title: title || 'Everything',
             parent: undefined,
         },
         breadcrumb: '',
@@ -33,8 +33,11 @@ export function titleToBreadcrumb(title: string): string {
     return collapseWhiteSpace(title).toLowerCase().replaceAll(/\s/g, '-');
 }
 
-export function entriesToTree(entries: ReadonlyArray<ElementBookEntry>) {
-    const tree = createEmptyEntryTreeRoot();
+export function entriesToTree(
+    entries: ReadonlyArray<ElementBookEntry>,
+    everythingTitle: string | undefined,
+) {
+    const tree = createEmptyEntryTreeRoot(everythingTitle);
 
     entries.forEach((newEntry) => {
         const immediateParent = traverseToImmediateParent(newEntry, tree);

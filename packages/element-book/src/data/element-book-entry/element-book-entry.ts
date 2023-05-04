@@ -5,7 +5,7 @@ import {ElementBookPage} from './element-book-page/element-book-page';
 
 export type ElementBookRoot = {
     type: ElementBookEntryTypeEnum.Root;
-    title: 'element book tree root';
+    title: string;
     parent: undefined;
 };
 

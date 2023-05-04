@@ -44,6 +44,7 @@ export const VirApp = defineElementNoInputs({
                     entries,
                     themeColor: state.themeColor,
                     baseRoute: '/',
+                    everythingTitle: 'All',
                 })}
             ></${ElementBookApp}>
         `;

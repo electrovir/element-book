@@ -13,8 +13,16 @@ export const ElementBookBreadcrumbs = defineElementBookElement<{
         }
     `,
     renderCallback: ({inputs}) => {
-        return inputs.currentRoute.paths.map((currentPath, pathIndex) => {
-            const isLastPath = pathIndex >= inputs.currentRoute.paths.length - 1;
+        const bookPaths = inputs.currentRoute.paths.slice(1);
+
+        if (!bookPaths.length) {
+            return html`
+                &nbsp;
+            `;
+        }
+
+        return bookPaths.map((currentPath, pathIndex, pathsArray) => {
+            const isLastPath = pathIndex >= pathsArray.length - 1;
             const spacer = isLastPath
                 ? ''
                 : html`

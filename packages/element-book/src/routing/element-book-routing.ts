@@ -1,14 +1,21 @@
 import {FullRoute, SpaRouter} from 'spa-router-vir';
 
-export type ValidElementBookPaths = string[];
+export enum ElementBookMainRoute {
+    Search = 'search',
+    Book = 'book',
+}
+
+export type ValidElementBookPaths =
+    | [ElementBookMainRoute.Search, string]
+    | [ElementBookMainRoute.Book, ...string[]];
 
 export type ElementBookFullRoute = Required<
     Readonly<FullRoute<ValidElementBookPaths, undefined, undefined>>
 >;
 
-export const emptyElementBookFullRoute: Readonly<ElementBookFullRoute> = {
+export const defaultElementBookFullRoute: Readonly<ElementBookFullRoute> = {
     hash: undefined,
-    paths: [],
+    paths: [ElementBookMainRoute.Book],
     search: undefined,
 } as const;
 

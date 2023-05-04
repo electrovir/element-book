@@ -2,4 +2,5 @@ export * from './data/element-book-entry/element-book-chapter/element-book-chapt
 export * from './data/element-book-entry/element-book-entry';
 export * from './data/element-book-entry/element-book-page/element-book-page';
 export * from './data/element-book-entry/element-book-page/element-book-page-example';
-export * from './ui/elements/element-book-app.element';
+export * from './ui/elements/element-book-app/element-book-app.element';
+export * from './ui/elements/element-book-app/element-book-config';

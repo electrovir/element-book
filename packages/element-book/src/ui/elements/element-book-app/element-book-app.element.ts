@@ -1,38 +1,34 @@
-import {extractErrorMessage} from '@augment-vir/common';
+import {extractErrorMessage, getOrSetFromMap} from '@augment-vir/common';
 import {assign, css, defineElement, html, listen} from 'element-vir';
+import {ElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
 import {
-    ElementBookEntry,
-    isElementBookEntry,
-} from '../../data/element-book-entry/element-book-entry';
-import {ElementBookEntryTypeEnum} from '../../data/element-book-entry/element-book-entry-type';
-import {
+    EntryTreeNode,
     entriesToTree,
     findEntryByBreadcrumbs,
     listBreadcrumbs,
-} from '../../data/element-book-entry/entry-tree/entry-tree';
-import {createElementBookRouter} from '../../routing/create-element-book-router';
+} from '../../../data/element-book-entry/entry-tree/entry-tree';
+import {createElementBookRouter} from '../../../routing/create-element-book-router';
 import {
     ElementBookFullRoute,
+    ElementBookMainRoute,
     ElementBookRouter,
-    emptyElementBookFullRoute,
-} from '../../routing/element-book-routing';
-import {ColorTheme, setThemeCssVars} from '../color-theme/color-theme';
-import {createTheme} from '../color-theme/create-color-theme';
-import {ChangeRouteEvent} from '../events/change-route.event';
-import {ElementBookNav} from './element-book-nav.element';
-import {ElementBookEntryDisplay} from './entry-display/element-book-entry-display.element';
+    defaultElementBookFullRoute,
+} from '../../../routing/element-book-routing';
+import {ColorTheme, setThemeCssVars} from '../../color-theme/color-theme';
+import {createTheme} from '../../color-theme/create-color-theme';
+import {ChangeRouteEvent} from '../../events/change-route.event';
+import {ElementBookNav} from '../element-book-nav.element';
+import {ElementBookEntryDisplay} from '../entry-display/element-book-entry-display.element';
+import {ElementBookConfig} from './element-book-config';
 
 type ColorThemeState = {original: string | undefined; theme: ColorTheme};
 
-export const ElementBookApp = defineElement<{
-    entries: ReadonlyArray<ElementBookEntry>;
-    baseRoute?: string | undefined;
-    defaultPath?: ReadonlyArray<string> | undefined;
-    themeColor?: string | undefined;
-}>()({
+const treeCache = new Map<ReadonlyArray<ElementBookEntry>, EntryTreeNode>();
+
+export const ElementBookApp = defineElement<ElementBookConfig>()({
     tagName: 'element-book-app',
     stateInit: {
-        currentRoute: emptyElementBookFullRoute,
+        currentRoute: defaultElementBookFullRoute,
         router: undefined as undefined | ElementBookRouter,
         colors: {
             original: undefined,
@@ -114,13 +110,15 @@ export const ElementBookApp = defineElement<{
                 }
             }
 
-            const entriesTree = entriesToTree(inputs.entries);
+            const entriesTree = getOrSetFromMap(treeCache, inputs.entries, () =>
+                entriesToTree(inputs.entries, inputs.everythingTitle),
+            );
 
-            const initialNode = findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree);
-            if (
-                !initialNode ||
-                isElementBookEntry(initialNode.entry, ElementBookEntryTypeEnum.Root)
-            ) {
+            const initialNode = findEntryByBreadcrumbs(
+                state.currentRoute.paths.slice(1),
+                entriesTree,
+            );
+            if (!initialNode) {
                 const firstChild = Object.values(entriesTree.children)[0];
                 if (!firstChild) {
                     throw new Error(`No entries exist.`);
@@ -133,13 +131,19 @@ export const ElementBookApp = defineElement<{
 
                 if (defaultPath && defaultPath.length) {
                     const newRoute: Pick<ElementBookFullRoute, 'paths'> = {
-                        paths: defaultPath,
+                        paths: [
+                            ElementBookMainRoute.Book,
+                            ...defaultPath,
+                        ],
                     };
                     updateRoutes(newRoute);
                 }
             }
 
-            const currentNode = findEntryByBreadcrumbs(state.currentRoute.paths, entriesTree);
+            const currentNode = findEntryByBreadcrumbs(
+                state.currentRoute.paths.slice(1),
+                entriesTree,
+            );
 
             if (!currentNode) {
                 throw new Error(`Tried to self-correct for invalid path ${state.currentRoute.paths.join(

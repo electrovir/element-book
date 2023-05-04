@@ -38,16 +38,16 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/common": "^13.3.0",
+        "@augment-vir/common": "^13.4.0",
         "@electrovir/icon-element": "^0.0.1",
         "colorjs.io": "^0.4.3",
-        "element-vir": "^12.2.0",
+        "element-vir": "^12.3.0",
         "lit-css-vars": "^2.0.2",
         "spa-router-vir": "^2.0.0",
         "typed-event-target": "^1.2.0"
     },
     "devDependencies": {
-        "@augment-vir/browser-testing": "^13.3.0",
+        "@augment-vir/browser-testing": "^13.4.0",
         "@open-wc/testing": "^3.1.8",
         "@types/mocha": "^10.0.1",
         "@web/dev-server-esbuild": "^0.4.1",

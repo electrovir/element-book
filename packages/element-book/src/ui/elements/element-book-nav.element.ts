@@ -4,7 +4,7 @@ import {assign, classMap, css, html, renderIf} from 'element-vir';
 import {TemplateResult} from 'lit';
 import {ElementBookEntryTypeEnum} from '../../data/element-book-entry/element-book-entry-type';
 import {EntryTreeNode} from '../../data/element-book-entry/entry-tree/entry-tree';
-import {ElementBookRouter} from '../../routing/element-book-routing';
+import {ElementBookMainRoute, ElementBookRouter} from '../../routing/element-book-routing';
 import {colorThemeCssVars} from '../color-theme/color-theme';
 import {Element16Icon} from '../icons/element-16.icon';
 import {ElementBookRouteLink} from './common/element-book-route-link.element';
@@ -39,7 +39,7 @@ export const ElementBookNav = defineElementBookElement<{
             padding-right: 16px;
             display: block;
             ${ElementBookRouteLink.cssVarNames
-                .anchorPadding}: 4px 24px 4px calc(calc(16px * var(--indent, 0)) + 24px);
+                .anchorPadding}: 4px 24px 4px calc(calc(16px * var(--indent, 0)) + 8px);
         }
 
         ${ElementBookRouteLink} {
@@ -76,10 +76,10 @@ export const ElementBookNav = defineElementBookElement<{
     renderCallback({inputs}) {
         const navTree = createNavigationTree({
             indent: 0,
-            tree: inputs.tree,
+            entryTreeNode: inputs.tree,
             rootPath: [],
             router: inputs.router,
-            selectedPath: inputs.selectedPath,
+            selectedPath: inputs.selectedPath.slice(1),
         });
 
         return html`
@@ -92,64 +92,63 @@ export const ElementBookNav = defineElementBookElement<{
 
 function createNavigationTree({
     indent,
-    tree,
+    entryTreeNode,
     rootPath,
     selectedPath,
     router,
 }: {
     indent: number;
-    tree: EntryTreeNode;
+    entryTreeNode: EntryTreeNode;
     rootPath: ReadonlyArray<string>;
     selectedPath: ReadonlyArray<string>;
     router: ElementBookRouter | undefined;
-}): TemplateResult[] {
-    if (!tree.children) {
-        return [];
-    }
+}): TemplateResult {
+    const entryPath = entryTreeNode.breadcrumb
+        ? rootPath.concat(entryTreeNode.breadcrumb)
+        : rootPath;
 
-    return Object.values(tree.children).map((child) => {
-        const childPath = rootPath.concat(child.breadcrumb);
+    const isPage: boolean = entryTreeNode.entry.type === ElementBookEntryTypeEnum.Page;
 
-        const childTemplates = createNavigationTree({
+    const childTemplates = Object.values(entryTreeNode.children).map((child) => {
+        return createNavigationTree({
             indent: indent + 1,
-            tree: child,
-            rootPath: childPath,
+            entryTreeNode: child,
+            rootPath: entryPath,
             selectedPath,
             router,
         });
-
-        const hasExamples: boolean = child.entry.type === ElementBookEntryTypeEnum.Page;
-
-        return html`
-            <div class="nav-tree-entry" style="--indent: ${indent};">
-                <li class=${child.entry.type}>
-                    <${ElementBookRouteLink}
-                        ${assign(ElementBookRouteLink, {
-                            router: router,
-                            route: {
-                                paths: childPath,
-                            },
-                        })}
-                        class=${classMap({
-                            'title-row': true,
-                            selected: areJsonEqual(selectedPath, childPath),
-                        })}
-                    >
-                        <div class="title-text">
-                            ${renderIf(
-                                hasExamples,
-                                html`
-                                    <${VirIcon}
-                                        ${assign(VirIcon, {icon: Element16Icon})}
-                                    ></${VirIcon}>
-                                `,
-                            )}
-                            ${child.entry.title}
-                        </div>
-                    </${ElementBookRouteLink}>
-                </li>
-                ${childTemplates}
-            </div>
-        `;
     });
+
+    return html`
+        <div class="nav-tree-entry" style="--indent: ${indent};">
+            <li class=${entryTreeNode.entry.type}>
+                <${ElementBookRouteLink}
+                    ${assign(ElementBookRouteLink, {
+                        router: router,
+                        route: {
+                            paths: [
+                                ElementBookMainRoute.Book,
+                                ...entryPath,
+                            ],
+                        },
+                    })}
+                    class=${classMap({
+                        'title-row': true,
+                        selected: areJsonEqual(selectedPath, entryPath),
+                    })}
+                >
+                    <div class="title-text">
+                        ${renderIf(
+                            isPage,
+                            html`
+                                <${VirIcon} ${assign(VirIcon, {icon: Element16Icon})}></${VirIcon}>
+                            `,
+                        )}
+                        ${entryTreeNode.entry.title}
+                    </div>
+                </${ElementBookRouteLink}>
+            </li>
+            ${childTemplates}
+        </div>
+    `;
 }
