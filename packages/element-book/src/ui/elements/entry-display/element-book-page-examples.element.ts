@@ -15,10 +15,15 @@ export const ElementBookPageExamples = defineElementBookElement<{
             gap: 32px;
             flex-wrap: wrap;
         }
+
         .individual-example-wrapper {
             display: flex;
             flex-direction: column;
             gap: 24px;
+        }
+
+        .individual-example-wrapper:hover ${ElementBookExampleControls} {
+            color: black;
         }
 
         .hidden-controls {
@@ -47,8 +52,17 @@ export const ElementBookPageExamples = defineElementBookElement<{
                             !allControlsHidden,
                             html`
                                 <${ElementBookExampleControls}
-                                    class=${classMap({'hidden-controls': !!example.hideControls})}
-                                    ${assign(ElementBookExampleControls, {example})}
+                                    class=${classMap({
+                                        /**
+                                         * If not all controls are hidden, we still want to render
+                                         * every control so that they take up space, but just hide
+                                         * them.
+                                         */
+                                        'hidden-controls': !!example.hideControls,
+                                    })}
+                                    ${assign(ElementBookExampleControls, {
+                                        example,
+                                    })}
                                 ></${ElementBookExampleControls}>
                             `,
                         )}
