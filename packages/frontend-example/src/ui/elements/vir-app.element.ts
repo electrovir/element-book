@@ -43,7 +43,7 @@ export const VirApp = defineElementNoInputs({
                 ${assign(ElementBookApp, {
                     entries,
                     themeColor: state.themeColor,
-                    baseRoute: '/',
+                    baseUrl: '/',
                     everythingTitle: 'All',
                 })}
             >

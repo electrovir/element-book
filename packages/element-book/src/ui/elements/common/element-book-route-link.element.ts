@@ -29,6 +29,7 @@ export const ElementBookRouteLink = defineElementBookElement<{
                 ...inputs.router?.getCurrentRawRoutes(),
                 ...inputs.route,
             }) ?? '#';
+
         return html`
             <a
                 href=${linkUrl}

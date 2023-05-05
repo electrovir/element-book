@@ -1,4 +1,4 @@
-import {collapseWhiteSpace, isLengthAtLeast} from '@augment-vir/common';
+import {collapseWhiteSpace, isLengthAtLeast, typedHasProperties} from '@augment-vir/common';
 import {ElementBookEntry} from '../element-book-entry';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 
@@ -9,14 +9,32 @@ export function doesNodeHaveEntryType<EntryType extends ElementBookEntryTypeEnum
     return node.entry.type === type;
 }
 
+const markerKeyName = 'isElementBookEntryTreeNode';
+
 export type EntryTreeNode<EntryType extends ElementBookEntryTypeEnum = ElementBookEntryTypeEnum> = {
+    [markerKeyName]: true;
     entry: Extract<ElementBookEntry, {type: EntryType}>;
     breadcrumb: string;
     children: Record<string, EntryTreeNode>;
 };
 
+export function isEntryNode<SpecificType extends ElementBookEntryTypeEnum>(
+    input: unknown,
+    type: SpecificType,
+): input is EntryTreeNode<SpecificType> {
+    return !!(
+        typedHasProperties(input, [
+            markerKeyName,
+            'entry',
+        ]) &&
+        input[markerKeyName] &&
+        (input.entry as any).type === type
+    );
+}
+
 export function createEmptyEntryTreeRoot(title: string | undefined): EntryTreeNode {
     const rootNode: Readonly<EntryTreeNode<ElementBookEntryTypeEnum.Root>> = {
+        [markerKeyName]: true,
         entry: {
             type: ElementBookEntryTypeEnum.Root,
             title: title || 'Everything',
@@ -50,6 +68,7 @@ export function entriesToTree(
         }
 
         const newNode: EntryTreeNode = {
+            [markerKeyName]: true,
             children: {},
             breadcrumb,
             entry: newEntry,

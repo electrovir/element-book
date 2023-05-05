@@ -1,19 +1,21 @@
 import {VirIcon} from '@electrovir/icon-element';
 import {HTMLTemplateResult, TemplateResult, assign, css, html} from 'element-vir';
 import {BaseElementBookEntry} from '../../../data/element-book-entry/element-book-chapter/element-book-chapter';
-import {
-    ElementBookEntry,
-    isElementBookEntry,
-} from '../../../data/element-book-entry/element-book-entry';
+import {isElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
 import {ElementBookEntryTypeEnum} from '../../../data/element-book-entry/element-book-entry-type';
-import {ElementBookPage} from '../../../data/element-book-entry/element-book-page/element-book-page';
 import {
     EntryTreeNode,
+    isEntryNode,
     listBreadcrumbs,
 } from '../../../data/element-book-entry/entry-tree/entry-tree';
-import {ElementBookFullRoute} from '../../../routing/element-book-routing';
+import {
+    ElementBookFullRoute,
+    ElementBookMainRoute,
+    ElementBookRouter,
+} from '../../../routing/element-book-routing';
 import {colorThemeCssVars} from '../../color-theme/color-theme';
 import {Element24Icon} from '../../icons/element-24.icon';
+import {ElementBookRouteLink} from '../common/element-book-route-link.element';
 import {defineElementBookElement} from '../define-book-element';
 import {ElementBookBreadcrumbs} from '../element-book-breadcrumbs.element';
 import {ElementBookPageExamples} from './element-book-page-examples.element';
@@ -21,6 +23,7 @@ import {ElementBookPageExamples} from './element-book-page-examples.element';
 export const ElementBookEntryDisplay = defineElementBookElement<{
     currentRoute: Readonly<ElementBookFullRoute>;
     currentNode: Readonly<EntryTreeNode>;
+    router: ElementBookRouter;
 }>()({
     tagName: 'element-book-entry-display',
     styles: css`
@@ -53,6 +56,15 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
             padding: 0;
         }
 
+        h2,
+        h3 {
+            font-size: 1.5em;
+        }
+
+        ${ElementBookRouteLink} {
+            display: inline-block;
+        }
+
         .header-with-icon {
             display: flex;
             align-items: center;
@@ -64,6 +76,9 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
         }
 
         .page-examples .title-group {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
             margin-bottom: 24px;
         }
 
@@ -90,13 +105,21 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
     renderCallback: ({inputs}) => {
         const nestedPages = extractNestedPages(inputs.currentNode);
 
-        const entryBreadcrumbs = listBreadcrumbs(inputs.currentNode.entry, true);
-        const exampleTemplates = createNestedPagesTemplates(nestedPages, entryBreadcrumbs, true);
+        const entryBreadcrumbs = listBreadcrumbs(inputs.currentNode.entry, false).reverse();
+        const exampleTemplates = createNestedPagesTemplates({
+            nestedPages,
+            parentBreadcrumbs: entryBreadcrumbs,
+            isTopLevel: true,
+            router: inputs.router,
+        });
 
         return html`
             <div class="title-bar">
                 <${ElementBookBreadcrumbs}
-                    ${assign(ElementBookBreadcrumbs, {currentRoute: inputs.currentRoute})}
+                    ${assign(ElementBookBreadcrumbs, {
+                        currentRoute: inputs.currentRoute,
+                        router: inputs.router,
+                    })}
                 ></${ElementBookBreadcrumbs}>
             </div>
             <div class="all-examples-wrapper">${exampleTemplates}</div>
@@ -105,22 +128,35 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
 });
 
 type NestedPages = ReadonlyArray<
-    ElementBookPage | Record<string, {entry: ElementBookEntry; nested: NestedPages}>
+    | EntryTreeNode<ElementBookEntryTypeEnum.Page>
+    | Record<string, {node: EntryTreeNode; nested: NestedPages}>
 >;
 
-function createNestedPagesTemplates(
-    nestedPages: NestedPages,
-    parentBreadcrumbs: ReadonlyArray<string>,
-    isTopLevel: boolean,
-): HTMLTemplateResult[] {
+function createNestedPagesTemplates({
+    nestedPages,
+    parentBreadcrumbs,
+    isTopLevel,
+    router,
+}: {
+    nestedPages: NestedPages;
+    parentBreadcrumbs: ReadonlyArray<string>;
+    isTopLevel: boolean;
+    router: ElementBookRouter;
+}): HTMLTemplateResult[] {
     return nestedPages
-        .map((nestingEntry) => {
-            if (isElementBookEntry(nestingEntry, ElementBookEntryTypeEnum.Page)) {
+        .map((nestingNode) => {
+            if (isEntryNode(nestingNode, ElementBookEntryTypeEnum.Page)) {
+                const bookEntry = nestingNode.entry;
+
+                if (!isElementBookEntry(bookEntry, ElementBookEntryTypeEnum.Page)) {
+                    throw new Error('nested entry should be a page');
+                }
+
                 const headerContentsTemplate = html`
                     <${VirIcon} ${assign(VirIcon, {icon: Element24Icon})}></${VirIcon}>
-                    ${nestingEntry.title}
+                    ${bookEntry.title}
                 `;
-                const headerTemplate = isTopLevel
+                const titleTemplate = isTopLevel
                     ? html`
                           <h2 class="header-with-icon">${headerContentsTemplate}</h2>
                       `
@@ -128,24 +164,41 @@ function createNestedPagesTemplates(
                           <h3 class="header-with-icon">${headerContentsTemplate}</h3>
                       `;
 
+                const linkPaths = [
+                    ElementBookMainRoute.Book,
+                    ...parentBreadcrumbs.concat(nestingNode.breadcrumb),
+                ] as const;
+
                 return html`
                     <div class="page-examples">
                         <div class="title-group">
-                            ${headerTemplate} ${createDescriptionTemplate(nestingEntry)}
+                            <${ElementBookRouteLink}
+                                ${assign(ElementBookRouteLink, {
+                                    route: {
+                                        paths: linkPaths,
+                                        hash: undefined,
+                                        search: undefined,
+                                    },
+                                    router,
+                                })}
+                            >
+                                ${titleTemplate}
+                            </${ElementBookRouteLink}>
+                            ${createDescriptionTemplate(bookEntry)}
                         </div>
                         <${ElementBookPageExamples}
                             ${assign(ElementBookPageExamples, {
-                                page: nestingEntry,
+                                page: bookEntry,
                                 parentBreadcrumbs: parentBreadcrumbs,
                             })}
                         ></${ElementBookPageExamples}>
                     </div>
                 `;
             } else {
-                return Object.entries(nestingEntry).map(
+                return Object.entries(nestingNode).map(
                     ([
                         title,
-                        currentEntry,
+                        currentNested,
                     ]) => {
                         const titleTemplate = isTopLevel
                             ? html`
@@ -155,15 +208,36 @@ function createNestedPagesTemplates(
                                   <h2>${title}</h2>
                               `;
 
+                        const linkPaths = [
+                            ElementBookMainRoute.Book,
+                            ...parentBreadcrumbs.concat(currentNested.node.breadcrumb),
+                        ] as const;
+
                         return html`
                             <div class="title-group">
-                                ${titleTemplate} ${createDescriptionTemplate(currentEntry.entry)}
+                                <${ElementBookRouteLink}
+                                    ${assign(ElementBookRouteLink, {
+                                        route: {
+                                            paths: linkPaths,
+                                            hash: undefined,
+                                            search: undefined,
+                                        },
+                                        router,
+                                    })}
+                                >
+                                    ${titleTemplate}
+                                </${ElementBookRouteLink}>
+                                ${createDescriptionTemplate(currentNested.node.entry)}
                             </div>
-                            ${createNestedPagesTemplates(
-                                currentEntry.nested,
-                                parentBreadcrumbs,
-                                false,
-                            )}
+                            ${createNestedPagesTemplates({
+                                nestedPages: currentNested.nested,
+                                /** An empty breadcrumb represents the top level node. */
+                                parentBreadcrumbs: currentNested.node.breadcrumb
+                                    ? parentBreadcrumbs.concat(currentNested.node.breadcrumb)
+                                    : parentBreadcrumbs,
+                                isTopLevel: false,
+                                router,
+                            })}
                         `;
                     },
                 );
@@ -186,13 +260,13 @@ function createDescriptionTemplate(entry: BaseElementBookEntry): TemplateResult 
 
 function extractNestedPages(node: Readonly<EntryTreeNode>): NestedPages {
     if (node.entry.type === ElementBookEntryTypeEnum.Page) {
-        return [node.entry];
+        return [node as EntryTreeNode<ElementBookEntryTypeEnum.Page>];
     }
 
     const nestedPages: NestedPages = [
         {
             [node.entry.title]: {
-                entry: node.entry,
+                node: node,
                 nested: Object.values(node.children).map(extractNestedPages).flat(),
             },
         },

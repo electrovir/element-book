@@ -14,10 +14,6 @@ function createExamplePage(index: number, parent: ElementBookChapter) {
     return defineElementBookPage({
         title: `test ${index}`,
         parent,
-        descriptionParagraphs: [
-            'This is the description. It has stuff in it.',
-            'Yay stuff!',
-        ],
         examples: [
             createExample({
                 title: 'example 1',

@@ -83,8 +83,6 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 });
             });
         }
-
-        setThemeCssVars(host, state.colors.theme);
     },
     renderCallback: ({state, inputs, host, updateState}) => {
         try {
@@ -188,6 +186,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                         ${assign(ElementBookEntryDisplay, {
                             currentRoute: state.currentRoute,
                             currentNode,
+                            router: state.router!,
                         })}
                     ></${ElementBookEntryDisplay}>
                 </div>
