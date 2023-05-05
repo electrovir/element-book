@@ -11,7 +11,7 @@ type OptionalConfig = {
      * Path to this page, used for routing. For example, if this page is hosted at
      * www.example.org/my-page then this value should be `my-page`.
      */
-    baseRoute: string;
+    baseUrl: string;
     /** Starting /book/ path. */
     defaultPath: ReadonlyArray<string>;
     /** Color from which to base all element-book colors from. */

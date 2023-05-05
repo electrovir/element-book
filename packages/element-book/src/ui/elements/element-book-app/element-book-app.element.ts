@@ -73,8 +73,8 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
         }
     `,
     initCallback({updateState, state, inputs, host}) {
-        if (inputs.baseRoute && !state.router) {
-            const router = createElementBookRouter(inputs.baseRoute);
+        if (inputs.baseUrl && !state.router) {
+            const router = createElementBookRouter(inputs.baseUrl);
             updateState({router});
 
             router.addRouteListener(true, (fullRoute) => {
