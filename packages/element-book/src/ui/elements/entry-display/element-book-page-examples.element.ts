@@ -1,5 +1,6 @@
 import {assign, classMap, css, html, renderIf, repeat} from 'element-vir';
 import {ElementBookPage} from '../../../data/element-book-entry/element-book-page/element-book-page';
+import {colorThemeCssVars} from '../../color-theme/color-theme';
 import {defineElementBookElement} from '../define-book-element';
 import {ElementBookExampleControls} from './element-book-example-controls.element';
 import {ElementBookExampleViewer} from './element-book-example-viewer.element';
@@ -23,7 +24,7 @@ export const ElementBookPageExamples = defineElementBookElement<{
         }
 
         .individual-example-wrapper:hover ${ElementBookExampleControls} {
-            color: black;
+            color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
         }
 
         .hidden-controls {

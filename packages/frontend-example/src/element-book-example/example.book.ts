@@ -6,14 +6,18 @@ import {
 } from 'element-book';
 import {css, html, listen} from 'element-vir';
 
-const chapter1 = defineElementBookChapter({title: 'My Chapter 1'});
-const chapter2 = defineElementBookChapter({title: 'My Chapter 2'});
+const chapter1 = defineElementBookChapter({title: 'My Chapter 1', parent: undefined});
+const chapter2 = defineElementBookChapter({title: 'My Chapter 2', parent: undefined});
 const subChapter = defineElementBookChapter({title: 'Sub Chapter 1', parent: chapter1});
 
 function createExamplePage(index: number, parent: ElementBookChapter) {
     return defineElementBookPage({
         title: `test ${index}`,
         parent,
+        descriptionParagraphs: [
+            'This is the description. It has stuff in it.',
+            'Yay stuff!',
+        ],
         examples: [
             createExample({
                 title: 'example 1',
@@ -81,6 +85,10 @@ export const entries = [
     defineElementBookPage({
         title: 'test 2',
         parent: chapter2,
+        descriptionParagraphs: [
+            'This is the description. It has stuff in it.',
+            'Yay stuff!',
+        ],
         examples: [
             createExample({
                 title: 'example 1',

@@ -1,12 +1,15 @@
-import {ElementBookChapter} from '../element-book-chapter/element-book-chapter';
+import {Overwrite} from '@augment-vir/common';
+import {BaseElementBookEntry} from '../element-book-chapter/element-book-chapter';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 import {listBreadcrumbs} from '../entry-tree/entry-tree';
 import {ElementBookPageExample} from './element-book-page-example';
 
-export type ElementBookPage = {
-    type: ElementBookEntryTypeEnum.Page;
-    title: string;
-    parent?: ElementBookChapter | undefined;
+export type ElementBookPage = Overwrite<
+    BaseElementBookEntry,
+    {
+        type: ElementBookEntryTypeEnum.Page;
+    }
+> & {
     examples: ReadonlyArray<ElementBookPageExample<any>>;
 };
 

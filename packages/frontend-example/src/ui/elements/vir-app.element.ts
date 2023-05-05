@@ -46,7 +46,9 @@ export const VirApp = defineElementNoInputs({
                     baseRoute: '/',
                     everythingTitle: 'All',
                 })}
-            ></${ElementBookApp}>
+            >
+                <h1 slot="nav-header">DERP</h1>
+            </${ElementBookApp}>
         `;
     },
 });

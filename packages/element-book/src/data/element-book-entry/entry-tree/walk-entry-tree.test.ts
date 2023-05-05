@@ -4,7 +4,7 @@ import {walkEntryTree} from './walk-entry-tree';
 
 describe(walkEntryTree.name, () => {
     it('has proper types', async () => {
-        const emptyTreeRootNode = createEmptyEntryTreeRoot();
+        const emptyTreeRootNode = createEmptyEntryTreeRoot('empty title');
 
         assertTypeOf(
             walkEntryTree(emptyTreeRootNode, () => {

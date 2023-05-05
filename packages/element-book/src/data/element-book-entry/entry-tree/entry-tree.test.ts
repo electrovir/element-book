@@ -13,6 +13,7 @@ import {
 describe(listBreadcrumbs.name, () => {
     const exampleTopLevelChapter = defineElementBookChapter({
         title: 'top level title',
+        parent: undefined,
     });
     const exampleChapter = defineElementBookChapter({
         title: 'chapter title',
@@ -60,7 +61,7 @@ describe(listBreadcrumbs.name, () => {
 
 describe(doesNodeHaveEntryType.name, () => {
     it('type guards', () => {
-        const emptyTreeRootNode = createEmptyEntryTreeRoot();
+        const emptyTreeRootNode = createEmptyEntryTreeRoot('empty title');
 
         assertTypeOf(emptyTreeRootNode).not.toEqualTypeOf<
             EntryTreeNode<ElementBookEntryTypeEnum.Page>

@@ -1,4 +1,4 @@
-import {extractErrorMessage, getOrSetFromMap} from '@augment-vir/common';
+import {areJsonEqual, extractErrorMessage, getOrSetFromMap} from '@augment-vir/common';
 import {assign, css, defineElement, html, listen} from 'element-vir';
 import {ElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
 import {
@@ -14,14 +14,14 @@ import {
     ElementBookRouter,
     defaultElementBookFullRoute,
 } from '../../../routing/element-book-routing';
-import {ColorTheme, setThemeCssVars} from '../../color-theme/color-theme';
-import {createTheme} from '../../color-theme/create-color-theme';
+import {ColorTheme, colorThemeCssVars, setThemeCssVars} from '../../color-theme/color-theme';
+import {ThemeConfig, createTheme} from '../../color-theme/create-color-theme';
 import {ChangeRouteEvent} from '../../events/change-route.event';
 import {ElementBookNav} from '../element-book-nav.element';
 import {ElementBookEntryDisplay} from '../entry-display/element-book-entry-display.element';
 import {ElementBookConfig} from './element-book-config';
 
-type ColorThemeState = {original: string | undefined; theme: ColorTheme};
+type ColorThemeState = {config: ThemeConfig | undefined; theme: ColorTheme};
 
 const treeCache = new Map<ReadonlyArray<ElementBookEntry>, EntryTreeNode>();
 
@@ -31,7 +31,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
         currentRoute: defaultElementBookFullRoute,
         router: undefined as undefined | ElementBookRouter,
         colors: {
-            original: undefined,
+            config: undefined,
             theme: createTheme(undefined),
         } as ColorThemeState,
     },
@@ -41,6 +41,8 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             height: 100%;
             width: 100%;
             font-family: sans-serif;
+            background-color: ${colorThemeCssVars['element-book-page-background-color'].value};
+            color: ${colorThemeCssVars['element-book-page-foreground-color'].value};
         }
 
         .error {
@@ -86,11 +88,14 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     },
     renderCallback: ({state, inputs, host, updateState}) => {
         try {
-            if (inputs.themeColor !== state.colors?.original) {
-                const newTheme = createTheme(inputs.themeColor);
+            const inputThemeConfig: ThemeConfig = {
+                themeColor: inputs.themeColor,
+            };
+            if (!areJsonEqual(inputThemeConfig, state.colors?.config)) {
+                const newTheme = createTheme(inputThemeConfig);
                 updateState({
                     colors: {
-                        original: inputs.themeColor,
+                        config: inputThemeConfig,
                         theme: newTheme,
                     },
                 });
@@ -156,6 +161,17 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 <div
                     class="root"
                     ${listen(ChangeRouteEvent, (event) => {
+                        const entryDisplay = host.shadowRoot.querySelector(
+                            ElementBookEntryDisplay.tagName,
+                        );
+
+                        if (entryDisplay) {
+                            entryDisplay.scroll({top: 0, behavior: 'smooth'});
+                        } else {
+                            console.error(
+                                `Failed to find '${ElementBookEntryDisplay.tagName}' for scrolling.`,
+                            );
+                        }
                         updateRoutes(event.detail);
                     })}
                 >
@@ -165,7 +181,9 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             router: state.router,
                             selectedPath: state.currentRoute.paths,
                         })}
-                    ></${ElementBookNav}>
+                    >
+                        <slot name="nav-header"></slot>
+                    </${ElementBookNav}>
                     <${ElementBookEntryDisplay}
                         ${assign(ElementBookEntryDisplay, {
                             currentRoute: state.currentRoute,

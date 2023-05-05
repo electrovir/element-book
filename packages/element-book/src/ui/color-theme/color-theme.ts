@@ -14,6 +14,12 @@ export type ColorTheme = {
     accent: {
         icon: CSSResult;
     };
+    page: ColorPair & {
+        backgroundFaint1: CSSResult;
+        backgroundFaint2: CSSResult;
+        foregroundFaint1: CSSResult;
+        foregroundFaint2: CSSResult;
+    };
 };
 
 type CssResultToCssVar<StartingPoint> = {
@@ -25,13 +31,19 @@ type CssResultToCssVar<StartingPoint> = {
 type ColorThemeCssVars = CssResultToCssVar<ColorTheme>;
 
 export const colorThemeCssVars = defineCssVars({
-    'element-book-nav-hover-background-color': 'grey',
-    'element-book-nav-hover-foreground-color': 'grey',
-    'element-book-nav-active-background-color': 'grey',
-    'element-book-nav-active-foreground-color': 'grey',
-    'element-book-nav-selected-background-color': 'grey',
-    'element-book-nav-selected-foreground-color': 'grey',
-    'element-book-accent-icon-color': 'grey',
+    'element-book-nav-hover-background-color': 'magenta',
+    'element-book-nav-hover-foreground-color': 'magenta',
+    'element-book-nav-active-background-color': 'magenta',
+    'element-book-nav-active-foreground-color': 'magenta',
+    'element-book-nav-selected-background-color': 'magenta',
+    'element-book-nav-selected-foreground-color': 'magenta',
+    'element-book-accent-icon-color': 'magenta',
+    'element-book-page-background-color': 'magenta',
+    'element-book-page-background-faint-level-1-color': 'magenta',
+    'element-book-page-background-faint-level-2-color': 'magenta',
+    'element-book-page-foreground-color': 'magenta',
+    'element-book-page-foreground-faint-level-1-color': 'magenta',
+    'element-book-page-foreground-faint-level-2-color': 'magenta',
 });
 
 const colorThemeCssVarMapping: ColorThemeCssVars = {
@@ -51,6 +63,14 @@ const colorThemeCssVarMapping: ColorThemeCssVars = {
     },
     accent: {
         icon: colorThemeCssVars['element-book-accent-icon-color'],
+    },
+    page: {
+        background: colorThemeCssVars['element-book-page-background-color'],
+        backgroundFaint1: colorThemeCssVars['element-book-page-background-faint-level-1-color'],
+        backgroundFaint2: colorThemeCssVars['element-book-page-background-faint-level-2-color'],
+        foreground: colorThemeCssVars['element-book-page-foreground-color'],
+        foregroundFaint1: colorThemeCssVars['element-book-page-foreground-faint-level-1-color'],
+        foregroundFaint2: colorThemeCssVars['element-book-page-foreground-faint-level-2-color'],
     },
 };
 

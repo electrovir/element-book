@@ -1,9 +1,14 @@
-import {mapObjectValues} from '@augment-vir/common';
+import {PartialAndUndefined, mapObjectValues} from '@augment-vir/common';
 import Color from 'colorjs.io';
 import {CSSResult, unsafeCSS} from 'lit';
 import {RequireExactlyOne} from 'type-fest';
 import {NestedType} from '../../augments/type';
 import {ColorTheme} from './color-theme';
+
+// as cast because colorjs.io's types for itself are wrong
+type FixedColor = Color & {
+    set: (input: Record<string, number>) => Color;
+};
 
 type NestedColors = NestedType<Color>;
 
@@ -27,11 +32,13 @@ function colorsObjectToCssResult<const Colors extends NestedColors>(
 
 export const defaultThemeStartColor = 'dodgerblue';
 
-function calculateTextColor(color: Color): Color {
+type BackForeGroundColor = 'black' | 'white';
+
+function calculateTextColorString(color: Color): BackForeGroundColor {
     const onWhite = Math.abs(color.contrast('white', 'APCA'));
     const onBlack = Math.abs(color.contrast('black', 'APCA'));
     const textColorString = onWhite > onBlack ? 'white' : 'black';
-    return new Color(textColorString);
+    return textColorString;
 }
 
 function createColorPair({
@@ -39,24 +46,70 @@ function createColorPair({
     foreground,
 }: RequireExactlyOne<{background: Color; foreground: Color}>) {
     return {
-        background: background ?? calculateTextColor(foreground),
-        foreground: foreground ?? calculateTextColor(background),
+        background: background ?? new Color(calculateTextColorString(foreground)),
+        foreground: foreground ?? new Color(calculateTextColorString(background)),
     };
 }
 
-export function createTheme(startColorString: string = defaultThemeStartColor): ColorTheme {
-    // as cast because colorjs.io's types for itself are wrong
-    const original = new Color(startColorString) as Color & {
-        set: (input: Record<string, number>) => Color;
-    };
+export enum ThemeStyle {
+    Dark = 'dark',
+    Light = 'light',
+}
+
+export type ThemeConfig = PartialAndUndefined<{
+    themeColor: string;
+    themeStyle: ThemeStyle;
+}>;
+
+function flipBackForeground(input: BackForeGroundColor): BackForeGroundColor {
+    return input === 'black' ? 'white' : 'black';
+}
+
+const faintForegroundColors = {
+    black: {
+        foregroundFaint1: new Color('#ccc'),
+        foregroundFaint2: new Color('#eee'),
+    },
+    white: {
+        foregroundFaint1: new Color('#ccc'),
+        foregroundFaint2: new Color('#eee'),
+    },
+} as const;
+
+const faintBackgroundColors = {
+    black: {
+        backgroundFaint1: new Color('#666'),
+        backgroundFaint2: new Color('#444'),
+    },
+    white: {
+        backgroundFaint1: new Color('#ccc'),
+        backgroundFaint2: new Color('#fafafa'),
+    },
+} as const;
+
+export function createTheme({
+    themeColor: inputThemeColor = defaultThemeStartColor,
+    themeStyle = ThemeStyle.Light,
+}: ThemeConfig = {}): ColorTheme {
+    const themeColor = new Color(inputThemeColor) as FixedColor;
+    const backgroundColor = new Color(themeStyle === ThemeStyle.Dark ? 'black' : 'white');
+    const foregroundColorString = calculateTextColorString(backgroundColor);
+    const foregroundColor = new Color(foregroundColorString);
+
     const colors = {
         nav: {
-            hover: createColorPair({background: original.clone().set({'hsl.l': 93})}),
-            active: createColorPair({background: original.clone().set({'hsl.l': 90})}),
-            selected: createColorPair({background: original.clone().set({'hsl.l': 85})}),
+            hover: createColorPair({background: themeColor.clone().set({'hsl.l': 93})}),
+            active: createColorPair({background: themeColor.clone().set({'hsl.l': 90})}),
+            selected: createColorPair({background: themeColor.clone().set({'hsl.l': 85})}),
         },
         accent: {
-            icon: original.clone().set({'hsl.l': 40}),
+            icon: themeColor.clone().set({'hsl.l': 40}),
+        },
+        page: {
+            background: backgroundColor,
+            ...faintBackgroundColors[flipBackForeground(foregroundColorString)],
+            foreground: foregroundColor,
+            ...faintForegroundColors[foregroundColorString],
         },
     } as const;
 

@@ -21,7 +21,9 @@ export const ElementBookNav = defineElementBookElement<{
             display: flex;
             flex-direction: column;
             padding: 16px 0;
-            background-color: #f8f8f8;
+            background-color: ${colorThemeCssVars[
+                'element-book-page-background-faint-level-2-color'
+            ].value};
         }
 
         .title-row:hover {
@@ -121,6 +123,7 @@ function createNavigationTree({
 
     return html`
         <div class="nav-tree-entry" style="--indent: ${indent};">
+            <slot></slot>
             <li class=${entryTreeNode.entry.type}>
                 <${ElementBookRouteLink}
                     ${assign(ElementBookRouteLink, {

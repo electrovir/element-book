@@ -1,6 +1,10 @@
 import {VirIcon} from '@electrovir/icon-element';
-import {HTMLTemplateResult, assign, css, html, renderIf} from 'element-vir';
-import {isElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
+import {HTMLTemplateResult, TemplateResult, assign, css, html} from 'element-vir';
+import {BaseElementBookEntry} from '../../../data/element-book-entry/element-book-chapter/element-book-chapter';
+import {
+    ElementBookEntry,
+    isElementBookEntry,
+} from '../../../data/element-book-entry/element-book-entry';
 import {ElementBookEntryTypeEnum} from '../../../data/element-book-entry/element-book-entry-type';
 import {ElementBookPage} from '../../../data/element-book-entry/element-book-page/element-book-page';
 import {
@@ -28,9 +32,10 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
         .title-bar {
             position: sticky;
             top: 0;
-            border-bottom: 1px solid #f8f8f8;
+            border-bottom: 1px solid
+                ${colorThemeCssVars['element-book-page-foreground-faint-level-2-color'].value};
             padding: 4px 8px;
-            background-color: white;
+            background-color: ${colorThemeCssVars['element-book-page-background-color'].value};
             z-index: 9999999999;
         }
 
@@ -38,20 +43,48 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
             padding: 32px;
             display: flex;
             flex-direction: column;
-            gap: 64px;
+            gap: 32px;
         }
 
-        h2 {
+        h1,
+        h2,
+        h3 {
             margin: 0;
-            margin-bottom: 24px;
             padding: 0;
+        }
+
+        .header-with-icon {
             display: flex;
-            gap: 16px;
             align-items: center;
+            gap: 8px;
         }
 
         ${VirIcon} {
             color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
+        }
+
+        .page-examples .title-group {
+            margin-bottom: 24px;
+        }
+
+        .description {
+            color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
+            display: inline-flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .description:hover {
+            color: ${colorThemeCssVars['element-book-page-foreground-color'].value};
+        }
+
+        .description p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .description p:first-child {
+            margin-top: 8px;
         }
     `,
     renderCallback: ({inputs}) => {
@@ -71,53 +104,66 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
     },
 });
 
-type NestedPages = ReadonlyArray<ElementBookPage | Record<string, NestedPages>>;
+type NestedPages = ReadonlyArray<
+    ElementBookPage | Record<string, {entry: ElementBookEntry; nested: NestedPages}>
+>;
 
 function createNestedPagesTemplates(
     nestedPages: NestedPages,
     parentBreadcrumbs: ReadonlyArray<string>,
     isTopLevel: boolean,
 ): HTMLTemplateResult[] {
-    const showTitles = !isTopLevel;
-
     return nestedPages
-        .map((nesting) => {
-            if (isElementBookEntry(nesting, ElementBookEntryTypeEnum.Page)) {
+        .map((nestingEntry) => {
+            if (isElementBookEntry(nestingEntry, ElementBookEntryTypeEnum.Page)) {
+                const headerContentsTemplate = html`
+                    <${VirIcon} ${assign(VirIcon, {icon: Element24Icon})}></${VirIcon}>
+                    ${nestingEntry.title}
+                `;
+                const headerTemplate = isTopLevel
+                    ? html`
+                          <h2 class="header-with-icon">${headerContentsTemplate}</h2>
+                      `
+                    : html`
+                          <h3 class="header-with-icon">${headerContentsTemplate}</h3>
+                      `;
+
                 return html`
                     <div class="page-examples">
-                        ${renderIf(
-                            showTitles,
-                            html`
-                                <h2>
-                                    <${VirIcon}
-                                        ${assign(VirIcon, {icon: Element24Icon})}
-                                    ></${VirIcon}>
-                                    ${nesting.title}
-                                </h2>
-                            `,
-                        )}
+                        <div class="title-group">
+                            ${headerTemplate} ${createDescriptionTemplate(nestingEntry)}
+                        </div>
                         <${ElementBookPageExamples}
                             ${assign(ElementBookPageExamples, {
-                                page: nesting,
+                                page: nestingEntry,
                                 parentBreadcrumbs: parentBreadcrumbs,
                             })}
                         ></${ElementBookPageExamples}>
                     </div>
                 `;
             } else {
-                return Object.entries(nesting).map(
+                return Object.entries(nestingEntry).map(
                     ([
                         title,
-                        nextNesting,
+                        currentEntry,
                     ]) => {
+                        const titleTemplate = isTopLevel
+                            ? html`
+                                  <h1>${title}</h1>
+                              `
+                            : html`
+                                  <h2>${title}</h2>
+                              `;
+
                         return html`
-                            ${renderIf(
-                                showTitles,
-                                html`
-                                    <h1>${title}</h1>
-                                `,
+                            <div class="title-group">
+                                ${titleTemplate} ${createDescriptionTemplate(currentEntry.entry)}
+                            </div>
+                            ${createNestedPagesTemplates(
+                                currentEntry.nested,
+                                parentBreadcrumbs,
+                                false,
                             )}
-                            ${createNestedPagesTemplates(nextNesting, parentBreadcrumbs, false)}
                         `;
                     },
                 );
@@ -126,14 +172,29 @@ function createNestedPagesTemplates(
         .flat();
 }
 
+function createDescriptionTemplate(entry: BaseElementBookEntry): TemplateResult {
+    const paragraphs: TemplateResult[] = (entry.descriptionParagraphs ?? []).map((paragraph) => {
+        return html`
+            <p>${paragraph}</p>
+        `;
+    });
+
+    return html`
+        <div class="description">${paragraphs}</div>
+    `;
+}
+
 function extractNestedPages(node: Readonly<EntryTreeNode>): NestedPages {
     if (node.entry.type === ElementBookEntryTypeEnum.Page) {
         return [node.entry];
     }
 
-    const nestedPages = [
+    const nestedPages: NestedPages = [
         {
-            [node.entry.title]: Object.values(node.children).map(extractNestedPages).flat(),
+            [node.entry.title]: {
+                entry: node.entry,
+                nested: Object.values(node.children).map(extractNestedPages).flat(),
+            },
         },
     ];
 

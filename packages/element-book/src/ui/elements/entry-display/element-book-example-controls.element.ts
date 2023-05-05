@@ -1,5 +1,6 @@
 import {css, html} from 'element-vir';
 import {ElementBookPageExample} from '../../../data/element-book-entry/element-book-page/element-book-page-example';
+import {colorThemeCssVars} from '../../color-theme/color-theme';
 import {defineElementBookElement} from '../define-book-element';
 
 /** At least take up vertical space, if not any horizontal space. */
@@ -14,7 +15,7 @@ export const ElementBookExampleControls = defineElementBookElement<{
     styles: css`
         :host {
             display: flex;
-            color: #ccc;
+            color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
             border-bottom: 1px solid currentColor;
             padding: 0 8px 4px;
         }
