@@ -1,6 +1,6 @@
 {
     "name": "@element-book/frontend-example",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "scripts": {
@@ -14,7 +14,7 @@
     "dependencies": {
         "@augment-vir/browser": "^13.4.0",
         "element-book": "*",
-        "element-vir": "^12.4.2"
+        "element-vir": "^12.4.4"
     },
     "devDependencies": {
         "@augment-vir/node-js": "^13.4.0",

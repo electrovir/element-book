@@ -21,6 +21,7 @@ export const ElementBookPageExamples = defineElementBookElement<{
             display: flex;
             flex-direction: column;
             gap: 24px;
+            max-width: 100%;
         }
 
         .individual-example-wrapper:hover ${ElementBookExampleControls} {
