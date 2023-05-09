@@ -1,6 +1,6 @@
 {
     "name": "element-book",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "keywords": [
         "book",
         "design system",
@@ -39,11 +39,11 @@
     },
     "dependencies": {
         "@augment-vir/common": "^13.4.0",
-        "@electrovir/icon-element": "^0.0.1",
+        "@electrovir/icon-element": "^0.0.2",
         "colorjs.io": "^0.4.3",
-        "element-vir": "^12.3.0",
+        "element-vir": "^12.4.2",
         "lit-css-vars": "^2.0.2",
-        "spa-router-vir": "^2.0.0",
+        "spa-router-vir": "^2.0.3",
         "typed-event-target": "^1.2.0"
     },
     "devDependencies": {
@@ -56,7 +56,7 @@
         "@web/test-runner-playwright": "^0.10.0",
         "@web/test-runner-visual-regression": "^0.8.0",
         "istanbul-smart-text-reporter": "^1.1.1",
-        "type-fest": "^3.9.0",
+        "type-fest": "^3.10.0",
         "typescript": "^5.0.4"
     }
 }

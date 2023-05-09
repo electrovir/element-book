@@ -1,6 +1,6 @@
 {
     "name": "@element-book/root",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "private": true,
     "homepage": "https://github.com/electrovir/element-book",
     "bugs": {
@@ -39,7 +39,7 @@
         "esbuild": "^0.17.18",
         "markdown-code-example-inserter": "^0.3.0",
         "nodemon": "^2.0.22",
-        "npm-check-updates": "^16.10.9",
+        "npm-check-updates": "^16.10.10",
         "prettier": "^2.8.8",
         "prettier-plugin-interpolated-html-tags": "^0.0.3",
         "prettier-plugin-jsdoc": "^0.4.2",
@@ -49,6 +49,6 @@
         "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "^0.3.1",
         "tsc-mono": "^2.1.2",
-        "virmator": "^6.5.0"
+        "virmator": "^6.5.1"
     }
 }
