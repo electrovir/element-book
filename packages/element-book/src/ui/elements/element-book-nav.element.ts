@@ -68,6 +68,7 @@ export const ElementBookNav = defineElementBookElement<{
             display: inline-flex;
             gap: 8px;
             align-items: center;
+            font-size: 0.75em;
         }
 
         ${VirIcon} {

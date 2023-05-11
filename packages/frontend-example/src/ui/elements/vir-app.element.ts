@@ -20,6 +20,12 @@ export const VirApp = defineElementNoInputs({
             max-width: 100%;
             box-sizing: border-box;
         }
+
+        h1 {
+            padding-left: 16px;
+            margin: 0;
+            margin-bottom: 16px;
+        }
     `,
     stateInit: {
         themeColor: undefined as string | undefined,
@@ -47,7 +53,7 @@ export const VirApp = defineElementNoInputs({
                     everythingTitle: 'All',
                 })}
             >
-                <h1 slot="nav-header">DERP</h1>
+                <h1 slot="nav-header">My Title</h1>
             </${ElementBookApp}>
         `;
     },
