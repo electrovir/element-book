@@ -1,5 +1,6 @@
-import {ElementBookApp, defineElementBookChapter} from 'element-book';
+import {ElementBookApp} from 'element-book';
 import {assign, css, defineElementNoInputs, html, listen} from 'element-vir';
+import {entries} from '../../element-book-example/example.book';
 
 export const VirApp = defineElementNoInputs({
     tagName: 'vir-app',
@@ -28,6 +29,7 @@ export const VirApp = defineElementNoInputs({
     `,
     stateInit: {
         themeColor: undefined as string | undefined,
+        paths: ['book'] as ReadonlyArray<string>,
     },
     renderCallback: ({state, updateState}) => {
         return html`
@@ -46,17 +48,15 @@ export const VirApp = defineElementNoInputs({
             </label>
             <${ElementBookApp}
                 ${assign(ElementBookApp, {
-                    entries: [
-                        defineElementBookChapter({
-                            parent: undefined,
-                            title: '',
-                        }),
-                    ],
+                    entries,
                     themeColor: state.themeColor,
                     internalRouterConfig: {
                         useInternalRouter: true,
                     },
                     everythingTitle: 'All',
+                })}
+                ${listen(ElementBookApp.events.pathUpdate, (event) => {
+                    updateState({paths: event.detail});
                 })}
             >
                 <h1 slot="nav-header">My Title</h1>

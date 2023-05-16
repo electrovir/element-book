@@ -94,7 +94,19 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                     });
                 }
 
-                dispatch(new events.pathUpdate(newRoute.paths ?? []));
+                if (
+                    inputs.elementBookRoutePaths &&
+                    !areJsonEqual(inputs.elementBookRoutePaths, state.currentRoute.paths)
+                ) {
+                    dispatch(new events.pathUpdate(newRoute.paths ?? []));
+                }
+            }
+
+            if (
+                inputs.elementBookRoutePaths &&
+                !areJsonEqual(inputs.elementBookRoutePaths, state.currentRoute.paths)
+            ) {
+                updateRoutes({paths: inputs.elementBookRoutePaths as any});
             }
 
             if (inputs.internalRouterConfig?.useInternalRouter && !state.router) {
