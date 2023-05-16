@@ -74,6 +74,12 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             top: 0;
         }
     `,
+    cleanupCallback({state, updateState}) {
+        if (state.router) {
+            state.router.removeAllRouteListeners();
+            updateState({router: undefined});
+        }
+    },
     renderCallback: ({state, inputs, host, updateState, dispatch, events}) => {
         try {
             function updateRoutes(newRoute: Partial<ElementBookFullRoute>) {
