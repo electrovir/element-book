@@ -7,7 +7,7 @@ import {
     defaultElementBookFullRoute,
 } from './element-book-routing';
 
-export function createElementBookRouter(baseRoute: string): ElementBookRouter {
+export function createElementBookRouter(baseRoute: string | undefined): ElementBookRouter {
     return createSpaRouter<ValidElementBookPaths, undefined, undefined>({
         routeBase: baseRoute,
         routeSanitizer(rawRoute) {

@@ -58,12 +58,22 @@ export function entriesToTree(
     const tree = createEmptyEntryTreeRoot(everythingTitle);
 
     entries.forEach((newEntry) => {
+        /**
+         * The type for newEntry does not include Error but if errors occur during entry definition
+         * they will be replaced with errors.
+         */
+        if (newEntry instanceof Error) {
+            throw newEntry;
+        }
+
         const immediateParent = traverseToImmediateParent(newEntry, tree);
         const breadcrumb = titleToBreadcrumb(newEntry.title);
 
         if (breadcrumb in immediateParent.children) {
             throw new Error(
-                `Cannot create duplicate entry '${breadcrumb}' in parent '${immediateParent.breadcrumb}'.`,
+                `Cannot create duplicate entry '${breadcrumb}'${
+                    immediateParent.breadcrumb ? ` in parent '${immediateParent.breadcrumb}'.` : ''
+                }`,
             );
         }
 

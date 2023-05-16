@@ -1,11 +1,10 @@
 import {areJsonEqual, extractErrorMessage, getOrSetFromMap} from '@augment-vir/common';
-import {assign, css, defineElement, html, listen} from 'element-vir';
+import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
 import {ElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
 import {
     EntryTreeNode,
     entriesToTree,
     findEntryByBreadcrumbs,
-    listBreadcrumbs,
 } from '../../../data/element-book-entry/entry-tree/entry-tree';
 import {createElementBookRouter} from '../../../routing/create-element-book-router';
 import {
@@ -27,6 +26,9 @@ const treeCache = new Map<ReadonlyArray<ElementBookEntry>, EntryTreeNode>();
 
 export const ElementBookApp = defineElement<ElementBookConfig>()({
     tagName: 'element-book-app',
+    events: {
+        pathUpdate: defineElementEvent<ReadonlyArray<string>>(),
+    },
     stateInit: {
         currentRoute: defaultElementBookFullRoute,
         router: undefined as undefined | ElementBookRouter,
@@ -72,20 +74,36 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             top: 0;
         }
     `,
-    initCallback({updateState, state, inputs, host}) {
-        if (inputs.baseUrl && !state.router) {
-            const router = createElementBookRouter(inputs.baseUrl);
-            updateState({router});
-
-            router.addRouteListener(true, (fullRoute) => {
-                updateState({
-                    currentRoute: fullRoute,
-                });
-            });
-        }
-    },
-    renderCallback: ({state, inputs, host, updateState}) => {
+    renderCallback: ({state, inputs, host, updateState, dispatch, events}) => {
         try {
+            function updateRoutes(newRoute: Partial<ElementBookFullRoute>) {
+                if (state.router) {
+                    state.router.setRoutes(newRoute);
+                } else {
+                    updateState({
+                        currentRoute: {
+                            ...state.currentRoute,
+                            ...newRoute,
+                        },
+                    });
+                }
+
+                dispatch(new events.pathUpdate(newRoute.paths ?? []));
+            }
+
+            if (inputs.internalRouterConfig?.useInternalRouter && !state.router) {
+                const router = createElementBookRouter(inputs.internalRouterConfig.basePath);
+                updateState({router});
+
+                router.addRouteListener(true, (fullRoute) => {
+                    updateState({
+                        currentRoute: fullRoute,
+                    });
+                });
+            } else if (!inputs.internalRouterConfig?.useInternalRouter && state.router) {
+                state.router.removeAllRouteListeners();
+            }
+
             const inputThemeConfig: ThemeConfig = {
                 themeColor: inputs.themeColor,
             };
@@ -100,55 +118,30 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 setThemeCssVars(host, newTheme);
             }
 
-            function updateRoutes(newRoute: Partial<ElementBookFullRoute>) {
-                if (state.router) {
-                    state.router.setRoutes(newRoute);
-                } else {
-                    updateState({
-                        currentRoute: {
-                            ...state.currentRoute,
-                            ...newRoute,
-                        },
-                    });
-                }
-            }
-
             const entriesTree = getOrSetFromMap(treeCache, inputs.entries, () =>
                 entriesToTree(inputs.entries, inputs.everythingTitle),
             );
 
-            const initialNode = findEntryByBreadcrumbs(
+            const entryTreeNodeByInitialPath = findEntryByBreadcrumbs(
                 state.currentRoute.paths.slice(1),
                 entriesTree,
             );
-            if (!initialNode) {
-                const firstChild = Object.values(entriesTree.children)[0];
-                if (!firstChild) {
-                    throw new Error(`No entries exist.`);
-                }
-                const firstEntryBreadcrumbs = listBreadcrumbs(firstChild.entry, true);
 
-                const defaultPath: ReadonlyArray<string> | undefined =
-                    inputs.defaultPath ??
-                    (firstEntryBreadcrumbs.length ? firstEntryBreadcrumbs : undefined);
-
-                if (defaultPath && defaultPath.length) {
-                    const newRoute: Pick<ElementBookFullRoute, 'paths'> = {
-                        paths: [
-                            ElementBookMainRoute.Book,
-                            ...defaultPath,
-                        ],
-                    };
-                    updateRoutes(newRoute);
-                }
+            if (!entryTreeNodeByInitialPath) {
+                const newRoute: Pick<ElementBookFullRoute, 'paths'> = {
+                    paths: [
+                        ElementBookMainRoute.Book,
+                    ],
+                };
+                updateRoutes(newRoute);
             }
 
-            const currentNode = findEntryByBreadcrumbs(
+            const currentEntryTreeNode = findEntryByBreadcrumbs(
                 state.currentRoute.paths.slice(1),
                 entriesTree,
             );
 
-            if (!currentNode) {
+            if (!currentEntryTreeNode) {
                 throw new Error(`Tried to self-correct for invalid path ${state.currentRoute.paths.join(
                     '/',
                 )}
@@ -185,13 +178,14 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                     <${ElementBookEntryDisplay}
                         ${assign(ElementBookEntryDisplay, {
                             currentRoute: state.currentRoute,
-                            currentNode,
+                            currentNode: currentEntryTreeNode,
                             router: state.router!,
                         })}
                     ></${ElementBookEntryDisplay}>
                 </div>
             `;
         } catch (error) {
+            console.error(error);
             return html`
                 <p class="error">${extractErrorMessage(error)}</p>
             `;

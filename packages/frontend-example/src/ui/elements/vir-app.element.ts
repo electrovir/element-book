@@ -1,6 +1,5 @@
-import {ElementBookApp} from 'element-book';
+import {ElementBookApp, defineElementBookChapter} from 'element-book';
 import {assign, css, defineElementNoInputs, html, listen} from 'element-vir';
-import {entries} from '../../element-book-example/example.book';
 
 export const VirApp = defineElementNoInputs({
     tagName: 'vir-app',
@@ -47,9 +46,16 @@ export const VirApp = defineElementNoInputs({
             </label>
             <${ElementBookApp}
                 ${assign(ElementBookApp, {
-                    entries,
+                    entries: [
+                        defineElementBookChapter({
+                            parent: undefined,
+                            title: '',
+                        }),
+                    ],
                     themeColor: state.themeColor,
-                    baseUrl: '/',
+                    internalRouterConfig: {
+                        useInternalRouter: true,
+                    },
                     everythingTitle: 'All',
                 })}
             >

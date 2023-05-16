@@ -29,7 +29,12 @@ export function defineElementBookChapter(
     chapterSetup: Omit<ElementBookChapter, 'type'>,
 ): ElementBookChapter {
     if (!chapterSetup.title) {
-        throw new Error(`Cannot have an element-book chapter with an empty title.`);
+        /**
+         * We don't want the Error type to actually be a part of this function's return type, cause
+         * users shouldn't actually return errors, but we still want to pass errors to element-book
+         * so element-book can handle them.
+         */
+        return new Error(`Cannot have an element-book chapter with an empty title.`) as any;
     }
     const chapter: ElementBookChapter = {
         type: ElementBookEntryTypeEnum.Chapter,
