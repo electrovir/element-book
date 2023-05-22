@@ -4,7 +4,7 @@ import {
     defineElementBookChapter,
     defineElementBookPage,
 } from 'element-book';
-import {css, html, listen} from 'element-vir';
+import {createObservableProperty, css, html, listen} from 'element-vir';
 
 const chapter1 = defineElementBookChapter({title: 'My Chapter 1', parent: undefined});
 const chapter2 = defineElementBookChapter({title: 'My Chapter 2', parent: undefined});
@@ -19,6 +19,24 @@ function createExamplePage(index: number, parent: ElementBookChapter) {
                 title: 'example 1',
                 render() {
                     return 'hi';
+                },
+            }),
+            createExample({
+                title: 'example with observable property state',
+                stateInit: {
+                    observable: createObservableProperty<number>(0),
+                },
+                render({state, updateState}) {
+                    setTimeout(() => {
+                        const newNumber = Math.floor(Math.random() * 10);
+                        updateState({
+                            observable:
+                                newNumber === state.observable ? state.observable + 1 : newNumber,
+                        });
+                    }, 1000);
+                    return html`
+                        stuff: ${state.observable}
+                    `;
                 },
             }),
             createExample({

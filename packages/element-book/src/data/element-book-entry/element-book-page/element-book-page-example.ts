@@ -1,4 +1,4 @@
-import {PropertyInitMapBase, TypedEvent} from 'element-vir';
+import {PropertyInitMapBase, RenderParams, TypedEvent} from 'element-vir';
 import {CSSResult} from 'lit';
 
 export type ElementBookPageExample<StateInit extends PropertyInitMapBase = {}> = {
@@ -15,10 +15,12 @@ export type ElementBookPageExample<StateInit extends PropertyInitMapBase = {}> =
     /** Set to true to hide the example controls (example title and buttons). */
     hideControls?: boolean | undefined;
     /** Render the example. */
-    render: (renderParams: {
-        state: StateInit;
-        updateState: (newState: Partial<StateInit>) => void;
-    }) => unknown;
+    render: (
+        renderParams: Pick<
+            RenderParams<any, any, StateInit, any, any, any>,
+            'state' | 'updateState'
+        >,
+    ) => unknown;
 };
 
 export function createExample<StateInit extends PropertyInitMapBase>(

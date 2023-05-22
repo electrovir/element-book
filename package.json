@@ -1,6 +1,6 @@
 {
     "name": "@element-book/root",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "private": true,
     "homepage": "https://github.com/electrovir/element-book",
     "bugs": {
@@ -49,6 +49,6 @@
         "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "^0.3.1",
         "tsc-mono": "^2.1.2",
-        "virmator": "^6.5.1"
+        "virmator": "^6.5.2"
     }
 }

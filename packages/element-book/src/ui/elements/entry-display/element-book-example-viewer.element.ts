@@ -11,24 +11,20 @@ export const ElementBookExampleViewer = defineElementBookElement<{
 }>()({
     tagName: 'element-book-example-viewer',
     stateInit: {
-        internalState: unsetInternalState as any,
-    },
+        isUnset: unsetInternalState,
+    } as any,
     renderCallback({state, inputs, updateState}) {
-        if (state.internalState === unsetInternalState) {
-            updateState({internalState: inputs.example.stateInit});
+        if (state.isUnset === unsetInternalState) {
+            updateState({
+                isUnset: undefined,
+                ...inputs.example.stateInit,
+            });
         }
 
         try {
             const output = inputs.example.render({
-                state: state.internalState,
-                updateState: (newState) => {
-                    updateState({
-                        internalState: {
-                            ...state.internalState,
-                            ...newState,
-                        },
-                    });
-                },
+                state,
+                updateState,
             });
             return html`
                 ${renderIf(
@@ -45,5 +41,8 @@ export const ElementBookExampleViewer = defineElementBookElement<{
             console.error(error);
             return `${inputs.breadcrumbs.join(' > ')} failed: ${extractErrorMessage(error)}`;
         }
+    },
+    options: {
+        allowPolymorphicState: true,
     },
 });

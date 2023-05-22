@@ -1,6 +1,6 @@
 {
     "name": "@element-book/frontend-example",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "scripts": {
@@ -12,12 +12,12 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^13.4.0",
+        "@augment-vir/browser": "^14.2.0",
         "element-book": "*",
-        "element-vir": "^12.4.6"
+        "element-vir": "^12.5.2"
     },
     "devDependencies": {
-        "@augment-vir/node-js": "^13.4.0",
+        "@augment-vir/node-js": "^14.2.0",
         "@open-wc/testing": "^3.1.8",
         "@types/mocha": "^10.0.1",
         "@web/dev-server-esbuild": "^0.4.1",
@@ -26,7 +26,7 @@
         "@web/test-runner-playwright": "^0.10.0",
         "istanbul-smart-text-reporter": "^1.1.1",
         "typescript": "^5.0.4",
-        "vite": "^4.3.6",
+        "vite": "^4.3.8",
         "vite-tsconfig-paths": "^4.2.0"
     }
 }
