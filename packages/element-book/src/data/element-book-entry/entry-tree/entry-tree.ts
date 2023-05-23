@@ -4,23 +4,23 @@ import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 
 export function doesNodeHaveEntryType<EntryType extends ElementBookEntryTypeEnum>(
     node: EntryTreeNode<any>,
-    type: EntryType,
+    entryType: EntryType,
 ): node is EntryTreeNode<EntryType> {
-    return node.entry.type === type;
+    return node.entry.entryType === entryType;
 }
 
 const markerKeyName = 'isElementBookEntryTreeNode';
 
 export type EntryTreeNode<EntryType extends ElementBookEntryTypeEnum = ElementBookEntryTypeEnum> = {
     [markerKeyName]: true;
-    entry: Extract<ElementBookEntry, {type: EntryType}>;
+    entry: Extract<ElementBookEntry, {entryType: EntryType}>;
     breadcrumb: string;
     children: Record<string, EntryTreeNode>;
 };
 
 export function isEntryNode<SpecificType extends ElementBookEntryTypeEnum>(
     input: unknown,
-    type: SpecificType,
+    entryType: SpecificType,
 ): input is EntryTreeNode<SpecificType> {
     return !!(
         typedHasProperties(input, [
@@ -28,7 +28,7 @@ export function isEntryNode<SpecificType extends ElementBookEntryTypeEnum>(
             'entry',
         ]) &&
         input[markerKeyName] &&
-        (input.entry as any).type === type
+        (input.entry as ElementBookEntry).entryType === entryType
     );
 }
 
@@ -36,7 +36,7 @@ export function createEmptyEntryTreeRoot(title: string | undefined): EntryTreeNo
     const rootNode: Readonly<EntryTreeNode<ElementBookEntryTypeEnum.Root>> = {
         [markerKeyName]: true,
         entry: {
-            type: ElementBookEntryTypeEnum.Root,
+            entryType: ElementBookEntryTypeEnum.Root,
             title: title || 'Everything',
             parent: undefined,
         },

@@ -7,11 +7,11 @@ describe(definePageControl.name, () => {
             // this should be boolean
             // @ts-expect-error
             initValue: 'hello',
-            type: ElementBookPageControlTypeEnum.Checkbox,
+            controlType: ElementBookPageControlTypeEnum.Checkbox,
         });
         definePageControl({
             initValue: true,
-            type: ElementBookPageControlTypeEnum.Checkbox,
+            controlType: ElementBookPageControlTypeEnum.Checkbox,
         });
     });
 });

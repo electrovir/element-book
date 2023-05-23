@@ -110,7 +110,7 @@ function createNavigationTree({
         ? rootPath.concat(entryTreeNode.breadcrumb)
         : rootPath;
 
-    const isPage: boolean = entryTreeNode.entry.type === ElementBookEntryTypeEnum.Page;
+    const isPage: boolean = entryTreeNode.entry.entryType === ElementBookEntryTypeEnum.Page;
 
     const childTemplates = Object.values(entryTreeNode.children).map((child) => {
         return createNavigationTree({
@@ -125,7 +125,7 @@ function createNavigationTree({
     return html`
         <div class="nav-tree-entry" style="--indent: ${indent};">
             <slot></slot>
-            <li class=${entryTreeNode.entry.type}>
+            <li class=${entryTreeNode.entry.entryType}>
                 <${ElementBookRouteLink}
                     ${assign(ElementBookRouteLink, {
                         router: router,

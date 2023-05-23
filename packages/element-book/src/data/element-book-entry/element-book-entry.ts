@@ -4,7 +4,7 @@ import {ElementBookEntryTypeEnum} from './element-book-entry-type';
 import {ElementBookPage} from './element-book-page/element-book-page';
 
 export type ElementBookRoot = {
-    type: ElementBookEntryTypeEnum.Root;
+    entryType: ElementBookEntryTypeEnum.Root;
     title: string;
     parent: undefined;
 };
@@ -13,7 +13,7 @@ export type ElementBookEntry = ElementBookChapter | ElementBookPage | ElementBoo
 
 export function isElementBookEntry<SpecificType extends ElementBookEntryTypeEnum>(
     entry: unknown,
-    type: SpecificType,
-): entry is Extract<ElementBookEntry, {type: SpecificType}> {
-    return typedHasProperty(entry, 'type') && entry.type === type;
+    entryType: SpecificType,
+): entry is Extract<ElementBookEntry, {entryType: SpecificType}> {
+    return typedHasProperty(entry, 'entryType') && entry.entryType === entryType;
 }

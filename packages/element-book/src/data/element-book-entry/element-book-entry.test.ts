@@ -7,7 +7,7 @@ describe('ElementBookEntry', () => {
         assertTypeOf<ElementBookEntry>().toMatchTypeOf<{
             title: string;
             parent?: ElementBookEntry | undefined;
-            type: ElementBookEntryTypeEnum;
+            entryType: ElementBookEntryTypeEnum;
         }>();
     });
 });

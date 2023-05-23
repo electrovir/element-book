@@ -259,7 +259,7 @@ function createDescriptionTemplate(entry: BaseElementBookEntry): TemplateResult 
 }
 
 function extractNestedPages(node: Readonly<EntryTreeNode>): NestedPages {
-    if (node.entry.type === ElementBookEntryTypeEnum.Page) {
+    if (node.entry.entryType === ElementBookEntryTypeEnum.Page) {
         return [node as EntryTreeNode<ElementBookEntryTypeEnum.Page>];
     }
 

@@ -30,7 +30,7 @@ const testPage3 = defineElementBookPage({
     controls: {
         thing: {
             initValue: 'yo',
-            type: ElementBookPageControlTypeEnum.Text,
+            controlType: ElementBookPageControlTypeEnum.Text,
         },
     },
     parent: chapter2,
@@ -45,7 +45,7 @@ insertElementExample({
     },
 });
 insertElementExample({
-    title: 'example 3 1',
+    title: 'example 3 2',
     parent: testPage3,
     hideExampleControls: true,
     renderCallback({controls}) {

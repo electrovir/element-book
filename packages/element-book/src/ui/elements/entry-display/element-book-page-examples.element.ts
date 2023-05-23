@@ -1,11 +1,12 @@
 import {mapObjectValues} from '@augment-vir/common';
-import {assign, classMap, css, html, renderIf, repeat} from 'element-vir';
+import {assign, classMap, css, html, listen, renderIf, repeat} from 'element-vir';
 import {ElementBookPage} from '../../../data/element-book-entry/element-book-page/element-book-page';
 import {unsetInternalState} from '../../../data/unset';
 import {colorThemeCssVars} from '../../color-theme/color-theme';
 import {defineElementBookElement} from '../define-book-element';
 import {ElementBookExampleControls} from './element-book-example-controls.element';
 import {ElementBookExampleViewer} from './element-book-example-viewer.element';
+import {ElementBookPageControls} from './element-book-page-controls.element';
 
 export const ElementBookPageExamples = defineElementBookElement<{
     page: ElementBookPage;
@@ -14,6 +15,12 @@ export const ElementBookPageExamples = defineElementBookElement<{
     tagName: 'element-book-page-examples',
     styles: css`
         :host {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .examples-wrapper {
             display: flex;
             gap: 32px;
             flex-wrap: wrap;
@@ -45,11 +52,13 @@ export const ElementBookPageExamples = defineElementBookElement<{
     },
     renderCallback({inputs, state, updateState}) {
         if (state.unset === unsetInternalState) {
-            updateState(
-                mapObjectValues(inputs.page.controls, (key, value) => {
-                    return value.initValue;
-                }),
-            );
+            const newState: any = mapObjectValues(inputs.page.controls, (key, value) => {
+                return value.initValue;
+            });
+            updateState({
+                unset: undefined,
+                ...newState,
+            });
         }
 
         const examples = inputs.page.examples;
@@ -62,7 +71,7 @@ export const ElementBookPageExamples = defineElementBookElement<{
          * Use the repeat directive here, instead of just a map, so that lit doesn't accidentally
          * keep state cached between element book pages.
          */
-        return repeat(
+        const examplesTemplate = repeat(
             Object.values(examples),
             (example) =>
                 inputs.parentBreadcrumbs
@@ -108,6 +117,19 @@ export const ElementBookPageExamples = defineElementBookElement<{
                 `;
             },
         );
+
+        return html`
+            <${ElementBookPageControls}
+                ${assign(ElementBookPageControls, {
+                    config: inputs.page.controls,
+                    currentValues: state as any,
+                })}
+                ${listen(ElementBookPageControls.events.controlValueChange, (event) => {
+                    updateState({[event.detail.name]: event.detail.value});
+                })}
+            ></${ElementBookPageControls}>
+            <section class="examples-wrapper">${examplesTemplate}</section>
+        `;
     },
     options: {
         allowPolymorphicState: true,

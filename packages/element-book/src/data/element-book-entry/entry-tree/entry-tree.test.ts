@@ -69,7 +69,7 @@ describe(doesNodeHaveEntryType.name, () => {
             assertTypeOf(emptyTreeRootNode).toEqualTypeOf<
                 EntryTreeNode<ElementBookEntryTypeEnum.Page>
             >();
-            assertTypeOf(emptyTreeRootNode.entry.type).toEqualTypeOf<
+            assertTypeOf(emptyTreeRootNode.entry.entryType).toEqualTypeOf<
                 typeof ElementBookEntryTypeEnum.Page
             >();
             assertTypeOf(emptyTreeRootNode).not.toEqualTypeOf<

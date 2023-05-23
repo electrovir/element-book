@@ -4,7 +4,7 @@ import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 export type ElementBookChapter = Overwrite<
     BaseElementBookEntry,
     {
-        type: ElementBookEntryTypeEnum.Chapter;
+        entryType: ElementBookEntryTypeEnum.Chapter;
     }
 >;
 
@@ -12,7 +12,7 @@ export type ElementBookChapter = Overwrite<
 export type BaseElementBookEntry = {
     /** Display name for the chapter or page. This is also used to create breadcrumbs and URL paths. */
     title: string;
-    type: ElementBookEntryTypeEnum;
+    entryType: ElementBookEntryTypeEnum;
     /**
      * The parent chapter. A value of undefined here indicates that the chapter or page should be at
      * the top level.
@@ -26,7 +26,7 @@ export type BaseElementBookEntry = {
 };
 
 export function defineElementBookChapter(
-    chapterSetup: Omit<ElementBookChapter, 'type'>,
+    chapterSetup: Omit<ElementBookChapter, 'entryType'>,
 ): ElementBookChapter {
     if (!chapterSetup.title) {
         /**
@@ -37,7 +37,7 @@ export function defineElementBookChapter(
         return new Error(`Cannot have an element-book chapter with an empty title.`) as any;
     }
     const chapter: ElementBookChapter = {
-        type: ElementBookEntryTypeEnum.Chapter,
+        entryType: ElementBookEntryTypeEnum.Chapter,
         ...chapterSetup,
     };
 

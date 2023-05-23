@@ -4,7 +4,7 @@ import {
 } from './element-book-page-control-type';
 
 export type ElementBookPageControl<ControlType extends ElementBookPageControlTypeEnum> = {
-    type: ControlType;
+    controlType: ControlType;
     initValue: ElementBookPageControlValueType[ControlType];
     controlName: string;
 };

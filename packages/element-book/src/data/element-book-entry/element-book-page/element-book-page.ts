@@ -10,7 +10,7 @@ export type ElementBookPage<
 > = Overwrite<
     BaseElementBookEntry,
     {
-        type: ElementBookEntryTypeEnum.Page;
+        entryType: ElementBookEntryTypeEnum.Page;
     }
 > & {
     controls: Controls;
@@ -25,7 +25,10 @@ export type PageControlsFromPage<Page extends ElementBookPage<any>> = Page exten
     : never;
 
 export type ElementBookPageInit<Controls extends ElementBookPageControlMap> = SetOptional<
-    Omit<ElementBookPage<Controls>, 'type' | 'examples' | 'allExampleTitles' | 'pageBreadcrumbs'>,
+    Omit<
+        ElementBookPage<Controls>,
+        'entryType' | 'examples' | 'allExampleTitles' | 'pageBreadcrumbs'
+    >,
     'controls'
 >;
 
@@ -37,7 +40,7 @@ export function defineElementBookPage<Controls extends ElementBookPageControlMap
     }
 
     const page: ElementBookPage<Controls> = {
-        type: ElementBookEntryTypeEnum.Page,
+        entryType: ElementBookEntryTypeEnum.Page,
         ...pageSetup,
         examples: {},
         controls: pageSetup.controls ?? ({} as Controls),

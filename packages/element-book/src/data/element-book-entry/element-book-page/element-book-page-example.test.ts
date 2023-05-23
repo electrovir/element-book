@@ -13,7 +13,7 @@ describe(insertElementExample.name, () => {
             controls: {
                 exampleControl: definePageControl({
                     initValue: 'nope',
-                    type: ElementBookPageControlTypeEnum.Text,
+                    controlType: ElementBookPageControlTypeEnum.Text,
                 }),
             },
         });
