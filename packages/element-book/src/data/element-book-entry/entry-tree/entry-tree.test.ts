@@ -20,7 +20,6 @@ describe(listBreadcrumbs.name, () => {
         parent: exampleTopLevelChapter,
     });
     const examplePage = defineElementBookPage({
-        examples: [],
         title: 'page title',
         parent: exampleChapter,
     });

@@ -10,7 +10,7 @@ export type ValidElementBookPaths =
     | [ElementBookMainRoute.Book, ...string[]];
 
 export type ElementBookFullRoute = Required<
-    Readonly<FullRoute<ValidElementBookPaths, undefined, undefined>>
+    Readonly<FullRoute<ValidElementBookPaths, undefined | Record<string, string>, undefined>>
 >;
 
 export const defaultElementBookFullRoute: Readonly<ElementBookFullRoute> = {
@@ -19,4 +19,10 @@ export const defaultElementBookFullRoute: Readonly<ElementBookFullRoute> = {
     search: undefined,
 } as const;
 
-export type ElementBookRouter = Readonly<SpaRouter<ValidElementBookPaths, undefined, undefined>>;
+export type ElementBookRouter = ElementBookFullRoute extends FullRoute<
+    infer Paths,
+    infer Search,
+    infer Hash
+>
+    ? Readonly<SpaRouter<Paths, Search, Hash>>
+    : never;

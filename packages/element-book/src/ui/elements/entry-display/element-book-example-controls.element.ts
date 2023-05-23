@@ -1,5 +1,5 @@
 import {css, html} from 'element-vir';
-import {ElementBookPageExample} from '../../../data/element-book-entry/element-book-page/element-book-page-example';
+import {ElementBookPageExampleInit} from '../../../data/element-book-entry/element-book-page/element-book-page-example';
 import {colorThemeCssVars} from '../../color-theme/color-theme';
 import {defineElementBookElement} from '../define-book-element';
 
@@ -9,7 +9,7 @@ const defaultTitle = html`
 `;
 
 export const ElementBookExampleControls = defineElementBookElement<{
-    example: ElementBookPageExample;
+    example: ElementBookPageExampleInit<any, any, any>;
 }>()({
     tagName: 'element-book-example-controls',
     styles: css`
@@ -21,7 +21,7 @@ export const ElementBookExampleControls = defineElementBookElement<{
         }
     `,
     renderCallback({inputs}) {
-        const title = inputs.example.hideControls ? '' : inputs.example.title;
+        const title = inputs.example.hideExampleControls ? '' : inputs.example.title;
 
         return html`
             <span>

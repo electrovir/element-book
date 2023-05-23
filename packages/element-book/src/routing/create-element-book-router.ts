@@ -1,14 +1,18 @@
 import {isEnumValue} from '@augment-vir/common';
-import {createSpaRouter} from 'spa-router-vir';
+import {createSpaRouter, SpaRouter} from 'spa-router-vir';
 import {
+    defaultElementBookFullRoute,
     ElementBookMainRoute,
     ElementBookRouter,
     ValidElementBookPaths,
-    defaultElementBookFullRoute,
 } from './element-book-routing';
 
 export function createElementBookRouter(baseRoute: string | undefined): ElementBookRouter {
-    return createSpaRouter<ValidElementBookPaths, undefined, undefined>({
+    type SubTypes = ElementBookRouter extends SpaRouter<infer Paths, infer Search, infer Hash>
+        ? {paths: Paths; search: Search; hash: Hash}
+        : never;
+
+    return createSpaRouter<SubTypes['paths'], SubTypes['search'], SubTypes['hash']>({
         routeBase: baseRoute,
         routeSanitizer(rawRoute) {
             const sanitizedPaths = sanitizePaths(rawRoute.paths);

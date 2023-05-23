@@ -1,19 +1,25 @@
 import {extractErrorMessage} from '@augment-vir/common';
 import {html, renderIf} from 'element-vir';
-import {ElementBookPageExample} from '../../../data/element-book-entry/element-book-page/element-book-page-example';
+import {ElementBookPageExampleInit} from '../../../data/element-book-entry/element-book-page/element-book-page-example';
+import {unsetInternalState} from '../../../data/unset';
 import {defineElementBookElement} from '../define-book-element';
 
-const unsetInternalState = Symbol('unset-internal-state');
-
 export const ElementBookExampleViewer = defineElementBookElement<{
-    example: ElementBookPageExample;
+    example: ElementBookPageExampleInit<any, any, any>;
     breadcrumbs: ReadonlyArray<string>;
+    currentPageControls: Record<string, any>;
 }>()({
     tagName: 'element-book-example-viewer',
     stateInit: {
         isUnset: unsetInternalState,
     } as any,
     renderCallback({state, inputs, updateState}) {
+        if (!inputs.example.renderCallback || typeof inputs.example.renderCallback === 'string') {
+            throw new Error(
+                `Failed to render example '${inputs.example.title}': renderCallback is not a function`,
+            );
+        }
+
         if (state.isUnset === unsetInternalState) {
             updateState({
                 isUnset: undefined,
@@ -22,9 +28,10 @@ export const ElementBookExampleViewer = defineElementBookElement<{
         }
 
         try {
-            const output = inputs.example.render({
+            const output = inputs.example.renderCallback({
                 state,
                 updateState,
+                controls: inputs.currentPageControls,
             });
             return html`
                 ${renderIf(

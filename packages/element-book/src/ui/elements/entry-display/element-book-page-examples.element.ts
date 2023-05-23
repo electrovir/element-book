@@ -1,5 +1,7 @@
+import {mapObjectValues} from '@augment-vir/common';
 import {assign, classMap, css, html, renderIf, repeat} from 'element-vir';
 import {ElementBookPage} from '../../../data/element-book-entry/element-book-page/element-book-page';
+import {unsetInternalState} from '../../../data/unset';
 import {colorThemeCssVars} from '../../color-theme/color-theme';
 import {defineElementBookElement} from '../define-book-element';
 import {ElementBookExampleControls} from './element-book-example-controls.element';
@@ -15,6 +17,11 @@ export const ElementBookPageExamples = defineElementBookElement<{
             display: flex;
             gap: 32px;
             flex-wrap: wrap;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
         }
 
         .individual-example-wrapper {
@@ -33,19 +40,41 @@ export const ElementBookPageExamples = defineElementBookElement<{
             visibility: hidden;
         }
     `,
-    renderCallback({inputs}) {
+    stateInit: {
+        unset: unsetInternalState,
+    },
+    renderCallback({inputs, state, updateState}) {
+        if (state.unset === unsetInternalState) {
+            updateState(
+                mapObjectValues(inputs.page.controls, (key, value) => {
+                    return value.initValue;
+                }),
+            );
+        }
+
         const examples = inputs.page.examples;
 
-        const allControlsHidden = examples.every((example) => example.hideControls);
+        const allControlsHidden = Object.values(examples).every(
+            (example) => 'hideExampleControls' in example && example.hideExampleControls,
+        );
 
         /**
          * Use the repeat directive here, instead of just a map, so that lit doesn't accidentally
          * keep state cached between element book pages.
          */
         return repeat(
-            examples,
-            (example) => inputs.parentBreadcrumbs.concat(example.title).join('>'),
+            Object.values(examples),
+            (example) =>
+                inputs.parentBreadcrumbs
+                    .concat(example instanceof Error ? example.message : example.title)
+                    .join('>'),
             (example) => {
+                if (example instanceof Error) {
+                    return html`
+                        <p class="error">${example.message}</p>
+                    `;
+                }
+
                 const exampleBreadcrumbs = inputs.parentBreadcrumbs.concat(example.title);
 
                 return html`
@@ -60,7 +89,7 @@ export const ElementBookPageExamples = defineElementBookElement<{
                                          * every control so that they take up space, but just hide
                                          * them.
                                          */
-                                        'hidden-controls': !!example.hideControls,
+                                        'hidden-controls': !!example.hideExampleControls,
                                     })}
                                     ${assign(ElementBookExampleControls, {
                                         example,
@@ -72,11 +101,15 @@ export const ElementBookPageExamples = defineElementBookElement<{
                             ${assign(ElementBookExampleViewer, {
                                 example,
                                 breadcrumbs: exampleBreadcrumbs,
+                                currentPageControls: state,
                             })}
                         ></${ElementBookExampleViewer}>
                     </div>
                 `;
             },
         );
+    },
+    options: {
+        allowPolymorphicState: true,
     },
 });
