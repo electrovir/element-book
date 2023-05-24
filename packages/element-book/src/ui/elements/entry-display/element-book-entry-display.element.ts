@@ -13,6 +13,7 @@ import {
     ElementBookFullRoute,
     ElementBookMainRoute,
     ElementBookRouter,
+    defaultElementBookFullRoute,
     extractSearchQuery,
 } from '../../../routing/element-book-routing';
 import {colorThemeCssVars} from '../../color-theme/color-theme';
@@ -155,14 +156,18 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
                             return;
                         }
 
-                        dispatch(
-                            new ChangeRouteEvent({
-                                paths: [
-                                    ElementBookMainRoute.Search,
-                                    encodeURIComponent(inputElement.value),
-                                ],
-                            }),
-                        );
+                        if (inputElement.value) {
+                            dispatch(
+                                new ChangeRouteEvent({
+                                    paths: [
+                                        ElementBookMainRoute.Search,
+                                        encodeURIComponent(inputElement.value),
+                                    ],
+                                }),
+                            );
+                        } else {
+                            dispatch(new ChangeRouteEvent(defaultElementBookFullRoute));
+                        }
                     })}
                 />
             </div>
