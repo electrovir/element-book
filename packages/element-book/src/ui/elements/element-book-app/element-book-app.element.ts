@@ -1,17 +1,13 @@
-import {areJsonEqual, extractErrorMessage, getOrSetFromMap} from '@augment-vir/common';
+import {areJsonEqual, extractErrorMessage} from '@augment-vir/common';
 import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
-import {ElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
-import {
-    EntryTreeNode,
-    entriesToTree,
-    findEntryByBreadcrumbs,
-} from '../../../data/element-book-entry/entry-tree/entry-tree';
+import {entriesToTree} from '../../../data/element-book-entry/entry-tree/entry-tree';
+import {createSearchedTree} from '../../../data/element-book-entry/entry-tree/entry-tree-search';
 import {createElementBookRouter} from '../../../routing/create-element-book-router';
 import {
     ElementBookFullRoute,
-    ElementBookMainRoute,
     ElementBookRouter,
     defaultElementBookFullRoute,
+    extractSearchQuery,
 } from '../../../routing/element-book-routing';
 import {ColorTheme, colorThemeCssVars, setThemeCssVars} from '../../color-theme/color-theme';
 import {ThemeConfig, createTheme} from '../../color-theme/create-color-theme';
@@ -19,10 +15,9 @@ import {ChangeRouteEvent} from '../../events/change-route.event';
 import {ElementBookNav} from '../element-book-nav.element';
 import {ElementBookEntryDisplay} from '../entry-display/element-book-entry-display.element';
 import {ElementBookConfig} from './element-book-config';
+import {getCurrentTreeEntry} from './get-current-entry';
 
 type ColorThemeState = {config: ThemeConfig | undefined; theme: ColorTheme};
-
-const treeCache = new Map<ReadonlyArray<ElementBookEntry>, EntryTreeNode>();
 
 export const ElementBookApp = defineElement<ElementBookConfig>()({
     tagName: 'element-book-app',
@@ -136,35 +131,23 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 setThemeCssVars(host, newTheme);
             }
 
-            const entriesTree = getOrSetFromMap(treeCache, inputs.entries, () =>
-                entriesToTree(inputs.entries, inputs.everythingTitle),
+            const originalTree = entriesToTree(inputs.entries, inputs.everythingTitle);
+
+            const searchQuery = extractSearchQuery(state.currentRoute.paths);
+
+            const searchedTree = searchQuery
+                ? createSearchedTree({
+                      entries: inputs.entries,
+                      searchQuery,
+                      startTree: originalTree,
+                  })
+                : originalTree;
+
+            const currentEntryTreeNode = getCurrentTreeEntry(
+                searchedTree,
+                state.currentRoute.paths,
+                updateRoutes,
             );
-
-            const entryTreeNodeByInitialPath = findEntryByBreadcrumbs(
-                state.currentRoute.paths.slice(1),
-                entriesTree,
-            );
-
-            if (!entryTreeNodeByInitialPath) {
-                const newRoute: Pick<ElementBookFullRoute, 'paths'> = {
-                    paths: [
-                        ElementBookMainRoute.Book,
-                    ],
-                };
-                updateRoutes(newRoute);
-            }
-
-            const currentEntryTreeNode = findEntryByBreadcrumbs(
-                state.currentRoute.paths.slice(1),
-                entriesTree,
-            );
-
-            if (!currentEntryTreeNode) {
-                throw new Error(`Tried to self-correct for invalid path ${state.currentRoute.paths.join(
-                    '/',
-                )}
-                        but failed to do so.`);
-            }
 
             return html`
                 <div
@@ -186,7 +169,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 >
                     <${ElementBookNav}
                         ${assign(ElementBookNav, {
-                            tree: entriesTree,
+                            tree: originalTree,
                             router: state.router,
                             selectedPath: state.currentRoute.paths,
                         })}

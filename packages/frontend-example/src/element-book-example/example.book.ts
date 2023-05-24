@@ -11,10 +11,20 @@ const chapter2 = defineElementBookChapter({title: 'My Chapter 2', parent: undefi
 const subChapter = defineElementBookChapter({title: 'Sub Chapter 1', parent: chapter1});
 
 function createExamplePage(index: number, parent: ElementBookChapter) {
-    return defineElementBookPage({
+    const newPage = defineElementBookPage({
         title: `test ${index}`,
         parent,
     });
+
+    insertElementExample({
+        parent: newPage,
+        title: 'example',
+        renderCallback() {
+            return 'element example here';
+        },
+    });
+
+    return newPage;
 }
 
 const testPage2 = defineElementBookPage({
@@ -39,7 +49,6 @@ const testPage3 = defineElementBookPage({
 insertElementExample({
     title: 'example 3 1',
     parent: testPage3,
-    hideExampleControls: true,
     renderCallback() {
         return 'hi';
     },
@@ -47,7 +56,6 @@ insertElementExample({
 insertElementExample({
     title: 'example 3 2',
     parent: testPage3,
-    hideExampleControls: true,
     renderCallback({controls}) {
         return `hello ${controls.thing}`;
     },
@@ -62,7 +70,6 @@ insertElementExample({
 });
 insertElementExample({
     title: 'example 2',
-    hideExampleControls: true,
     parent: testPage2,
     renderCallback() {
         return 'hi';

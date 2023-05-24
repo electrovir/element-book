@@ -37,9 +37,16 @@ function sanitizePaths(paths: ReadonlyArray<string>): Readonly<ValidElementBookP
             ...paths.slice(1),
         ];
     } else if (firstPath === ElementBookMainRoute.Search) {
+        if (!paths[1]) {
+            return [
+                ElementBookMainRoute.Book,
+                ...paths.slice(1),
+            ];
+        }
+
         return [
             firstPath,
-            paths[1] ?? '',
+            paths[1],
         ];
     } else {
         throw new Error(`Route path not handled for sanitization: ${paths.join('/')}`);

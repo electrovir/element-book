@@ -1,5 +1,6 @@
+import {wait} from '@augment-vir/common';
 import {VirIcon} from '@electrovir/icon-element';
-import {HTMLTemplateResult, TemplateResult, assign, css, html} from 'element-vir';
+import {HTMLTemplateResult, TemplateResult, assign, css, html, listen, renderIf} from 'element-vir';
 import {BaseElementBookEntry} from '../../../data/element-book-entry/element-book-chapter/element-book-chapter';
 import {isElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
 import {ElementBookEntryTypeEnum} from '../../../data/element-book-entry/element-book-entry-type';
@@ -12,8 +13,10 @@ import {
     ElementBookFullRoute,
     ElementBookMainRoute,
     ElementBookRouter,
+    extractSearchQuery,
 } from '../../../routing/element-book-routing';
 import {colorThemeCssVars} from '../../color-theme/color-theme';
+import {ChangeRouteEvent} from '../../events/change-route.event';
 import {Element24Icon} from '../../icons/element-24.icon';
 import {ElementBookRouteLink} from '../common/element-book-route-link.element';
 import {defineElementBookElement} from '../define-book-element';
@@ -40,6 +43,9 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
             padding: 4px 8px;
             background-color: ${colorThemeCssVars['element-book-page-background-color'].value};
             z-index: 9999999999;
+            display: flex;
+            gap: 16px;
+            justify-content: space-between;
         }
 
         .all-examples-wrapper {
@@ -102,8 +108,10 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
             margin-top: 8px;
         }
     `,
-    renderCallback: ({inputs}) => {
+    renderCallback: ({inputs, dispatch}) => {
         const nestedPages = extractNestedPages(inputs.currentNode);
+
+        const currentSearch = extractSearchQuery(inputs.currentRoute.paths);
 
         const entryBreadcrumbs = listBreadcrumbs(inputs.currentNode.entry, false).reverse();
         const exampleTemplates = createNestedPagesTemplates({
@@ -111,16 +119,52 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
             parentBreadcrumbs: entryBreadcrumbs,
             isTopLevel: true,
             router: inputs.router,
+            isSearching: !!currentSearch,
         });
 
         return html`
             <div class="title-bar">
-                <${ElementBookBreadcrumbs}
-                    ${assign(ElementBookBreadcrumbs, {
-                        currentRoute: inputs.currentRoute,
-                        router: inputs.router,
+                ${renderIf(
+                    !!currentSearch,
+                    html`
+                        &nbsp;
+                    `,
+                    html`
+                        <${ElementBookBreadcrumbs}
+                            ${assign(ElementBookBreadcrumbs, {
+                                currentRoute: inputs.currentRoute,
+                                router: inputs.router,
+                            })}
+                        ></${ElementBookBreadcrumbs}>
+                    `,
+                )}
+                <input
+                    placeholder="search"
+                    .value=${currentSearch}
+                    ${listen('input', async (event) => {
+                        const inputElement = event.currentTarget;
+
+                        if (!(inputElement instanceof HTMLInputElement)) {
+                            throw new Error('Failed to find input element for search.');
+                        }
+                        const preThrottleValue = inputElement.value;
+                        // throttle it a bit
+                        await wait(500);
+
+                        if (inputElement.value !== preThrottleValue) {
+                            return;
+                        }
+
+                        dispatch(
+                            new ChangeRouteEvent({
+                                paths: [
+                                    ElementBookMainRoute.Search,
+                                    encodeURIComponent(inputElement.value),
+                                ],
+                            }),
+                        );
                     })}
-                ></${ElementBookBreadcrumbs}>
+                />
             </div>
             <div class="all-examples-wrapper">${exampleTemplates}</div>
         `;
@@ -137,12 +181,22 @@ function createNestedPagesTemplates({
     parentBreadcrumbs,
     isTopLevel,
     router,
+    isSearching,
 }: {
     nestedPages: NestedPages;
     parentBreadcrumbs: ReadonlyArray<string>;
     isTopLevel: boolean;
     router: ElementBookRouter;
+    isSearching: boolean;
 }): HTMLTemplateResult[] {
+    if (!nestedPages.length && isSearching) {
+        return [
+            html`
+                No results
+            `,
+        ];
+    }
+
     return nestedPages
         .map((nestingNode) => {
             if (isEntryNode(nestingNode, ElementBookEntryTypeEnum.Page)) {
@@ -237,6 +291,7 @@ function createNestedPagesTemplates({
                                     : parentBreadcrumbs,
                                 isTopLevel: false,
                                 router,
+                                isSearching,
                             })}
                         `;
                     },

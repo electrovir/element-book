@@ -21,11 +21,9 @@ export const ElementBookExampleControls = defineElementBookElement<{
         }
     `,
     renderCallback({inputs}) {
-        const title = inputs.example.hideExampleControls ? '' : inputs.example.title;
-
         return html`
             <span>
-                ${title || defaultTitle}
+                ${inputs.example.title}
                 <span></span>
             </span>
         `;

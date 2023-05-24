@@ -13,6 +13,14 @@ export type ElementBookFullRoute = Required<
     Readonly<FullRoute<ValidElementBookPaths, undefined | Record<string, string>, undefined>>
 >;
 
+export function extractSearchQuery(paths: Readonly<ValidElementBookPaths>) {
+    if (paths[0] === ElementBookMainRoute.Book) {
+        return '';
+    } else {
+        return decodeURIComponent(paths[1]);
+    }
+}
+
 export const defaultElementBookFullRoute: Readonly<ElementBookFullRoute> = {
     hash: undefined,
     paths: [ElementBookMainRoute.Book],

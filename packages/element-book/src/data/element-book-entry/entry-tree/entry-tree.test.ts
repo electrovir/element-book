@@ -60,7 +60,7 @@ describe(listBreadcrumbs.name, () => {
 
 describe(doesNodeHaveEntryType.name, () => {
     it('type guards', () => {
-        const emptyTreeRootNode = createEmptyEntryTreeRoot('empty title');
+        const emptyTreeRootNode = createEmptyEntryTreeRoot('empty title') as any;
 
         assertTypeOf(emptyTreeRootNode).not.toEqualTypeOf<
             EntryTreeNode<ElementBookEntryTypeEnum.Page>

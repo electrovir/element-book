@@ -2,7 +2,7 @@ import {PartialAndUndefined, mapObjectValues} from '@augment-vir/common';
 import Color from 'colorjs.io';
 import {CSSResult, unsafeCSS} from 'lit';
 import {RequireExactlyOne} from 'type-fest';
-import {NestedType} from '../../augments/type';
+import {NestedType} from '../../utilities/type';
 import {ColorTheme} from './color-theme';
 
 // as cast because colorjs.io's types for itself are wrong

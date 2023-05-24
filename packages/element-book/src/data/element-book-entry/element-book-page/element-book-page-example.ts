@@ -29,8 +29,6 @@ export type ElementBookPageExampleInit<
      * wrapper element!
      */
     styles?: CSSResult;
-    /** Set to true to hide the example controls (example title and buttons). */
-    hideExampleControls?: boolean | undefined;
     /** Render the example. */
     renderCallback: RequireNonVoid<
         RenderOutput,

@@ -1,6 +1,7 @@
 import {collapseWhiteSpace, isLengthAtLeast, typedHasProperties} from '@augment-vir/common';
 import {ElementBookEntry} from '../element-book-entry';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
+import {addTreeToCache, getTreeFromCache} from './tree-cache';
 
 export function doesNodeHaveEntryType<EntryType extends ElementBookEntryTypeEnum>(
     node: EntryTreeNode<any>,
@@ -11,9 +12,10 @@ export function doesNodeHaveEntryType<EntryType extends ElementBookEntryTypeEnum
 
 const markerKeyName = 'isElementBookEntryTreeNode';
 
-export type EntryTreeNode<EntryType extends ElementBookEntryTypeEnum = ElementBookEntryTypeEnum> = {
+export type EntryTreeNode<EntryType extends ElementBookEntryTypeEnum = any> = {
     [markerKeyName]: true;
     entry: Extract<ElementBookEntry, {entryType: EntryType}>;
+    /** Breadcrumb is different from entry.title because it's modified to support URLs. */
     breadcrumb: string;
     children: Record<string, EntryTreeNode>;
 };
@@ -32,7 +34,9 @@ export function isEntryNode<SpecificType extends ElementBookEntryTypeEnum>(
     );
 }
 
-export function createEmptyEntryTreeRoot(title: string | undefined): EntryTreeNode {
+export function createEmptyEntryTreeRoot(
+    title: string | undefined,
+): EntryTreeNode<ElementBookEntryTypeEnum.Root> {
     const rootNode: Readonly<EntryTreeNode<ElementBookEntryTypeEnum.Root>> = {
         [markerKeyName]: true,
         entry: {
@@ -54,7 +58,21 @@ export function titleToBreadcrumb(title: string): string {
 export function entriesToTree(
     entries: ReadonlyArray<ElementBookEntry>,
     everythingTitle: string | undefined,
+): EntryTreeNode<ElementBookEntryTypeEnum.Root> {
+    const baseTree = createBaseTree(entries, everythingTitle);
+
+    return baseTree;
+}
+
+function createBaseTree(
+    entries: ReadonlyArray<ElementBookEntry>,
+    everythingTitle: string | undefined,
 ) {
+    const cachedTree = getTreeFromCache(entries, '');
+    if (cachedTree) {
+        return cachedTree;
+    }
+
     const tree = createEmptyEntryTreeRoot(everythingTitle);
 
     entries.forEach((newEntry) => {
@@ -86,6 +104,8 @@ export function entriesToTree(
 
         immediateParent.children[breadcrumb] = newNode;
     });
+
+    addTreeToCache(entries, '', tree);
 
     return tree;
 }
