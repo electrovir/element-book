@@ -17,7 +17,7 @@ export function extractSearchQuery(paths: Readonly<ValidElementBookPaths>) {
     if (paths[0] === ElementBookMainRoute.Book) {
         return '';
     } else {
-        return decodeURIComponent(paths[1]);
+        return paths[1] ? decodeURIComponent(paths[1]) : '';
     }
 }
 
