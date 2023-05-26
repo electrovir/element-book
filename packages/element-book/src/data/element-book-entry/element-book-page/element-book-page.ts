@@ -26,6 +26,16 @@ export type PageControlsFromPage<Page extends ElementBookPage<any>> = Page exten
     ? Controls
     : never;
 
+export type DefinePageExamplesCallback<ParentPageControls extends ElementBookPageControlMap> =
+    (params: {defineExample: DefineExampleCallback<ParentPageControls>}) => void;
+
+export type DefineExampleCallback<ParentPageControls extends ElementBookPageControlMap> = <
+    StateInit extends PropertyInitMapBase = {},
+    RenderOutput = any,
+>(
+    exampleInit: ElementBookPageExampleInit<ParentPageControls, StateInit, RenderOutput>,
+) => void;
+
 export type ElementBookPageInit<Controls extends ElementBookPageControlMap> = Overwrite<
     SetOptional<
         Omit<
@@ -35,11 +45,7 @@ export type ElementBookPageInit<Controls extends ElementBookPageControlMap> = Ov
         'controls'
     >,
     {
-        defineExamplesCallback?: (params: {
-            defineExample: <StateInit extends PropertyInitMapBase = {}, RenderOutput = any>(
-                exampleInit: ElementBookPageExampleInit<Controls, StateInit, RenderOutput>,
-            ) => void;
-        }) => void;
+        defineExamplesCallback?: DefinePageExamplesCallback<Controls>;
     }
 >;
 
