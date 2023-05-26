@@ -1,5 +1,5 @@
 import {mapObjectValues} from '@augment-vir/common';
-import {assign, css, html, listen, repeat} from 'element-vir';
+import {assign, css, html, listen, renderIf, repeat} from 'element-vir';
 import {ElementBookPage} from '../../../data/element-book-entry/element-book-page/element-book-page';
 import {unsetInternalState} from '../../../data/unset';
 import {colorThemeCssVars} from '../../color-theme/color-theme';
@@ -97,15 +97,20 @@ export const ElementBookPageExamples = defineElementBookElement<{
         );
 
         return html`
-            <${ElementBookPageControls}
-                ${assign(ElementBookPageControls, {
-                    config: inputs.page.controls,
-                    currentValues: state as any,
-                })}
-                ${listen(ElementBookPageControls.events.controlValueChange, (event) => {
-                    updateState({[event.detail.name]: event.detail.value});
-                })}
-            ></${ElementBookPageControls}>
+            ${renderIf(
+                !!Object.keys(inputs.page.controls).length,
+                html`
+                    <${ElementBookPageControls}
+                        ${assign(ElementBookPageControls, {
+                            config: inputs.page.controls,
+                            currentValues: state as any,
+                        })}
+                        ${listen(ElementBookPageControls.events.controlValueChange, (event) => {
+                            updateState({[event.detail.name]: event.detail.value});
+                        })}
+                    ></${ElementBookPageControls}>
+                `,
+            )}
             <section class="examples-wrapper">${examplesTemplate}</section>
         `;
     },
