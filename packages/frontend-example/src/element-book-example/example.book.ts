@@ -3,7 +3,6 @@ import {
     ElementBookPageControlTypeEnum,
     defineElementBookChapter,
     defineElementBookPage,
-    insertElementExample,
 } from 'element-book';
 
 const chapter1 = defineElementBookChapter({title: 'My Chapter 1', parent: undefined});
@@ -14,13 +13,13 @@ function createExamplePage(index: number, parent: ElementBookChapter) {
     const newPage = defineElementBookPage({
         title: `test ${index}`,
         parent,
-    });
-
-    insertElementExample({
-        parent: newPage,
-        title: 'example',
-        renderCallback() {
-            return 'element example here';
+        defineExamplesCallback({defineExample}) {
+            defineExample({
+                title: 'example',
+                renderCallback() {
+                    return 'element example here';
+                },
+            });
         },
     });
 
@@ -34,6 +33,20 @@ const testPage2 = defineElementBookPage({
         'This is the description. It has stuff in it.',
         'Yay stuff!',
     ],
+    defineExamplesCallback({defineExample}) {
+        defineExample({
+            title: 'example 1',
+            renderCallback() {
+                return 'hi';
+            },
+        });
+        defineExample({
+            title: 'example 2',
+            renderCallback() {
+                return 'hi';
+            },
+        });
+    },
 });
 const testPage3 = defineElementBookPage({
     title: 'test 3',
@@ -44,35 +57,19 @@ const testPage3 = defineElementBookPage({
         },
     },
     parent: chapter2,
-});
-
-insertElementExample({
-    title: 'example 3 1',
-    parent: testPage3,
-    renderCallback() {
-        return 'hi';
-    },
-});
-insertElementExample({
-    title: 'example 3 2',
-    parent: testPage3,
-    renderCallback({controls}) {
-        return `hello ${controls.thing}`;
-    },
-});
-
-insertElementExample({
-    title: 'example 1',
-    parent: testPage2,
-    renderCallback() {
-        return 'hi';
-    },
-});
-insertElementExample({
-    title: 'example 2',
-    parent: testPage2,
-    renderCallback() {
-        return 'hi';
+    defineExamplesCallback({defineExample}) {
+        defineExample({
+            title: 'example 3 1',
+            renderCallback() {
+                return 'hi';
+            },
+        });
+        defineExample({
+            title: 'example 3 2',
+            renderCallback({controls}) {
+                return `hello ${controls.thing}`;
+            },
+        });
     },
 });
 

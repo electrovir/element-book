@@ -2,13 +2,12 @@ import {wait} from '@augment-vir/common';
 import {VirIcon} from '@electrovir/icon-element';
 import {HTMLTemplateResult, TemplateResult, assign, css, html, listen, renderIf} from 'element-vir';
 import {BaseElementBookEntry} from '../../../data/element-book-entry/element-book-chapter/element-book-chapter';
-import {isElementBookEntry} from '../../../data/element-book-entry/element-book-entry';
-import {ElementBookEntryTypeEnum} from '../../../data/element-book-entry/element-book-entry-type';
 import {
-    EntryTreeNode,
-    isEntryNode,
+    isElementBookEntry,
     listBreadcrumbs,
-} from '../../../data/element-book-entry/entry-tree/entry-tree';
+} from '../../../data/element-book-entry/element-book-entry';
+import {ElementBookEntryTypeEnum} from '../../../data/element-book-entry/element-book-entry-type';
+import {EntryTreeNode, isEntryNode} from '../../../data/element-book-entry/entry-tree/entry-tree';
 import {
     ElementBookFullRoute,
     ElementBookMainRoute,

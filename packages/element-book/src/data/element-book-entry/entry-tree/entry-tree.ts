@@ -1,5 +1,5 @@
-import {collapseWhiteSpace, isLengthAtLeast, typedHasProperties} from '@augment-vir/common';
-import {ElementBookEntry} from '../element-book-entry';
+import {isLengthAtLeast, typedHasProperties} from '@augment-vir/common';
+import {ElementBookEntry, listBreadcrumbs, titleToBreadcrumb} from '../element-book-entry';
 import {ElementBookEntryTypeEnum} from '../element-book-entry-type';
 import {addTreeToCache, getTreeFromCache} from './tree-cache';
 
@@ -49,10 +49,6 @@ export function createEmptyEntryTreeRoot(
     };
 
     return rootNode;
-}
-
-export function titleToBreadcrumb(title: string): string {
-    return collapseWhiteSpace(title).toLowerCase().replaceAll(/\s/g, '-');
 }
 
 export function entriesToTree(
@@ -128,21 +124,6 @@ function traverseToImmediateParent(
     }, currentTree);
 
     return immediateParentNode;
-}
-
-export function listBreadcrumbs(entry: ElementBookEntry, includeSelf?: boolean): string[] {
-    const entryBreadcrumb = titleToBreadcrumb(entry.title);
-
-    if (entry.parent) {
-        return [
-            titleToBreadcrumb(entry.parent.title),
-            ...listBreadcrumbs(entry.parent, false),
-        ].concat(includeSelf ? [entryBreadcrumb] : []);
-    } else if (includeSelf) {
-        return [entryBreadcrumb];
-    } else {
-        return [];
-    }
 }
 
 export function findEntryByBreadcrumbs(

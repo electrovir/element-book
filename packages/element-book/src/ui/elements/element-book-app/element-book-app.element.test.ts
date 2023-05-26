@@ -3,7 +3,6 @@ import {assert, fixture as renderFixture} from '@open-wc/testing';
 import {assign, html} from 'element-vir';
 import {defineElementBookChapter} from '../../../data/element-book-entry/element-book-chapter/element-book-chapter';
 import {defineElementBookPage} from '../../../data/element-book-entry/element-book-page/element-book-page';
-import {insertElementExample} from '../../../data/element-book-entry/element-book-page/element-book-page-example';
 import {ElementBookApp} from './element-book-app.element';
 import {ElementBookConfig} from './element-book-config';
 
@@ -42,20 +41,19 @@ describe(ElementBookApp.tagName, () => {
         const examplePage = defineElementBookPage({
             parent: undefined,
             title: 'title',
-        });
-
-        insertElementExample({
-            title: 'duplicate example',
-            parent: examplePage,
-            renderCallback() {
-                return '';
-            },
-        });
-        insertElementExample({
-            title: 'duplicate example',
-            parent: examplePage,
-            renderCallback() {
-                return '';
+            defineExamplesCallback({defineExample}) {
+                defineExample({
+                    title: 'duplicate example',
+                    renderCallback() {
+                        return '';
+                    },
+                });
+                defineExample({
+                    title: 'duplicate example',
+                    renderCallback() {
+                        return '';
+                    },
+                });
             },
         });
 
