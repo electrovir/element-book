@@ -39,7 +39,6 @@ export const ElementBookNav = defineElementBookElement<{
         }
 
         .title-row {
-            padding-right: 16px;
             display: block;
             ${ElementBookRouteLink.cssVarNames
                 .anchorPadding}: 1px 24px 1px calc(calc(16px * var(--indent, 0)) + 8px);
