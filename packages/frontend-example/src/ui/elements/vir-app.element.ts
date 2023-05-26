@@ -1,4 +1,4 @@
-import {ElementBookApp} from 'element-book';
+import {ElementBookApp, ElementBookSlotName} from 'element-book';
 import {assign, css, defineElementNoInputs, html, listen} from 'element-vir';
 import {entries} from '../../element-book-example/example.book';
 
@@ -59,7 +59,8 @@ export const VirApp = defineElementNoInputs({
                     updateState({paths: event.detail});
                 })}
             >
-                <h1 slot="nav-header">My Title</h1>
+                <h1 slot=${ElementBookSlotName.NavHeader}>My Title</h1>
+                <footer slot=${ElementBookSlotName.Footer}>THIS IS MY FOOTER</footer>
             </${ElementBookApp}>
         `;
     },

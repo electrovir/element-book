@@ -14,6 +14,7 @@ import {ThemeConfig, createTheme} from '../../color-theme/create-color-theme';
 import {ChangeRouteEvent} from '../../events/change-route.event';
 import {ElementBookNav} from '../element-book-nav.element';
 import {ElementBookEntryDisplay} from '../entry-display/element-book-entry-display.element';
+import {ElementBookSlotName} from './element-book-app-slots';
 import {ElementBookConfig} from './element-book-config';
 import {getCurrentTreeEntry} from './get-current-entry';
 
@@ -174,7 +175,10 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             selectedPath: state.currentRoute.paths,
                         })}
                     >
-                        <slot name="nav-header"></slot>
+                        <slot
+                            name=${ElementBookSlotName.NavHeader}
+                            slot=${ElementBookSlotName.NavHeader}
+                        ></slot>
                     </${ElementBookNav}>
                     <${ElementBookEntryDisplay}
                         ${assign(ElementBookEntryDisplay, {
@@ -182,7 +186,12 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             currentNode: currentEntryTreeNode,
                             router: state.router!,
                         })}
-                    ></${ElementBookEntryDisplay}>
+                    >
+                        <slot
+                            name=${ElementBookSlotName.Footer}
+                            slot=${ElementBookSlotName.Footer}
+                        ></slot>
+                    </${ElementBookEntryDisplay}>
                 </div>
             `;
         } catch (error) {

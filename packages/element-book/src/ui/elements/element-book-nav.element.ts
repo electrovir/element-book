@@ -9,6 +9,7 @@ import {colorThemeCssVars} from '../color-theme/color-theme';
 import {Element16Icon} from '../icons/element-16.icon';
 import {ElementBookRouteLink} from './common/element-book-route-link.element';
 import {defineElementBookElement} from './define-book-element';
+import {ElementBookSlotName} from './element-book-app/element-book-app-slots';
 
 export const ElementBookNav = defineElementBookElement<{
     tree: EntryTreeNode;
@@ -124,7 +125,7 @@ function createNavigationTree({
 
     return html`
         <div class="nav-tree-entry" style="--indent: ${indent};">
-            <slot></slot>
+            <slot name=${ElementBookSlotName.NavHeader}></slot>
             <li class=${entryTreeNode.entry.entryType}>
                 <${ElementBookRouteLink}
                     ${assign(ElementBookRouteLink, {

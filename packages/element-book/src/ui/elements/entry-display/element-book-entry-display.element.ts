@@ -20,6 +20,7 @@ import {ChangeRouteEvent} from '../../events/change-route.event';
 import {Element24Icon} from '../../icons/element-24.icon';
 import {ElementBookRouteLink} from '../common/element-book-route-link.element';
 import {defineElementBookElement} from '../define-book-element';
+import {ElementBookSlotName} from '../element-book-app/element-book-app-slots';
 import {ElementBookBreadcrumbs} from '../element-book-breadcrumbs.element';
 import {ElementBookPageExamples} from './element-book-page-examples.element';
 
@@ -171,6 +172,7 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
                 />
             </div>
             <div class="all-examples-wrapper">${exampleTemplates}</div>
+            <slot name=${ElementBookSlotName.Footer}></slot>
         `;
     },
 });
