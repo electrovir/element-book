@@ -50,6 +50,8 @@ export const ElementBookEntryDisplay = defineElementBookElement<{
         }
 
         .all-examples-wrapper {
+            flex-grow: 1;
+            box-sizing: border-box;
             padding: 32px;
             display: flex;
             flex-direction: column;

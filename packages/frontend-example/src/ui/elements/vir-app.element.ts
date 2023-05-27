@@ -60,7 +60,7 @@ export const VirApp = defineElementNoInputs({
                 })}
             >
                 <h1 slot=${ElementBookSlotName.NavHeader}>My Title</h1>
-                <footer slot=${ElementBookSlotName.Footer}>THIS IS MY FOOTER</footer>
+                <footer slot=${ElementBookSlotName.Footer}>Example Footer</footer>
             </${ElementBookApp}>
         `;
     },
