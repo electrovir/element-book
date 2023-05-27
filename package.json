@@ -28,7 +28,7 @@
         "publish": "virmator publish \"npm run test:all\"",
         "start": "npm run compile && concurrently \"cd packages/frontend-example && npm run start\" \"npm run compile:watch\"",
         "test": "npm run test --workspaces -s --if-present",
-        "test:all": "npm run compile:clean && concurrently --kill-others-on-fail \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
+        "test:all": "npm run compile:clean && concurrently --colors --kill-others-on-fail -c auto --names types,tests,spelling,format,docs \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
         "test:coverage": "npm run test:coverage --workspaces -s --if-present",
         "test:docs": "virmator code-in-markdown check",
         "test:format": "virmator format check",
