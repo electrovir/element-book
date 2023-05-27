@@ -27,7 +27,7 @@ export const VirApp = defineElementNoInputs({
             margin-bottom: 16px;
         }
     `,
-    stateInit: {
+    stateInitStatic: {
         themeColor: undefined as string | undefined,
         paths: ['book'] as ReadonlyArray<string>,
     },

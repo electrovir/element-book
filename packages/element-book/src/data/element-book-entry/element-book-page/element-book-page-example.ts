@@ -21,7 +21,7 @@ export type ElementBookPageExampleInit<
     /** This example's title. Each title in a page must be unique. */
     title: string;
     /** Initialize the state for this example. */
-    stateInit?: StateInit;
+    stateInitStatic?: StateInit;
     /** Specify which events this example should intercept (so the user can see them). */
     capturedEvents?: ReadonlyArray<string | TypedEvent>;
     /**

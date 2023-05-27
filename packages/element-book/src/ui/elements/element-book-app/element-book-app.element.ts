@@ -25,7 +25,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     events: {
         pathUpdate: defineElementEvent<ReadonlyArray<string>>(),
     },
-    stateInit: {
+    stateInitStatic: {
         currentRoute: defaultElementBookFullRoute,
         router: undefined as undefined | ElementBookRouter,
         colors: {

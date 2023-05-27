@@ -18,7 +18,7 @@ describe(defineElementBookPage.name, () => {
             defineExamplesCallback({defineExample}) {
                 defineExample({
                     title: 'example with observable property state',
-                    stateInit: {
+                    stateInitStatic: {
                         observable: createObservableProperty<number | undefined>(undefined),
                     },
                     renderCallback({state, updateState}) {

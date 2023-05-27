@@ -10,7 +10,7 @@ export const ElementBookExampleViewer = defineElementBookElement<{
     currentPageControls: Record<string, any>;
 }>()({
     tagName: 'element-book-example-viewer',
-    stateInit: {
+    stateInitStatic: {
         isUnset: unsetInternalState,
     } as any,
     renderCallback({state, inputs, updateState}) {
@@ -23,7 +23,7 @@ export const ElementBookExampleViewer = defineElementBookElement<{
         if (state.isUnset === unsetInternalState) {
             updateState({
                 isUnset: undefined,
-                ...inputs.example.stateInit,
+                ...inputs.example.stateInitStatic,
             });
         }
 

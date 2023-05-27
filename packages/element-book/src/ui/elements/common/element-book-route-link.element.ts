@@ -10,13 +10,13 @@ export const ElementBookRouteLink = defineElementBookElement<{
 }>()({
     tagName: 'element-book-route-link',
     cssVars: {
-        anchorPadding: '',
+        'element-book-route-link-anchor-padding': '',
     },
-    styles: ({cssVarValues}) => css`
+    styles: ({cssVars}) => css`
         a {
             box-sizing: border-box;
             display: block;
-            padding: ${cssVarValues.anchorPadding};
+            padding: ${cssVars['element-book-route-link-anchor-padding'].value};
             text-decoration: inherit;
             color: inherit;
             height: 100%;

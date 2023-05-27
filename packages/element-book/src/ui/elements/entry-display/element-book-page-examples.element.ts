@@ -42,7 +42,7 @@ export const ElementBookPageExamples = defineElementBookElement<{
             color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
         }
     `,
-    stateInit: {
+    stateInitStatic: {
         unset: unsetInternalState,
     },
     renderCallback({inputs, state, updateState}) {
