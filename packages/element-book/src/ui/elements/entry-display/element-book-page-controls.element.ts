@@ -68,7 +68,7 @@ function createControlInput(
         return html`
             <input
                 type="text"
-                .value=${value}
+                .value=${value || ''}
                 ${listen('input', (event) => {
                     const inputElement = event.currentTarget;
 

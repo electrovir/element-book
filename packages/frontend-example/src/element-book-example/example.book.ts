@@ -52,7 +52,7 @@ const testPage3 = defineElementBookPage({
     title: 'test 3',
     controls: {
         thing: {
-            initValue: 'yo',
+            initValue: '',
             controlType: ElementBookPageControlTypeEnum.Text,
         },
     },
