@@ -255,7 +255,7 @@ var xs=Object.defineProperty;var As=(t,e,r)=>e in t?xs(t,e,{enumerable:!0,config
                 `})}});function ac(t,e,r){return e===ut.Text?y`
             <input
                 type="text"
-                .value=${t}
+                .value=${t||""}
                 ${ie("input",n=>{const o=n.currentTarget;if(!(o instanceof HTMLInputElement))throw new Error("Din't get an input element from the event target.");r(o.value)})}
             />
         `:y`
@@ -506,7 +506,7 @@ var xs=Object.defineProperty;var As=(t,e,r)=>e in t?xs(t,e,{enumerable:!0,config
                 </div>
             `}catch(d){return console.error(d),y`
                 <p class="error">${St(d)}</p>
-            `}}}),Cr=_r({title:"My Chapter 1",parent:void 0}),Or=_r({title:"My Chapter 2",parent:void 0}),eo=_r({title:"Sub Chapter 1",parent:Cr});function to(t,e){return kr({title:`test ${t}`,parent:e,defineExamplesCallback({defineExample:n}){n({title:"example",renderCallback(){return"element example here"}})}})}const lc=kr({title:"test 2",parent:Or,descriptionParagraphs:["This is the description. It has stuff in it.","Yay stuff!"],defineExamplesCallback({defineExample:t}){t({title:"example 1",renderCallback(){return"hi"}}),t({title:"example 2",renderCallback(){return"hi"}})}}),cc=kr({title:"test 3",controls:{thing:{initValue:"yo",controlType:ut.Text}},parent:Or,defineExamplesCallback({defineExample:t}){t({title:"example 3 1",renderCallback(){return"hi"}}),t({title:"example 3 2",renderCallback({controls:e}){return`hello ${e.thing}`}})}}),Cs=[Cr,to(0,Cr),eo,...Array(100).fill(0).map((t,e)=>to(e+1,eo)),Or,lc,cc];console.info({entries:Cs});Tt({tagName:"vir-app",styles:V`
+            `}}}),Cr=_r({title:"My Chapter 1",parent:void 0}),Or=_r({title:"My Chapter 2",parent:void 0}),eo=_r({title:"Sub Chapter 1",parent:Cr});function to(t,e){return kr({title:`test ${t}`,parent:e,defineExamplesCallback({defineExample:n}){n({title:"example",renderCallback(){return"element example here"}})}})}const lc=kr({title:"test 2",parent:Or,descriptionParagraphs:["This is the description. It has stuff in it.","Yay stuff!"],defineExamplesCallback({defineExample:t}){t({title:"example 1",renderCallback(){return"hi"}}),t({title:"example 2",renderCallback(){return"hi"}})}}),cc=kr({title:"test 3",controls:{thing:{initValue:"",controlType:ut.Text}},parent:Or,defineExamplesCallback({defineExample:t}){t({title:"example 3 1",renderCallback(){return"hi"}}),t({title:"example 3 2",renderCallback({controls:e}){return`hello ${e.thing}`}})}}),Cs=[Cr,to(0,Cr),eo,...Array(100).fill(0).map((t,e)=>to(e+1,eo)),Or,lc,cc];console.info({entries:Cs});Tt({tagName:"vir-app",styles:V`
         :host {
             display: flex;
             flex-direction: column;
