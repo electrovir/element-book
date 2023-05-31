@@ -5,7 +5,10 @@ export const ncuConfig: RunOptions = {
     upgrade: true,
     root: true,
     // exclude these
-    reject: [],
+    reject: [
+        // version 0.4.4's dependencies are broken so we want to stay on 0.4.3
+        'colorjs.io',
+    ],
     // include only these
     filter: [],
 };
