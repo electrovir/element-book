@@ -1,6 +1,6 @@
 import {wait} from '@augment-vir/common';
 import {VirIcon} from '@electrovir/icon-element';
-import {HTMLTemplateResult, TemplateResult, assign, css, html, listen, renderIf} from 'element-vir';
+import {TemplateResult, assign, css, html, listen, renderIf, repeat} from 'element-vir';
 import {BaseElementBookEntry} from '../../../data/element-book-entry/element-book-chapter/element-book-chapter';
 import {
     isElementBookEntry,
@@ -196,7 +196,7 @@ function createNestedPagesTemplates({
     isTopLevel: boolean;
     router: ElementBookRouter;
     isSearching: boolean;
-}): HTMLTemplateResult[] {
+}): unknown {
     if (!nestedPages.length && isSearching) {
         return [
             html`
@@ -205,8 +205,10 @@ function createNestedPagesTemplates({
         ];
     }
 
-    return nestedPages
-        .map((nestingNode) => {
+    return repeat(
+        nestedPages,
+        (page) => page.breadcrumb,
+        (nestingNode) => {
             if (isEntryNode(nestingNode, ElementBookEntryTypeEnum.Page)) {
                 const bookEntry = nestingNode.entry;
 
@@ -257,7 +259,7 @@ function createNestedPagesTemplates({
                     </div>
                 `;
             } else {
-                return Object.entries(nestingNode).map(
+                const templates = Object.entries(nestingNode).map(
                     ([
                         title,
                         currentNested,
@@ -304,9 +306,13 @@ function createNestedPagesTemplates({
                         `;
                     },
                 );
+
+                return html`
+                    ${templates}
+                `;
             }
-        })
-        .flat();
+        },
+    );
 }
 
 function createDescriptionTemplate(entry: BaseElementBookEntry): TemplateResult {
