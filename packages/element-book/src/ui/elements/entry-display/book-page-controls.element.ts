@@ -1,18 +1,24 @@
+import {PropertyValueType} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen} from 'element-vir';
 import {BookPage} from '../../../data/book-entry/book-page/book-page';
 import {
     BookPageControl,
     BookPageControlTypeEnum,
+    BookPageControlsValues,
 } from '../../../data/book-entry/book-page/book-page-controls';
 import {defineBookElement} from '../define-book-element';
 
 export const BookPageControls = defineBookElement<{
     config: BookPage['controls'];
+    fullUrlBreadcrumbs: ReadonlyArray<string>;
     currentValues: Record<string, BookPageControl['initValue']>;
 }>()({
     tagName: 'book-page-controls',
     events: {
-        controlValueChange: defineElementEvent<{name: string; value: unknown}>(),
+        controlValueChange: defineElementEvent<{
+            fullUrlBreadcrumbs: ReadonlyArray<string>;
+            newValues: BookPageControlsValues;
+        }>(),
     },
     styles: css`
         :host {
@@ -44,8 +50,11 @@ export const BookPageControls = defineBookElement<{
                     (newValue) => {
                         dispatch(
                             new events.controlValueChange({
-                                name: controlName,
-                                value: newValue,
+                                fullUrlBreadcrumbs: inputs.fullUrlBreadcrumbs,
+                                newValues: {
+                                    ...inputs.currentValues,
+                                    [controlName]: newValue,
+                                },
                             }),
                         );
                     },
@@ -64,7 +73,7 @@ export const BookPageControls = defineBookElement<{
 function createControlInput(
     value: unknown,
     controlType: BookPageControlTypeEnum,
-    valueChange: (newValue: unknown) => void,
+    valueChange: (newValue: PropertyValueType<BookPageControlsValues>) => void,
 ) {
     if (controlType === BookPageControlTypeEnum.Text) {
         return html`

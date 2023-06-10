@@ -1,10 +1,10 @@
 import {assertTypeOf} from '@augment-vir/browser-testing';
-import {createEmptyEntryTreeRoot} from './entry-tree';
-import {walkEntryTree} from './walk-entry-tree';
+import {createEmptyBookTreeRoot} from './book-tree';
+import {walkEntryTree} from './walk-book-tree';
 
 describe(walkEntryTree.name, () => {
     it('has proper types', async () => {
-        const emptyTreeRootNode = createEmptyEntryTreeRoot('empty title', []);
+        const emptyTreeRootNode = createEmptyBookTreeRoot('empty title', []);
 
         assertTypeOf(
             walkEntryTree(emptyTreeRootNode, () => {

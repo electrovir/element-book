@@ -2,11 +2,14 @@ import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture} from '@open-wc/testing';
 import {assign, html} from 'element-vir';
 import {defineBookPage} from '../../../data/book-entry/book-page/define-book-page';
-import {ElementBookApp} from './book-app.element';
-import {BookConfig} from './book-config';
+import {BookError} from '../common/book-error.element';
+import {BookEntryDisplay} from '../entry-display/book-entry-display.element';
+import {BookElementExampleWrapper} from '../entry-display/element-example/book-element-example-wrapper.element';
+import {ElementBookApp} from './element-book-app.element';
+import {ElementBookConfig} from './element-book-config';
 
 describe(ElementBookApp.tagName, () => {
-    async function setupEntriesTest(entries: BookConfig['entries']) {
+    async function setupEntriesTest(entries: ElementBookConfig['entries']) {
         const fixture = await renderFixture(
             html`
                 <${ElementBookApp}
@@ -33,7 +36,10 @@ describe(ElementBookApp.tagName, () => {
             }),
         ]);
 
-        assert.include(fixture.shadowRoot.innerHTML, 'Cannot create duplicate entry');
+        assert.include(
+            fixture.shadowRoot.querySelector(BookEntryDisplay.tagName)!.shadowRoot!.innerHTML,
+            BookError.tagName,
+        );
     });
 
     it('should render error message when there are duplicate examples', async () => {
@@ -61,14 +67,18 @@ describe(ElementBookApp.tagName, () => {
         ]);
 
         assert.include(
-            fixture.shadowRoot
-                .querySelector('element-book-entry-display')!
-                .shadowRoot!.querySelector('element-book-page-examples')!.shadowRoot!.innerHTML,
-            'Failed to define example',
+            Array.from(
+                fixture.shadowRoot
+                    .querySelector(BookEntryDisplay.tagName)!
+                    .shadowRoot!.querySelectorAll(BookElementExampleWrapper.tagName),
+            )
+                .map((exampleWrapper) => exampleWrapper.shadowRoot!.innerHTML)
+                .join(''),
+            BookError.tagName,
         );
     });
 
-    it('should render error message when there are empty chapter titles', async () => {
+    it('should render error message when there are empty page titles', async () => {
         const fixture = await setupEntriesTest([
             defineBookPage({
                 parent: undefined,
@@ -77,8 +87,8 @@ describe(ElementBookApp.tagName, () => {
         ]);
 
         assert.include(
-            fixture.shadowRoot.innerHTML,
-            'Cannot have an element-book chapter with an empty title',
+            fixture.shadowRoot.querySelector(BookEntryDisplay.tagName)!.shadowRoot!.innerHTML,
+            BookError.tagName,
         );
     });
 });

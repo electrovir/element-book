@@ -2,7 +2,7 @@ import {PartialAndUndefined} from '@augment-vir/common';
 import {RequireExactlyOne} from 'type-fest';
 import {BookEntry} from '../../../data/book-entry/book-entry';
 
-export type BookConfig = {
+export type ElementBookConfig = {
     /** All element-book entries in order. */
     entries: ReadonlyArray<BookEntry>;
 } & PartialAndUndefined<OptionalConfig>;
@@ -13,6 +13,7 @@ type OptionalConfig = {
     /** The title to use for the "Everything" nav link. */
     everythingTitle: string;
     everythingDescriptionParagraphs: ReadonlyArray<string>;
+    debug: boolean;
 } & RequireExactlyOne<{
     /**
      * Set this internal router config if element-book is intended to be the current website's

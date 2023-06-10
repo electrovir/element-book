@@ -67,21 +67,6 @@ describe(defineBookPage.name, () => {
         });
     });
 
-    it('errors if controls are not valid', () => {
-        const badPage = defineBookPage({
-            parent: undefined,
-            title: 'derp',
-            controls: {
-                badControls: {
-                    controlType: BookPageControlTypeEnum.Checkbox,
-                    // this won't throw a type error but it'll throw a run-time error
-                    initValue: 'hello',
-                },
-            },
-        });
-
-        assert.lengthOf(badPage.errors, 1);
-    });
     it('errors multiple examples with the same name are used', () => {
         const badPage = defineBookPage({
             parent: undefined,
@@ -102,9 +87,11 @@ describe(defineBookPage.name, () => {
             },
         });
 
-        assert.lengthOf(badPage.examples, 2);
+        assert.lengthOf(Object.values(badPage.elementExamples), 1);
 
-        badPage.examples.forEach((example) => assert.lengthOf(example.errors, 1));
+        Object.values(badPage.elementExamples).forEach((example) =>
+            assert.lengthOf(example.errors, 1),
+        );
     });
 });
 

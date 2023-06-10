@@ -27,6 +27,7 @@ export type ControlsToValues<ControlsInit extends BookPageControlsInitBase> = {
 };
 
 export type BookPageControlsInitBase = Record<string, BookPageControlInit<BookPageControlTypeEnum>>;
+export type BookPageControlsValues = ControlsToValues<BookPageControlsInitBase>;
 
 export enum BookPageControlTypeEnum {
     Checkbox = 'checkbox',
@@ -71,6 +72,9 @@ export function checkControls(
                         }.`,
                     ),
                 );
+            }
+            if (!controlName) {
+                errors.push(new Error(`'${pageName}' cannot have an empty control name.`));
             }
         },
     );

@@ -1,11 +1,6 @@
 import {isEnumValue} from '@augment-vir/common';
 import {createSpaRouter, SpaRouter} from 'spa-router-vir';
-import {
-    BookRouter,
-    defaultBookFullRoute,
-    BookMainRoute,
-    ValidBookPaths,
-} from './book-routing';
+import {BookMainRoute, BookRouter, defaultBookFullRoute, ValidBookPaths} from './book-routing';
 
 export function createBookRouter(baseRoute: string | undefined): BookRouter {
     type SubTypes = BookRouter extends SpaRouter<infer Paths, infer Search, infer Hash>

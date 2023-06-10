@@ -6,3 +6,8 @@ export enum BookEntryTypeEnum {
     /** Tree root. Not for external use. */
     Root = 'root',
 }
+
+export type AnyBookEntryType =
+    | BookEntryTypeEnum.ElementExample
+    | BookEntryTypeEnum.Page
+    | BookEntryTypeEnum.Root;

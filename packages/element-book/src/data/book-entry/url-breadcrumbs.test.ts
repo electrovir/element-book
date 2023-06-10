@@ -1,22 +1,22 @@
 import {itCases} from '@augment-vir/browser-testing';
 import {defineBookPage} from './book-page/define-book-page';
-import {listBreadcrumbs, titleToBreadcrumb} from './breadcrumbs';
+import {listUrlBreadcrumbs, titleToUrlBreadcrumb} from './url-breadcrumbs';
 
-describe(listBreadcrumbs.name, () => {
+describe(listUrlBreadcrumbs.name, () => {
     const exampleTopLevelPage = defineBookPage({
         title: 'top level title',
         parent: undefined,
     });
     const examplePage = defineBookPage({
-        title: 'chapter title',
+        title: 'page title 1',
         parent: exampleTopLevelPage,
     });
     const examplePageNested = defineBookPage({
-        title: 'page title',
+        title: 'page title 2',
         parent: examplePage,
     });
 
-    itCases(listBreadcrumbs, [
+    itCases(listUrlBreadcrumbs, [
         {
             it: 'finds nothing when entry has no parent',
             inputs: [
@@ -31,7 +31,7 @@ describe(listBreadcrumbs.name, () => {
                 examplePage,
                 false,
             ],
-            expect: [exampleTopLevelPage.title].map(titleToBreadcrumb),
+            expect: [exampleTopLevelPage.title].map(titleToUrlBreadcrumb),
         },
         {
             it: 'finds multiple ancestors',
@@ -42,7 +42,7 @@ describe(listBreadcrumbs.name, () => {
             expect: [
                 examplePage.title,
                 exampleTopLevelPage.title,
-            ].map(titleToBreadcrumb),
+            ].map(titleToUrlBreadcrumb),
         },
         {
             it: 'includes title of given entry when includeSelf is true',
@@ -54,7 +54,7 @@ describe(listBreadcrumbs.name, () => {
                 examplePage.title,
                 exampleTopLevelPage.title,
                 examplePageNested.title,
-            ].map(titleToBreadcrumb),
+            ].map(titleToUrlBreadcrumb),
         },
     ]);
 });

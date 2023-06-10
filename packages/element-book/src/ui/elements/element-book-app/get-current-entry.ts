@@ -1,8 +1,4 @@
-import {BookEntryTypeEnum} from '../../../data/book-entry/book-entry-type';
-import {
-    EntryTreeNode,
-    findEntryByBreadcrumbs,
-} from '../../../data/book-entry/entry-tree/entry-tree';
+import {BookTreeNode, findEntryByBreadcrumbs} from '../../../data/book-tree/book-tree';
 import {
     BookFullRoute,
     BookMainRoute,
@@ -11,10 +7,10 @@ import {
 } from '../../../routing/book-routing';
 
 export function getCurrentTreeEntry(
-    entriesTree: EntryTreeNode<BookEntryTypeEnum.Root>,
+    entriesTree: BookTreeNode,
     paths: Readonly<ValidBookPaths>,
     updateRoutes: (newRoute: Partial<BookFullRoute>) => void,
-): EntryTreeNode {
+): BookTreeNode {
     if (paths[0] === BookMainRoute.Search) {
         return entriesTree;
     }

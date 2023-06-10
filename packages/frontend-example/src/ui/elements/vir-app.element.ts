@@ -54,6 +54,7 @@ export const VirApp = defineElementNoInputs({
                         useInternalRouter: true,
                     },
                     everythingTitle: 'All',
+                    debug: true,
                 })}
                 ${listen(ElementBookApp.events.pathUpdate, (event) => {
                     updateState({paths: event.detail});

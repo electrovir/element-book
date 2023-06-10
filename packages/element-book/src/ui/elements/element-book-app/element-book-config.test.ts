@@ -1,7 +1,7 @@
-import {BookConfig} from './book-config';
+import {ElementBookConfig} from './element-book-config';
 
 describe('ElementBookConfig', () => {
-    function acceptsElementBookConfig(input: BookConfig) {}
+    function acceptsElementBookConfig(input: ElementBookConfig) {}
 
     it('prevents router config and paths in the same config', () => {
         // it's fine with elementBookRoutePaths and everything else

@@ -2,15 +2,15 @@ import {areJsonEqual} from '@augment-vir/common';
 import {TemplateResult, assign, classMap, css, html, renderIf} from 'element-vir';
 import {Element16Icon, ViraIcon} from 'vira';
 import {BookEntryTypeEnum} from '../../data/book-entry/book-entry-type';
-import {EntryTreeNode} from '../../data/book-entry/entry-tree/entry-tree';
+import {BookTreeNode, isBookTreeNode} from '../../data/book-tree/book-tree';
 import {BookMainRoute, BookRouter} from '../../routing/book-routing';
 import {colorThemeCssVars} from '../color-theme/color-theme';
-import {BookSlotName} from './book-app/book-app-slots';
 import {BookRouteLink} from './common/book-route-link.element';
 import {defineBookElement} from './define-book-element';
+import {ElementBookSlotName} from './element-book-app/element-book-app-slots';
 
 export const BookNav = defineBookElement<{
-    tree: EntryTreeNode;
+    tree: BookTreeNode;
     selectedPath: ReadonlyArray<string>;
     router: BookRouter | undefined;
 }>()({
@@ -99,7 +99,7 @@ function createNavigationTree({
     router,
 }: {
     indent: number;
-    entryTreeNode: EntryTreeNode;
+    entryTreeNode: BookTreeNode;
     rootPath: ReadonlyArray<string>;
     selectedPath: ReadonlyArray<string>;
     router: BookRouter | undefined;
@@ -107,8 +107,6 @@ function createNavigationTree({
     const entryPath = entryTreeNode.urlBreadcrumb
         ? rootPath.concat(entryTreeNode.urlBreadcrumb)
         : rootPath;
-
-    const isPage: boolean = entryTreeNode.entry.entryType === BookEntryTypeEnum.Page;
 
     const childTemplates = Object.values(entryTreeNode.children).map((child) => {
         return createNavigationTree({
@@ -122,7 +120,7 @@ function createNavigationTree({
 
     return html`
         <div class="nav-tree-entry" style="--indent: ${indent};">
-            <slot name=${BookSlotName.NavHeader}></slot>
+            <slot name=${ElementBookSlotName.NavHeader}></slot>
             <li class=${entryTreeNode.entry.entryType}>
                 <${BookRouteLink}
                     ${assign(BookRouteLink, {
@@ -141,7 +139,7 @@ function createNavigationTree({
                 >
                     <div class="title-text">
                         ${renderIf(
-                            isPage,
+                            isBookTreeNode(entryTreeNode, BookEntryTypeEnum.ElementExample),
                             html`
                                 <${ViraIcon}
                                     ${assign(ViraIcon, {icon: Element16Icon})}

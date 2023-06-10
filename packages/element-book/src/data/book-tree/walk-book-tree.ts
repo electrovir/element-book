@@ -1,5 +1,5 @@
 import {MaybePromise} from '@augment-vir/common';
-import {EntryTreeNode} from './entry-tree';
+import {BookTreeNode} from './book-tree';
 
 /**
  * Walk the whole given tree, calling callback on each node. If callback returns the boolean false
@@ -7,8 +7,8 @@ import {EntryTreeNode} from './entry-tree';
  * promise. Otherwise, it will not return a promise.
  */
 export function walkEntryTree<CallbackReturn extends MaybePromise<void | boolean>>(
-    startNode: Readonly<EntryTreeNode>,
-    callback: (node: Readonly<EntryTreeNode>) => CallbackReturn,
+    startNode: Readonly<BookTreeNode>,
+    callback: (node: Readonly<BookTreeNode>) => CallbackReturn,
 ): CallbackReturn {
     // this inner function is for easier typing purposes
     function innerWalk(): MaybePromise<void | boolean> {

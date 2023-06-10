@@ -1,7 +1,12 @@
 import {areJsonEqual, extractErrorMessage} from '@augment-vir/common';
 import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
-import {entriesToTree} from '../../../data/book-entry/entry-tree/entry-tree';
-import {createSearchedTree} from '../../../data/book-entry/entry-tree/entry-tree-search';
+import {
+    CurrentControls,
+    createControlsFromTree,
+    createNewCurrentControls,
+} from '../../../data/book-entry/book-page/current-controls';
+import {entriesToTree} from '../../../data/book-tree/book-tree';
+import {createSearchedTree} from '../../../data/book-tree/book-tree-search';
 import {
     BookFullRoute,
     BookRouter,
@@ -13,14 +18,16 @@ import {ColorTheme, colorThemeCssVars, setThemeCssVars} from '../../color-theme/
 import {ThemeConfig, createTheme} from '../../color-theme/create-color-theme';
 import {ChangeRouteEvent} from '../../events/change-route.event';
 import {BookNav} from '../book-nav.element';
+import {BookError} from '../common/book-error.element';
 import {BookEntryDisplay} from '../entry-display/book-entry-display.element';
-import {BookSlotName} from './book-app-slots';
-import {BookConfig} from './book-config';
+import {BookPageControls} from '../entry-display/book-page-controls.element';
+import {ElementBookSlotName} from './element-book-app-slots';
+import {ElementBookConfig} from './element-book-config';
 import {getCurrentTreeEntry} from './get-current-entry';
 
 type ColorThemeState = {config: ThemeConfig | undefined; theme: ColorTheme};
 
-export const ElementBookApp = defineElement<BookConfig>()({
+export const ElementBookApp = defineElement<ElementBookConfig>()({
     tagName: 'element-book-app',
     events: {
         pathUpdate: defineElementEvent<ReadonlyArray<string>>(),
@@ -32,6 +39,12 @@ export const ElementBookApp = defineElement<BookConfig>()({
             config: undefined,
             theme: createTheme(undefined),
         } as ColorThemeState,
+        treeBasedCurrentControls: undefined as
+            | {
+                  trigger: ElementBookConfig['entries'];
+                  currentControls: CurrentControls;
+              }
+            | undefined,
     },
     styles: css`
         :host {
@@ -132,11 +145,26 @@ export const ElementBookApp = defineElement<BookConfig>()({
                 setThemeCssVars(host, newTheme);
             }
 
-            const originalTree = entriesToTree(
-                inputs.entries,
-                inputs.everythingTitle,
-                inputs.everythingDescriptionParagraphs ?? [],
-            );
+            const debug: boolean = inputs.debug ?? false;
+
+            const originalTree = entriesToTree({
+                entries: inputs.entries,
+                everythingTitle: inputs.everythingTitle,
+                everythingDescriptionParagraphs: inputs.everythingDescriptionParagraphs ?? [],
+                debug,
+            });
+
+            if (
+                !state.treeBasedCurrentControls ||
+                state.treeBasedCurrentControls.trigger !== inputs.entries
+            ) {
+                updateState({
+                    treeBasedCurrentControls: {
+                        trigger: inputs.entries,
+                        currentControls: createControlsFromTree(originalTree),
+                    },
+                });
+            }
 
             const searchQuery = extractSearchQuery(state.currentRoute.paths);
 
@@ -153,6 +181,20 @@ export const ElementBookApp = defineElement<BookConfig>()({
                 state.currentRoute.paths,
                 updateRoutes,
             );
+
+            const currentControls = state.treeBasedCurrentControls?.currentControls;
+
+            if (!currentControls) {
+                return html`
+                    <${BookError}
+                        ${assign(BookError, {message: 'Failed to generate page controls.'})}
+                    ></${BookError}>
+                `;
+            }
+
+            if (inputs.debug) {
+                console.info({currentControls});
+            }
 
             return html`
                 <div
@@ -171,6 +213,23 @@ export const ElementBookApp = defineElement<BookConfig>()({
                         }
                         updateRoutes(event.detail);
                     })}
+                    ${listen(BookPageControls.events.controlValueChange, (event) => {
+                        if (!state.treeBasedCurrentControls) {
+                            return;
+                        }
+                        const newControls = createNewCurrentControls(
+                            currentControls,
+                            event.detail.fullUrlBreadcrumbs,
+                            event.detail.newValues,
+                        );
+
+                        updateState({
+                            treeBasedCurrentControls: {
+                                ...state.treeBasedCurrentControls,
+                                currentControls: newControls,
+                            },
+                        });
+                    })}
                 >
                     <${BookNav}
                         ${assign(BookNav, {
@@ -179,16 +238,24 @@ export const ElementBookApp = defineElement<BookConfig>()({
                             selectedPath: state.currentRoute.paths,
                         })}
                     >
-                        <slot name=${BookSlotName.NavHeader} slot=${BookSlotName.NavHeader}></slot>
+                        <slot
+                            name=${ElementBookSlotName.NavHeader}
+                            slot=${ElementBookSlotName.NavHeader}
+                        ></slot>
                     </${BookNav}>
                     <${BookEntryDisplay}
                         ${assign(BookEntryDisplay, {
                             currentRoute: state.currentRoute,
                             currentNode: currentEntryTreeNode,
                             router: state.router!,
+                            debug,
+                            currentControls,
                         })}
                     >
-                        <slot name=${BookSlotName.Footer} slot=${BookSlotName.Footer}></slot>
+                        <slot
+                            name=${ElementBookSlotName.Footer}
+                            slot=${ElementBookSlotName.Footer}
+                        ></slot>
                     </${BookEntryDisplay}>
                 </div>
             `;

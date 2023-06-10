@@ -15,5 +15,5 @@ export type BookPage<
     }
 > & {
     controls: ControlsInit;
-    examples: ReadonlyArray<BookElementExample>;
+    elementExamples: Record<string, BookElementExample>;
 };

@@ -35,7 +35,8 @@
         "compile:clean": "rm -rf dist && npm run compile",
         "test": "virmator test-web",
         "test:coverage": "npm run test coverage",
-        "test:types": "tsc --noEmit"
+        "test:types": "tsc --noEmit",
+        "test:watch": "web-test-runner --color --watch --config configs/web-test-runner.config.mjs"
     },
     "dependencies": {
         "@augment-vir/common": "^14.3.0",
@@ -45,7 +46,7 @@
         "object-shape-tester": "^0.3.0",
         "spa-router-vir": "^2.1.0",
         "typed-event-target": "^1.2.1",
-        "vira": "^0.3.0"
+        "vira": "^0.3.1"
     },
     "devDependencies": {
         "@augment-vir/browser-testing": "^14.3.0",

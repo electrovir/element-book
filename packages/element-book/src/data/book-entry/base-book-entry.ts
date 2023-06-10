@@ -17,5 +17,5 @@ export type BaseBookEntry = {
      * separate paragraph.
      */
     descriptionParagraphs: ReadonlyArray<string>;
-    errors: ReadonlyArray<Error>;
+    errors: Error[];
 };

@@ -1,4 +1,4 @@
-import {ArrayElement, Writeable, isTruthy} from '@augment-vir/common';
+import {PropertyValueType, isTruthy} from '@augment-vir/common';
 import {PropertyInitMapBase} from 'element-vir';
 import {SetOptional} from 'type-fest';
 import {InfiniteRecursionLimiter} from '../../../util/type';
@@ -7,8 +7,9 @@ import {
     BookElementExampleInit,
 } from '../book-element-example/book-element-example';
 import {BookEntryTypeEnum} from '../book-entry-type';
+import {titleToUrlBreadcrumb} from '../url-breadcrumbs';
 import {BookPage} from './book-page';
-import {BookPageControlsInitBase, checkControls} from './book-page-controls';
+import {BookPageControlsInitBase} from './book-page-controls';
 
 export type ElementExamplesDefiner<
     ControlsInit extends BookPageControlsInitBase = BookPageControlsInitBase,
@@ -34,7 +35,7 @@ export type BookPageInit<
     ParentPage extends BookPage | undefined,
     CurrentControlsInit extends BookPageControlsInitBase,
 > = SetOptional<
-    Omit<BookPage<ParentPage, CurrentControlsInit>, 'entryType' | 'examples' | 'errors'>,
+    Omit<BookPage<ParentPage, CurrentControlsInit>, 'entryType' | 'elementExamples' | 'errors'>,
     'controls' | 'descriptionParagraphs'
 > & {
     elementExamplesCallback?:
@@ -49,18 +50,13 @@ export function defineBookPage<
     const page: BookPage<ParentPage, ControlsInit> = {
         ...pageInit,
         entryType: BookEntryTypeEnum.Page,
-        examples: [],
+        elementExamples: {},
         descriptionParagraphs: pageInit.descriptionParagraphs ?? [],
         controls: pageInit.controls ?? ({} as ControlsInit),
-        errors: [
-            !pageInit.title && new Error(`Cannot define an element-book page with an empty title.`),
-            ...checkControls(pageInit.controls, pageInit.title),
-        ].filter(isTruthy),
+        errors: [],
     };
 
     const alreadyTakenElementExampleNames = new Set<string>();
-
-    const finalizedExamples: Writeable<(typeof page)['examples']> = [];
 
     if (pageInit.elementExamplesCallback) {
         pageInit.elementExamplesCallback({
@@ -79,11 +75,11 @@ export function defineBookPage<
                 };
                 alreadyTakenElementExampleNames.add(elementExampleInit.title);
 
-                finalizedExamples.push(newExample as ArrayElement<(typeof page)['examples']>);
+                page.elementExamples[titleToUrlBreadcrumb(newExample.title)] =
+                    newExample as PropertyValueType<(typeof page)['elementExamples']>;
             },
         });
     }
-    page.examples = finalizedExamples.sort((a, b) => a.title.localeCompare(b.title));
 
     return page;
 }
