@@ -1,6 +1,6 @@
 import {defineTypedEvent} from 'element-vir';
-import {ElementBookFullRoute} from '../../routing/element-book-routing';
+import {BookFullRoute} from '../../routing/book-routing';
 
-export const ChangeRouteEvent = defineTypedEvent<Partial<ElementBookFullRoute>>()(
+export const ChangeRouteEvent = defineTypedEvent<Partial<BookFullRoute>>()(
     'element-book-change-route',
 );

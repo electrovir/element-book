@@ -1,7 +1,7 @@
 import {isRuntimeTypeOf, typedHasProperties, typedHasProperty} from '@augment-vir/common';
 import {CSSResult} from 'lit';
 import {SingleCssVarDefinition, defineCssVars, setCssVarValue} from 'lit-css-vars';
-import {NestedType} from '../../utilities/type';
+import {NestedType} from '../../util/type';
 
 export type ColorPair = {background: CSSResult; foreground: CSSResult};
 

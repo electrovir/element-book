@@ -26,7 +26,7 @@
         "docs:update": "virmator code-in-markdown",
         "format": "virmator format",
         "publish": "virmator publish \"npm run test:all\"",
-        "start": "npm run compile && concurrently \"cd packages/frontend-example && npm run start\" \"npm run compile:watch\"",
+        "start": "npm run compile && concurrently -c auto --colors --names server,compile-watcher \"cd packages/frontend-example && npm run start\" \"npm run compile:watch\"",
         "test": "npm run test --workspaces -s --if-present",
         "test:all": "npm run compile:clean && concurrently --colors --kill-others-on-fail -c auto --names types,tests,spelling,format,docs \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
         "test:coverage": "npm run test:coverage --workspaces -s --if-present",
@@ -50,6 +50,6 @@
         "prettier-plugin-packagejson": "^2.4.3",
         "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "^0.3.1",
-        "virmator": "^6.6.1"
+        "virmator": "^6.6.2"
     }
 }

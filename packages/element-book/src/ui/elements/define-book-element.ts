@@ -1,8 +1,6 @@
 import {wrapDefineElement} from 'element-vir';
 
-export type BookTagName = `element-book-${string}`;
+export type BookTagName = `book-${string}`;
 
-export const {
-    defineElement: defineElementBookElement,
-    defineElementNoInputs: defineElementBookElementNoInputs,
-} = wrapDefineElement<BookTagName>();
+export const {defineElement: defineBookElement, defineElementNoInputs: defineBookElementNoInputs} =
+    wrapDefineElement<BookTagName>();
