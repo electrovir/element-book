@@ -1,38 +1,45 @@
-import {extractErrorMessage} from '@augment-vir/common';
+import {combineErrors, extractErrorMessage} from '@augment-vir/common';
 import {assign, html, renderIf} from 'element-vir';
-import {BookElementExample} from '../../../../data/book-entry/book-element-example/book-element-example';
+import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
+import {BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls';
+import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
 import {unsetInternalState} from '../../../../data/unset';
+import {BookRouter} from '../../../../routing/book-routing';
 import {BookError} from '../../common/book-error.element';
 import {defineBookElement} from '../../define-book-element';
 
 export const BookElementExampleViewer = defineBookElement<{
-    elementExample: BookElementExample;
-    fullUrlBreadcrumbs: ReadonlyArray<string>;
-    currentPageControls: Record<string, any>;
+    elementExampleNode: BookTreeNode<BookEntryTypeEnum.ElementExample>;
+    currentPageControls: BookPageControlsValues;
+    router: BookRouter;
 }>()({
     tagName: 'book-element-example-viewer',
     stateInitStatic: {
         isUnset: unsetInternalState,
     } as any,
     renderCallback({state, inputs, updateState}) {
-        if (
-            !inputs.elementExample.renderCallback ||
-            typeof inputs.elementExample.renderCallback === 'string'
-        ) {
-            throw new Error(
-                `Failed to render example '${inputs.elementExample.title}': renderCallback is not a function`,
-            );
-        }
-
-        if (state.isUnset === unsetInternalState) {
-            updateState({
-                isUnset: undefined,
-                ...inputs.elementExample.stateInitStatic,
-            });
-        }
-
         try {
-            const output = inputs.elementExample.renderCallback({
+            if (inputs.elementExampleNode.entry.errors.length) {
+                throw combineErrors(inputs.elementExampleNode.entry.errors);
+            }
+
+            if (
+                !inputs.elementExampleNode.entry.renderCallback ||
+                typeof inputs.elementExampleNode.entry.renderCallback === 'string'
+            ) {
+                throw new Error(
+                    `Failed to render example '${inputs.elementExampleNode.entry.title}': renderCallback is not a function`,
+                );
+            }
+
+            if (state.isUnset === unsetInternalState) {
+                updateState({
+                    isUnset: undefined,
+                    ...inputs.elementExampleNode.entry.stateInitStatic,
+                });
+            }
+
+            const output = inputs.elementExampleNode.entry.renderCallback({
                 state,
                 updateState,
                 controls: inputs.currentPageControls,
@@ -43,10 +50,10 @@ export const BookElementExampleViewer = defineBookElement<{
 
             return html`
                 ${renderIf(
-                    !!inputs.elementExample.styles,
+                    !!inputs.elementExampleNode.entry.styles,
                     html`
                         <style>
-                            ${inputs.elementExample.styles}
+                            ${inputs.elementExampleNode.entry.styles}
                         </style>
                     `,
                 )}
@@ -57,9 +64,9 @@ export const BookElementExampleViewer = defineBookElement<{
             return html`
                 <${BookError}
                     ${assign(BookError, {
-                        message: `inputs.fullUrlBreadcrumbs.join(' > ')} failed: ${extractErrorMessage(
-                            error,
-                        )}`,
+                        message: `${
+                            inputs.elementExampleNode.entry.title
+                        } failed: ${extractErrorMessage(error)}`,
                     })}
                 ></${BookError}>
             `;

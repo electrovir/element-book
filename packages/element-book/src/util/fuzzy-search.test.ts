@@ -1,5 +1,5 @@
 import {itCases} from '@augment-vir/browser-testing';
-import {fuzzySearch} from './search';
+import {fuzzySearch} from './fuzzy-search';
 
 describe(fuzzySearch.name, () => {
     itCases(fuzzySearch, [

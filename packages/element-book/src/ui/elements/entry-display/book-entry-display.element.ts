@@ -1,16 +1,13 @@
 import {wait} from '@augment-vir/common';
-import {TemplateResult, assign, css, html, listen, renderIf, repeat} from 'element-vir';
-import {isBookEntry} from '../../../data/book-entry/book-entry';
+import {assign, css, html, listen, renderIf, repeat} from 'element-vir';
 import {BookEntryTypeEnum} from '../../../data/book-entry/book-entry-type';
 
-import {Element24Icon, ViraIcon} from 'vira';
-import {BaseBookEntry} from '../../../data/book-entry/base-book-entry';
 import {
     CurrentControls,
     traverseCurrentControls,
 } from '../../../data/book-entry/book-page/current-controls';
-import {listUrlBreadcrumbs} from '../../../data/book-entry/url-breadcrumbs';
-import {BookTreeNode, flattenTree, isBookTreeNode} from '../../../data/book-tree/book-tree';
+import {isBookTreeNode} from '../../../data/book-tree/book-tree';
+import {BookTreeNode} from '../../../data/book-tree/book-tree-node';
 import {
     BookFullRoute,
     BookMainRoute,
@@ -22,15 +19,14 @@ import {colorThemeCssVars} from '../../color-theme/color-theme';
 import {ChangeRouteEvent} from '../../events/change-route.event';
 import {BookBreadcrumbs} from '../book-breadcrumbs.element';
 import {BookError} from '../common/book-error.element';
-import {BookRouteLink} from '../common/book-route-link.element';
 import {defineBookElement} from '../define-book-element';
 import {ElementBookSlotName} from '../element-book-app/element-book-app-slots';
-import {BookPageControls} from './book-page-controls.element';
+import {BookPageWrapper} from './book-page/book-page-wrapper.element';
 import {BookElementExampleWrapper} from './element-example/book-element-example-wrapper.element';
 
 export const BookEntryDisplay = defineBookElement<{
     currentRoute: Readonly<BookFullRoute>;
-    currentNode: Readonly<BookTreeNode>;
+    currentNodes: ReadonlyArray<BookTreeNode>;
     router: BookRouter;
     debug: boolean;
     currentControls: CurrentControls;
@@ -72,72 +68,16 @@ export const BookEntryDisplay = defineBookElement<{
             margin-top: 32px;
         }
 
-        h1,
-        h2,
-        h3 {
+        h1 {
             margin: 0;
             padding: 0;
-        }
-
-        h2,
-        h3 {
-            font-size: 1.5em;
-        }
-
-        ${BookRouteLink} {
-            display: inline-block;
-        }
-
-        .header-with-icon {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        ${ViraIcon} {
-            color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
-        }
-
-        .page-header .title-group {
-            align-items: flex-start;
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 24px;
-        }
-
-        .description {
-            color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
-            display: inline-flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .description:hover {
-            color: ${colorThemeCssVars['element-book-page-foreground-color'].value};
-        }
-
-        .description p {
-            margin: 0;
-            padding: 0;
-        }
-
-        .description p:first-child {
-            margin-top: 8px;
         }
     `,
     renderCallback: ({inputs, dispatch}) => {
-        const flattenedTree = flattenTree(inputs.currentNode);
-
-        if (inputs.debug) {
-            console.info({flattenedTree});
-        }
-
         const currentSearch = extractSearchQuery(inputs.currentRoute.paths);
 
-        const parentBreadcrumbs = listUrlBreadcrumbs(inputs.currentNode.entry, false).reverse();
         const entryTemplates = createFlattenedTreeTemplates({
-            flattenedTree,
-            parentBreadcrumbs,
+            currentNodes: inputs.currentNodes,
             isTopLevel: true,
             router: inputs.router,
             isSearching: !!currentSearch,
@@ -199,21 +139,19 @@ export const BookEntryDisplay = defineBookElement<{
 });
 
 function createFlattenedTreeTemplates({
-    flattenedTree,
-    parentBreadcrumbs,
+    currentNodes,
     isTopLevel,
     router,
     isSearching,
     currentControls,
 }: {
-    flattenedTree: ReadonlyArray<BookTreeNode>;
-    parentBreadcrumbs: ReadonlyArray<string>;
+    currentNodes: ReadonlyArray<BookTreeNode>;
     isTopLevel: boolean;
     router: BookRouter;
     isSearching: boolean;
     currentControls: CurrentControls;
 }): unknown {
-    if (!flattenedTree.length && isSearching) {
+    if (!currentNodes.length && isSearching) {
         return [
             html`
                 No results
@@ -222,80 +160,20 @@ function createFlattenedTreeTemplates({
     }
 
     return repeat(
-        flattenedTree,
+        currentNodes,
         (node) => node.fullUrlBreadcrumbs.join('>'),
         (currentNode) => {
             if (isBookTreeNode(currentNode, BookEntryTypeEnum.Page)) {
-                const bookPageEntry = currentNode.entry;
-
-                if (!isBookEntry(bookPageEntry, BookEntryTypeEnum.Page)) {
-                    throw new Error('nested entry should be a page');
-                }
-
-                const hasExamples: boolean = !!Object.keys(currentNode.entry.elementExamples)
-                    .length;
-
-                const headerContentsTemplate = html`
-                    ${renderIf(
-                        hasExamples,
-                        html`
-                            <${ViraIcon} ${assign(ViraIcon, {icon: Element24Icon})}></${ViraIcon}>
-                        `,
-                    )}
-                    ${bookPageEntry.title}
-                `;
-                const titleTemplate = isTopLevel
-                    ? html`
-                          <h2 class="header-with-icon">${headerContentsTemplate}</h2>
-                      `
-                    : html`
-                          <h3 class="header-with-icon">${headerContentsTemplate}</h3>
-                      `;
-
-                const linkPaths = [
-                    BookMainRoute.Book,
-                    ...parentBreadcrumbs.concat(currentNode.urlBreadcrumb),
-                ] as const;
-
-                if (currentNode.entry.errors.length) {
-                    return html`
-                        <${BookError}
-                            class="block-entry"
-                            ${assign(BookError, {
-                                message: currentNode.entry.errors.map((error) => error.message),
-                            })}
-                        ></${BookError}>
-                    `;
-                }
-
                 return html`
-                    <div class="page-header block-entry">
-                        <div class="title-group">
-                            <${BookRouteLink}
-                                ${assign(BookRouteLink, {
-                                    route: {
-                                        paths: linkPaths,
-                                        hash: undefined,
-                                        search: undefined,
-                                    },
-                                    router,
-                                })}
-                            >
-                                ${titleTemplate}
-                            </${BookRouteLink}>
-                            ${createDescriptionTemplate(bookPageEntry)}
-                            <${BookPageControls}
-                                ${assign(BookPageControls, {
-                                    config: currentNode.entry.controls,
-                                    currentValues: traverseCurrentControls(
-                                        currentControls,
-                                        currentNode.fullUrlBreadcrumbs,
-                                    ),
-                                    fullUrlBreadcrumbs: currentNode.fullUrlBreadcrumbs,
-                                })}
-                            ></${BookPageControls}>
-                        </div>
-                    </div>
+                    <${BookPageWrapper}
+                        class="block-entry"
+                        ${assign(BookPageWrapper, {
+                            isTopLevel,
+                            pageNode: currentNode,
+                            currentControls,
+                            router,
+                        })}
+                    ></${BookPageWrapper}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryTypeEnum.ElementExample)) {
                 const controlsForElementExample = traverseCurrentControls(
@@ -307,14 +185,16 @@ function createFlattenedTreeTemplates({
                     <${BookElementExampleWrapper}
                         class="inline-entry"
                         ${assign(BookElementExampleWrapper, {
-                            elementExample: currentNode.entry,
-                            fullUrlBreadcrumbs: currentNode.fullUrlBreadcrumbs,
-                            parentControls: controlsForElementExample,
+                            elementExampleNode: currentNode,
+                            currentPageControls: controlsForElementExample,
+                            router,
                         })}
                     ></${BookElementExampleWrapper}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryTypeEnum.Root)) {
-                return '';
+                return html`
+                    <h1>${currentNode.entry.title}</h1>
+                `;
             } else {
                 return html`
                     <${BookError}
@@ -327,16 +207,4 @@ function createFlattenedTreeTemplates({
             }
         },
     );
-}
-
-function createDescriptionTemplate(entry: BaseBookEntry): TemplateResult {
-    const paragraphs: TemplateResult[] = (entry.descriptionParagraphs ?? []).map((paragraph) => {
-        return html`
-            <p>${paragraph}</p>
-        `;
-    });
-
-    return html`
-        <div class="description">${paragraphs}</div>
-    `;
 }

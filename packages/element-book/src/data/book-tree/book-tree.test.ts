@@ -2,13 +2,12 @@ import {assertTypeOf, itCases} from '@augment-vir/browser-testing';
 import {BookEntryTypeEnum} from '../book-entry/book-entry-type';
 import {defineBookPage} from '../book-entry/book-page/define-book-page';
 import {
-    BookTreeNode,
+    createBookTreeFromEntries,
     createEmptyBookTreeRoot,
     doesNodeHaveEntryType,
-    entriesToTree,
     flattenTree,
-    isBookTreeNodeMarker,
 } from './book-tree';
+import {BookTreeNode, isBookTreeNodeMarker} from './book-tree-node';
 
 const page1 = defineBookPage({
     parent: undefined,
@@ -47,81 +46,93 @@ const exampleTreeInputs = {
     everythingTitle: 'all',
 } as const;
 
-const exampleTree = entriesToTree(exampleTreeInputs);
+const exampleTree = createBookTreeFromEntries(exampleTreeInputs);
 
-describe(entriesToTree.name, () => {
-    itCases(entriesToTree, [
+const expectedTree = {
+    [isBookTreeNodeMarker]: true,
+    manuallyAdded: true,
+    children: {
+        'page-1': {
+            [isBookTreeNodeMarker]: true,
+            manuallyAdded: true,
+            children: {
+                'example-1': {
+                    [isBookTreeNodeMarker]: true,
+                    manuallyAdded: true,
+                    children: {},
+                    entry: page1.elementExamples['example-1']!,
+                    urlBreadcrumb: 'example-1',
+                    fullUrlBreadcrumbs: [
+                        'page-1',
+                        'example-1',
+                    ],
+                },
+                'page-1-child': {
+                    [isBookTreeNodeMarker]: true,
+                    manuallyAdded: true,
+                    children: {},
+                    entry: exampleEntries[2]!,
+                    urlBreadcrumb: 'page-1-child',
+                    fullUrlBreadcrumbs: [
+                        'page-1',
+                        'page-1-child',
+                    ],
+                },
+                aaaaaaaa: {
+                    [isBookTreeNodeMarker]: true,
+                    manuallyAdded: true,
+                    children: {},
+                    entry: exampleEntries[3]!,
+                    urlBreadcrumb: 'aaaaaaaa',
+                    fullUrlBreadcrumbs: [
+                        'page-1',
+                        'aaaaaaaa',
+                    ],
+                },
+            },
+            entry: page1,
+            fullUrlBreadcrumbs: [
+                'page-1',
+            ],
+            urlBreadcrumb: 'page-1',
+        },
+        'page-2': {
+            [isBookTreeNodeMarker]: true,
+            manuallyAdded: true,
+            children: {},
+            entry: exampleEntries[1]!,
+            urlBreadcrumb: 'page-2',
+            fullUrlBreadcrumbs: [
+                'page-2',
+            ],
+        },
+    },
+    entry: {
+        descriptionParagraphs: [],
+        entryType: BookEntryTypeEnum.Root,
+        errors: [],
+        parent: undefined,
+        title: 'all',
+    },
+    urlBreadcrumb: '',
+    fullUrlBreadcrumbs: [],
+} satisfies BookTreeNode<BookEntryTypeEnum.Root>;
+
+describe(createBookTreeFromEntries.name, () => {
+    itCases(createBookTreeFromEntries, [
         {
             it: 'produces a correct tree',
             input: exampleTreeInputs,
             expect: {
-                [isBookTreeNodeMarker]: true,
-                manuallyAdded: true,
-                children: {
-                    'page-1': {
-                        [isBookTreeNodeMarker]: true,
-                        manuallyAdded: true,
-                        children: {
-                            'example-1': {
-                                [isBookTreeNodeMarker]: true,
-                                manuallyAdded: true,
-                                children: {},
-                                entry: page1.elementExamples['example-1']!,
-                                urlBreadcrumb: 'example-1',
-                                fullUrlBreadcrumbs: [
-                                    'page-1',
-                                    'example-1',
-                                ],
-                            },
-                            'page-1-child': {
-                                [isBookTreeNodeMarker]: true,
-                                manuallyAdded: true,
-                                children: {},
-                                entry: exampleEntries[2]!,
-                                urlBreadcrumb: 'page-1-child',
-                                fullUrlBreadcrumbs: [
-                                    'page-1',
-                                    'page-1-child',
-                                ],
-                            },
-                            aaaaaaaa: {
-                                [isBookTreeNodeMarker]: true,
-                                manuallyAdded: true,
-                                children: {},
-                                entry: exampleEntries[3]!,
-                                urlBreadcrumb: 'aaaaaaaa',
-                                fullUrlBreadcrumbs: [
-                                    'page-1',
-                                    'aaaaaaaa',
-                                ],
-                            },
-                        },
-                        entry: page1,
-                        fullUrlBreadcrumbs: [
-                            'page-1',
-                        ],
-                        urlBreadcrumb: 'page-1',
-                    },
-                    'page-2': {
-                        [isBookTreeNodeMarker]: true,
-                        manuallyAdded: true,
-                        children: {},
-                        entry: exampleEntries[1]!,
-                        urlBreadcrumb: 'page-2',
-                        fullUrlBreadcrumbs: [
-                            'page-2',
-                        ],
-                    },
-                },
-                entry: {
-                    descriptionParagraphs: [],
-                    entryType: BookEntryTypeEnum.Root,
-                    errors: [],
-                    parent: undefined,
-                    title: 'all',
-                },
-                urlBreadcrumb: '',
-                fullUrlBreadcrumbs: [],
+                tree: expectedTree,
+                flattenedNodes: [
+                    expectedTree,
+                    expectedTree.children['page-1'],
+                    expectedTree.children['page-1'].children['example-1'],
+                    expectedTree.children['page-1'].children['aaaaaaaa'],
+                    expectedTree.children['page-1'].children['page-1-child'],
+                    expectedTree.children['page-2'],
+                ],
             },
         },
     ]);
@@ -148,14 +159,14 @@ describe(flattenTree.name, () => {
     itCases(flattenTree, [
         {
             it: 'flattens a basic out of order tree',
-            input: exampleTree,
+            input: exampleTree.tree,
             expect: [
-                exampleTree,
-                exampleTree.children['page-1']!,
-                exampleTree.children['page-1']!.children['example-1']!,
-                exampleTree.children['page-1']!.children['aaaaaaaa']!,
-                exampleTree.children['page-1']!.children['page-1-child']!,
-                exampleTree.children['page-2']!,
+                exampleTree.tree,
+                exampleTree.tree.children['page-1']!,
+                exampleTree.tree.children['page-1']!.children['example-1']!,
+                exampleTree.tree.children['page-1']!.children['aaaaaaaa']!,
+                exampleTree.tree.children['page-1']!.children['page-1-child']!,
+                exampleTree.tree.children['page-2']!,
             ],
         },
     ]);

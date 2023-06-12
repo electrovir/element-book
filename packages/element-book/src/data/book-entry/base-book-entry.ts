@@ -16,6 +16,6 @@ export type BaseBookEntry = {
      * A description that will be displayed below the entry title. Each item in the array will be a
      * separate paragraph.
      */
-    descriptionParagraphs: ReadonlyArray<string>;
+    descriptionParagraphs: string[];
     errors: Error[];
 };

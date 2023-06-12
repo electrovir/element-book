@@ -1,9 +1,10 @@
-import {PropertyValueType, isLengthAtLeast, typedHasProperties} from '@augment-vir/common';
+import {makeWritable, typedHasProperties} from '@augment-vir/common';
 import {BookEntry, isBookEntry} from '../book-entry/book-entry';
-import {AnyBookEntryType, BookEntryTypeEnum} from '../book-entry/book-entry-type';
+import {BookEntryTypeEnum} from '../book-entry/book-entry-type';
 import {listUrlBreadcrumbs, titleToUrlBreadcrumb} from '../book-entry/url-breadcrumbs';
 import {bookEntryVerifiers} from '../book-entry/verify-book-entry';
-import {addTreeToCache, getTreeFromCache} from './book-tree-cache';
+import {BookTree, BookTreeNode, isBookTreeNodeMarker} from './book-tree-node';
+import {addTreeToCache, getTreeFromCache} from './tree-cache';
 
 export function doesNodeHaveEntryType<EntryType extends BookEntryTypeEnum>(
     node: BookTreeNode<any>,
@@ -11,30 +12,6 @@ export function doesNodeHaveEntryType<EntryType extends BookEntryTypeEnum>(
 ): node is BookTreeNode<EntryType> {
     return node.entry.entryType === entryType;
 }
-
-export const isBookTreeNodeMarker = '_isBookTreeNode';
-
-type InternalBookTreeNodeType<Entry> = {
-    [isBookTreeNodeMarker]: true;
-    entry: Entry;
-    /** UrlBreadcrumb is different from entry.title because it's modified to support URLs. */
-    urlBreadcrumb: string;
-    fullUrlBreadcrumbs: ReadonlyArray<string>;
-    children: Record<string, BookTreeNode>;
-    /**
-     * False when an entry has been added by traversing manually added parents. True when the entry
-     * was added as an explicit entry.
-     */
-    manuallyAdded: boolean;
-};
-
-export type BookTreeNode<EntryTypes extends BookEntryTypeEnum = AnyBookEntryType> =
-    | PropertyValueType<{
-          [EntryType in EntryTypes]: InternalBookTreeNodeType<
-              Extract<BookEntry, {entryType: EntryType}>
-          >;
-      }>
-    | (AnyBookEntryType extends EntryTypes ? InternalBookTreeNodeType<BookEntry> : never);
 
 export function isBookTreeNode<SpecificType extends BookEntryTypeEnum>(
     input: unknown,
@@ -61,7 +38,7 @@ export function createEmptyBookTreeRoot(
             title: title || 'Everything',
             parent: undefined,
             errors: [],
-            descriptionParagraphs,
+            descriptionParagraphs: makeWritable(descriptionParagraphs),
         },
         urlBreadcrumb: '',
         fullUrlBreadcrumbs: [],
@@ -72,7 +49,7 @@ export function createEmptyBookTreeRoot(
     return rootNode;
 }
 
-export function entriesToTree({
+export function createBookTreeFromEntries({
     entries,
     everythingTitle,
     everythingDescriptionParagraphs,
@@ -82,8 +59,8 @@ export function entriesToTree({
     everythingTitle: string | undefined;
     everythingDescriptionParagraphs: ReadonlyArray<string>;
     debug: boolean;
-}): BookTreeNode<BookEntryTypeEnum.Root> {
-    const cachedTree = getTreeFromCache(entries, '');
+}): BookTree {
+    const cachedTree = getTreeFromCache(entries);
     if (cachedTree) {
         return cachedTree;
     }
@@ -92,13 +69,20 @@ export function entriesToTree({
 
     entries.forEach((newEntry) => addEntryToTree({tree, newEntry, debug, manuallyAdded: true}));
 
-    addTreeToCache(entries, '', tree);
+    const flattenedNodes = flattenTree(tree);
+
+    const bookTree: BookTree = {
+        tree,
+        flattenedNodes,
+    };
+
+    addTreeToCache(entries, bookTree);
 
     if (debug) {
         console.info('element-book tree:', tree);
     }
 
-    return tree;
+    return bookTree;
 }
 
 function getOrAddImmediateParent(
@@ -155,7 +139,7 @@ function addEntryToTree({
             if (existingChild.manuallyAdded) {
                 existingChild.entry.errors.push(
                     new Error(
-                        `Cannot create duplicate entry '${newEntryUrlBreadcrumb}'${
+                        `Cannot create duplicate '${newEntryUrlBreadcrumb}'${
                             immediateParent.urlBreadcrumb
                                 ? ` in parent '${immediateParent.urlBreadcrumb}'.`
                                 : ''
@@ -218,25 +202,6 @@ function traverseToImmediateParent(
     return immediateParentNode;
 }
 
-export function findEntryByBreadcrumbs(
-    breadcrumbs: ReadonlyArray<string>,
-    tree: Readonly<BookTreeNode>,
-): Readonly<BookTreeNode> | undefined {
-    if (!isLengthAtLeast(breadcrumbs, 1)) {
-        return tree;
-    }
-
-    const nextBreadcrumb = breadcrumbs[0];
-
-    const nextTree = tree.children[nextBreadcrumb];
-
-    if (!nextTree) {
-        return undefined;
-    }
-
-    return findEntryByBreadcrumbs(breadcrumbs.slice(1), nextTree);
-}
-
 export function getSortedNodeChildren(
     nodeA: Readonly<BookTreeNode>,
     nodeB: Readonly<BookTreeNode>,
@@ -254,11 +219,17 @@ export function getSortedNodeChildren(
 }
 
 export function flattenTree(node: Readonly<BookTreeNode>): BookTreeNode[] {
+    const hasErrors: boolean = !!node.entry.errors.length;
+
+    const childNodes = hasErrors
+        ? []
+        : Object.values(node.children)
+              .sort(getSortedNodeChildren)
+              .map((child) => flattenTree(child));
+
     const entries: BookTreeNode[] = [
         node,
-        ...Object.values(node.children)
-            .sort(getSortedNodeChildren)
-            .map((child) => flattenTree(child)),
+        ...childNodes,
     ].flat();
 
     return entries;

@@ -1,5 +1,6 @@
 import {copyThroughJson, mapObjectValues} from '@augment-vir/common';
-import {BookTreeNode, isBookTreeNode} from '../../book-tree/book-tree';
+import {isBookTreeNode} from '../../book-tree/book-tree';
+import {BookTreeNode} from '../../book-tree/book-tree-node';
 import {BookEntryTypeEnum} from '../book-entry-type';
 import {BookPageControlsValues} from './book-page-controls';
 

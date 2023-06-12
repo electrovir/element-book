@@ -1,8 +1,9 @@
 import {areJsonEqual} from '@augment-vir/common';
-import {TemplateResult, assign, classMap, css, html, renderIf} from 'element-vir';
+import {assign, classMap, css, html, renderIf} from 'element-vir';
 import {Element16Icon, ViraIcon} from 'vira';
 import {BookEntryTypeEnum} from '../../data/book-entry/book-entry-type';
-import {BookTreeNode, isBookTreeNode} from '../../data/book-tree/book-tree';
+import {isBookTreeNode} from '../../data/book-tree/book-tree';
+import {BookTreeNode} from '../../data/book-tree/book-tree-node';
 import {BookMainRoute, BookRouter} from '../../routing/book-routing';
 import {colorThemeCssVars} from '../color-theme/color-theme';
 import {BookRouteLink} from './common/book-route-link.element';
@@ -10,12 +11,15 @@ import {defineBookElement} from './define-book-element';
 import {ElementBookSlotName} from './element-book-app/element-book-app-slots';
 
 export const BookNav = defineBookElement<{
-    tree: BookTreeNode;
-    selectedPath: ReadonlyArray<string>;
+    flattenedNodes: ReadonlyArray<Readonly<BookTreeNode>>;
+    selectedPath: ReadonlyArray<string> | undefined;
     router: BookRouter | undefined;
 }>()({
     tagName: 'book-nav',
-    styles: css`
+    cssVars: {
+        'book-nav-internal-indent': '0',
+    },
+    styles: ({cssVars}) => css`
         :host {
             display: flex;
             flex-direction: column;
@@ -39,11 +43,8 @@ export const BookNav = defineBookElement<{
         .title-row {
             display: block;
             ${BookRouteLink.cssVars['book-route-link-anchor-padding']
-                .name}: 1px 24px 1px calc(calc(16px * var(--indent, 0)) + 8px);
-        }
-
-        ${BookRouteLink} {
-            font-size: 20px;
+                .name}: 1px 24px 1px calc(calc(16px * ${cssVars['book-nav-internal-indent']
+                .value}) + 8px);
         }
 
         ul {
@@ -62,11 +63,12 @@ export const BookNav = defineBookElement<{
 
         .title-text {
             white-space: nowrap;
+            padding: 1px 0;
             text-overflow: ellipsis;
-            display: inline-flex;
+            display: flex;
             gap: 8px;
             align-items: center;
-            font-size: 0.75em;
+            font-size: 16px;
         }
 
         ${ViraIcon} {
@@ -75,82 +77,51 @@ export const BookNav = defineBookElement<{
         }
     `,
     renderCallback({inputs}) {
-        const navTree = createNavigationTree({
-            indent: 0,
-            entryTreeNode: inputs.tree,
-            rootPath: [],
-            router: inputs.router,
-            selectedPath: inputs.selectedPath.slice(1),
+        const navTreeTemplates = inputs.flattenedNodes.map((treeNode) => {
+            const liStyle = css`
+                --book-nav-internal-indent: ${treeNode.fullUrlBreadcrumbs.length};
+            `;
+
+            return html`
+                <li style=${liStyle}>
+                    <${BookRouteLink}
+                        ${assign(BookRouteLink, {
+                            router: inputs.router,
+                            route: {
+                                paths: [
+                                    BookMainRoute.Book,
+                                    ...treeNode.fullUrlBreadcrumbs,
+                                ],
+                            },
+                        })}
+                        class=${classMap({
+                            'title-row': true,
+                            selected: inputs.selectedPath
+                                ? areJsonEqual(inputs.selectedPath, treeNode.fullUrlBreadcrumbs)
+                                : false,
+                        })}
+                    >
+                        <div class="title-text">
+                            ${renderIf(
+                                isBookTreeNode(treeNode, BookEntryTypeEnum.ElementExample),
+                                html`
+                                    <${ViraIcon}
+                                        ${assign(ViraIcon, {icon: Element16Icon})}
+                                    ></${ViraIcon}>
+                                `,
+                            )}
+                            ${treeNode.entry.title}
+                        </div>
+                    </${BookRouteLink}>
+                </li>
+            `;
         });
 
         return html`
+            <slot name=${ElementBookSlotName.NavHeader}></slot>
             <ul>
-                ${navTree}
+                ${navTreeTemplates}
             </ul>
         `;
     },
 });
-
-function createNavigationTree({
-    indent,
-    entryTreeNode,
-    rootPath,
-    selectedPath,
-    router,
-}: {
-    indent: number;
-    entryTreeNode: BookTreeNode;
-    rootPath: ReadonlyArray<string>;
-    selectedPath: ReadonlyArray<string>;
-    router: BookRouter | undefined;
-}): TemplateResult {
-    const entryPath = entryTreeNode.urlBreadcrumb
-        ? rootPath.concat(entryTreeNode.urlBreadcrumb)
-        : rootPath;
-
-    const childTemplates = Object.values(entryTreeNode.children).map((child) => {
-        return createNavigationTree({
-            indent: indent + 1,
-            entryTreeNode: child,
-            rootPath: entryPath,
-            selectedPath,
-            router,
-        });
-    });
-
-    return html`
-        <div class="nav-tree-entry" style="--indent: ${indent};">
-            <slot name=${ElementBookSlotName.NavHeader}></slot>
-            <li class=${entryTreeNode.entry.entryType}>
-                <${BookRouteLink}
-                    ${assign(BookRouteLink, {
-                        router: router,
-                        route: {
-                            paths: [
-                                BookMainRoute.Book,
-                                ...entryPath,
-                            ],
-                        },
-                    })}
-                    class=${classMap({
-                        'title-row': true,
-                        selected: areJsonEqual(selectedPath, entryPath),
-                    })}
-                >
-                    <div class="title-text">
-                        ${renderIf(
-                            isBookTreeNode(entryTreeNode, BookEntryTypeEnum.ElementExample),
-                            html`
-                                <${ViraIcon}
-                                    ${assign(ViraIcon, {icon: Element16Icon})}
-                                ></${ViraIcon}>
-                            `,
-                        )}
-                        ${entryTreeNode.entry.title}
-                    </div>
-                </${BookRouteLink}>
-            </li>
-            ${childTemplates}
-        </div>
-    `;
-}

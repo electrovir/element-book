@@ -1,12 +1,12 @@
 import {PropertyValueType} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen} from 'element-vir';
-import {BookPage} from '../../../data/book-entry/book-page/book-page';
+import {BookPage} from '../../../../data/book-entry/book-page/book-page';
 import {
     BookPageControl,
     BookPageControlTypeEnum,
     BookPageControlsValues,
-} from '../../../data/book-entry/book-page/book-page-controls';
-import {defineBookElement} from '../define-book-element';
+} from '../../../../data/book-entry/book-page/book-page-controls';
+import {defineBookElement} from '../../define-book-element';
 
 export const BookPageControls = defineBookElement<{
     config: BookPage['controls'];

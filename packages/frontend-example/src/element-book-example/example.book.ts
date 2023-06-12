@@ -1,8 +1,8 @@
 import {BookPage, BookPageControlTypeEnum, defineBookPage} from 'element-book';
 
 const parentPage1 = defineBookPage({title: 'Parent Page 1', parent: undefined});
-const pageWithError = defineBookPage({title: 'Page with error', parent: undefined});
-const subPage = defineBookPage({title: 'Sub Page 1', parent: parentPage1});
+const parentPage2 = defineBookPage({title: 'Parent Page 2', parent: undefined});
+const subPage = defineBookPage({title: 'Sub Page 1', parent: parentPage2});
 
 function createExamplePage(index: number, parent: BookPage) {
     const newPage = defineBookPage({
@@ -21,9 +21,9 @@ function createExamplePage(index: number, parent: BookPage) {
     return newPage;
 }
 
-const testPage2 = defineBookPage({
-    title: 'test 2',
-    parent: pageWithError,
+const duplicateErrorPage = defineBookPage({
+    title: 'duplicate error page',
+    parent: parentPage1,
     descriptionParagraphs: [
         'This is the description. It has stuff in it.',
         'Yay stuff!',
@@ -51,7 +51,7 @@ const testPage3 = defineBookPage({
             controlType: BookPageControlTypeEnum.Text,
         },
     },
-    parent: pageWithError,
+    parent: parentPage1,
     elementExamplesCallback({defineExample}) {
         defineExample({
             title: 'example 3 1',
@@ -81,16 +81,16 @@ const testPage3 = defineBookPage({
 });
 
 export const entries = [
-    createExamplePage(0, parentPage1),
+    createExamplePage(0, parentPage2),
     subPage,
     ...Array(100)
         .fill(0)
         .map((_value, index) => createExamplePage(index + 1, subPage)),
-    pageWithError,
-    testPage2,
-    testPage2,
-    testPage3,
     parentPage1,
+    duplicateErrorPage,
+    duplicateErrorPage,
+    testPage3,
+    parentPage2,
 ];
 
 console.info({entries});

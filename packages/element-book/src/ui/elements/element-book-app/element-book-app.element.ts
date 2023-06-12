@@ -5,8 +5,8 @@ import {
     createControlsFromTree,
     createNewCurrentControls,
 } from '../../../data/book-entry/book-page/current-controls';
-import {entriesToTree} from '../../../data/book-tree/book-tree';
-import {createSearchedTree} from '../../../data/book-tree/book-tree-search';
+import {createBookTreeFromEntries} from '../../../data/book-tree/book-tree';
+import {searchFlattenedNodes} from '../../../data/book-tree/search-nodes';
 import {
     BookFullRoute,
     BookRouter,
@@ -20,10 +20,10 @@ import {ChangeRouteEvent} from '../../events/change-route.event';
 import {BookNav} from '../book-nav.element';
 import {BookError} from '../common/book-error.element';
 import {BookEntryDisplay} from '../entry-display/book-entry-display.element';
-import {BookPageControls} from '../entry-display/book-page-controls.element';
+import {BookPageControls} from '../entry-display/book-page/book-page-controls.element';
 import {ElementBookSlotName} from './element-book-app-slots';
 import {ElementBookConfig} from './element-book-config';
-import {getCurrentTreeEntry} from './get-current-entry';
+import {getCurrentNodes} from './get-current-nodes';
 
 type ColorThemeState = {config: ThemeConfig | undefined; theme: ColorTheme};
 
@@ -147,7 +147,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
 
             const debug: boolean = inputs.debug ?? false;
 
-            const originalTree = entriesToTree({
+            const originalTree = createBookTreeFromEntries({
                 entries: inputs.entries,
                 everythingTitle: inputs.everythingTitle,
                 everythingDescriptionParagraphs: inputs.everythingDescriptionParagraphs ?? [],
@@ -161,26 +161,27 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 updateState({
                     treeBasedCurrentControls: {
                         trigger: inputs.entries,
-                        currentControls: createControlsFromTree(originalTree),
+                        currentControls: createControlsFromTree(originalTree.tree),
                     },
                 });
             }
 
             const searchQuery = extractSearchQuery(state.currentRoute.paths);
 
-            const searchedTree = searchQuery
-                ? createSearchedTree({
-                      entries: inputs.entries,
+            const searchedNodes = searchQuery
+                ? searchFlattenedNodes({
+                      flattenedNodes: originalTree.flattenedNodes,
                       searchQuery,
-                      startTree: originalTree,
                   })
-                : originalTree;
+                : undefined;
 
-            const currentEntryTreeNode = getCurrentTreeEntry(
-                searchedTree,
-                state.currentRoute.paths,
-                updateRoutes,
-            );
+            const currentNodes =
+                searchedNodes ??
+                getCurrentNodes(
+                    originalTree.flattenedNodes,
+                    state.currentRoute.paths,
+                    updateRoutes,
+                );
 
             const currentControls = state.treeBasedCurrentControls?.currentControls;
 
@@ -233,9 +234,11 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 >
                     <${BookNav}
                         ${assign(BookNav, {
-                            tree: originalTree,
+                            flattenedNodes: originalTree.flattenedNodes,
                             router: state.router,
-                            selectedPath: state.currentRoute.paths,
+                            selectedPath: searchQuery
+                                ? undefined
+                                : state.currentRoute.paths.slice(1),
                         })}
                     >
                         <slot
@@ -246,7 +249,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                     <${BookEntryDisplay}
                         ${assign(BookEntryDisplay, {
                             currentRoute: state.currentRoute,
-                            currentNode: currentEntryTreeNode,
+                            currentNodes,
                             router: state.router!,
                             debug,
                             currentControls,

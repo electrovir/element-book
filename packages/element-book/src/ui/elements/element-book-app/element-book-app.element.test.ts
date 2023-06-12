@@ -1,16 +1,15 @@
+import {queryThroughShadow} from '@augment-vir/browser';
 import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture} from '@open-wc/testing';
 import {assign, html} from 'element-vir';
 import {defineBookPage} from '../../../data/book-entry/book-page/define-book-page';
 import {BookError} from '../common/book-error.element';
-import {BookEntryDisplay} from '../entry-display/book-entry-display.element';
-import {BookElementExampleWrapper} from '../entry-display/element-example/book-element-example-wrapper.element';
 import {ElementBookApp} from './element-book-app.element';
 import {ElementBookConfig} from './element-book-config';
 
 describe(ElementBookApp.tagName, () => {
     async function setupEntriesTest(entries: ElementBookConfig['entries']) {
-        const fixture = await renderFixture(
+        const elementBookAppInstance = await renderFixture(
             html`
                 <${ElementBookApp}
                     ${assign(ElementBookApp, {
@@ -20,12 +19,26 @@ describe(ElementBookApp.tagName, () => {
             `,
         );
 
-        typedAssertInstanceOf(fixture, ElementBookApp);
-        return fixture;
+        typedAssertInstanceOf(elementBookAppInstance, ElementBookApp);
+
+        return elementBookAppInstance;
+    }
+
+    function getBookErrorMessage(
+        elementBookAppInstance: (typeof ElementBookApp)['instanceType'],
+    ): string {
+        const errorWrapper = queryThroughShadow({
+            element: elementBookAppInstance,
+            query: BookError.tagName,
+        });
+
+        typedAssertInstanceOf(errorWrapper, BookError);
+
+        return errorWrapper.shadowRoot.innerHTML;
     }
 
     it('should render error message when there are duplicate page names', async () => {
-        const fixture = await setupEntriesTest([
+        const elementBookAppInstance = await setupEntriesTest([
             defineBookPage({
                 parent: undefined,
                 title: 'duplicate title',
@@ -37,8 +50,8 @@ describe(ElementBookApp.tagName, () => {
         ]);
 
         assert.include(
-            fixture.shadowRoot.querySelector(BookEntryDisplay.tagName)!.shadowRoot!.innerHTML,
-            BookError.tagName,
+            getBookErrorMessage(elementBookAppInstance),
+            "Cannot create duplicate 'duplicate-title'",
         );
     });
 
@@ -62,24 +75,18 @@ describe(ElementBookApp.tagName, () => {
             },
         });
 
-        const fixture = await setupEntriesTest([
+        const elementBookAppInstance = await setupEntriesTest([
             examplePage,
         ]);
 
         assert.include(
-            Array.from(
-                fixture.shadowRoot
-                    .querySelector(BookEntryDisplay.tagName)!
-                    .shadowRoot!.querySelectorAll(BookElementExampleWrapper.tagName),
-            )
-                .map((exampleWrapper) => exampleWrapper.shadowRoot!.innerHTML)
-                .join(''),
-            BookError.tagName,
+            getBookErrorMessage(elementBookAppInstance),
+            "Example title 'duplicate example' in page 'title' is already taken.",
         );
     });
 
     it('should render error message when there are empty page titles', async () => {
-        const fixture = await setupEntriesTest([
+        const elementBookAppInstance = await setupEntriesTest([
             defineBookPage({
                 parent: undefined,
                 title: '',
@@ -87,8 +94,8 @@ describe(ElementBookApp.tagName, () => {
         ]);
 
         assert.include(
-            fixture.shadowRoot.querySelector(BookEntryDisplay.tagName)!.shadowRoot!.innerHTML,
-            BookError.tagName,
+            getBookErrorMessage(elementBookAppInstance),
+            'Cannot define an element-book page with an empty title.',
         );
     });
 });

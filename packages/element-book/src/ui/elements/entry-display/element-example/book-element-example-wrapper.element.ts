@@ -1,16 +1,17 @@
 import {assign, css, html} from 'element-vir';
-import {BookElementExample} from '../../../../data/book-entry/book-element-example/book-element-example';
+import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
 import {BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls';
+import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
+import {BookRouter} from '../../../../routing/book-routing';
 import {colorThemeCssVars} from '../../../color-theme/color-theme';
-import {BookError} from '../../common/book-error.element';
 import {defineBookElement} from '../../define-book-element';
 import {BookElementExampleControls} from './book-element-example-controls.element';
 import {BookElementExampleViewer} from './book-element-example-viewer.element';
 
 export const BookElementExampleWrapper = defineBookElement<{
-    elementExample: BookElementExample;
-    fullUrlBreadcrumbs: ReadonlyArray<string>;
-    parentControls: BookPageControlsValues;
+    elementExampleNode: BookTreeNode<BookEntryTypeEnum.ElementExample>;
+    currentPageControls: BookPageControlsValues;
+    router: BookRouter;
 }>()({
     tagName: 'book-element-example-wrapper',
     styles: css`
@@ -43,29 +44,13 @@ export const BookElementExampleWrapper = defineBookElement<{
         }
     `,
     renderCallback({inputs}) {
-        if (inputs.elementExample.errors.length) {
-            return html`
-                <${BookError}
-                    ${assign(BookError, {
-                        message: inputs.elementExample.errors.map((error) => error.message),
-                    })}
-                ></${BookError}>
-            `;
-        }
-
         return html`
             <div class="individual-example-wrapper">
                 <${BookElementExampleControls}
-                    ${assign(BookElementExampleControls, {
-                        elementExample: inputs.elementExample,
-                    })}
+                    ${assign(BookElementExampleControls, inputs)}
                 ></${BookElementExampleControls}>
                 <${BookElementExampleViewer}
-                    ${assign(BookElementExampleViewer, {
-                        elementExample: inputs.elementExample,
-                        fullUrlBreadcrumbs: inputs.fullUrlBreadcrumbs,
-                        currentPageControls: inputs.parentControls,
-                    })}
+                    ${assign(BookElementExampleViewer, inputs)}
                 ></${BookElementExampleViewer}>
             </div>
         `;

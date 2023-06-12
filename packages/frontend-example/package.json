@@ -12,12 +12,12 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^14.3.0",
+        "@augment-vir/browser": "^14.3.1",
         "element-book": "*",
         "element-vir": "^13.0.4"
     },
     "devDependencies": {
-        "@augment-vir/node-js": "^14.3.0",
+        "@augment-vir/node-js": "^14.3.1",
         "@open-wc/testing": "^3.2.0",
         "@types/mocha": "^10.0.1",
         "@web/dev-server-esbuild": "^0.4.1",

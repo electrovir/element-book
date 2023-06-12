@@ -19,3 +19,15 @@ export function listUrlBreadcrumbs(entry: BookEntry, includeSelf: boolean): stri
 export function titleToUrlBreadcrumb(title: string): string {
     return collapseWhiteSpace(title).toLowerCase().replaceAll(/\s/g, '-');
 }
+
+export function doBreadcrumbsStartWith({
+    searchFor,
+    searchIn,
+}: {
+    searchIn: ReadonlyArray<string>;
+    searchFor: ReadonlyArray<string>;
+}): boolean {
+    return searchFor.every((breadcrumb, index) => {
+        return searchIn[index] === breadcrumb;
+    });
+}
