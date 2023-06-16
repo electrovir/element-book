@@ -1,10 +1,13 @@
+import {extractEventTarget} from '@augment-vir/browser';
 import {PropertyValueType} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen} from 'element-vir';
 import {BookPage} from '../../../../data/book-entry/book-page/book-page';
 import {
     BookPageControl,
+    BookPageControlInit,
     BookPageControlTypeEnum,
     BookPageControlsValues,
+    isControlInitType,
 } from '../../../../data/book-entry/book-page/book-page-controls';
 import {defineBookElement} from '../../define-book-element';
 
@@ -46,7 +49,7 @@ export const BookPageControls = defineBookElement<{
             ]) => {
                 const controlInputTemplate = createControlInput(
                     inputs.currentValues[controlName],
-                    controlInit.controlType,
+                    controlInit,
                     (newValue) => {
                         dispatch(
                             new events.controlValueChange({
@@ -72,28 +75,69 @@ export const BookPageControls = defineBookElement<{
 
 function createControlInput(
     value: unknown,
-    controlType: BookPageControlTypeEnum,
+    controlInit: BookPageControlInit<any>,
     valueChange: (newValue: PropertyValueType<BookPageControlsValues>) => void,
 ) {
-    if (controlType === BookPageControlTypeEnum.Text) {
+    if (isControlInitType(controlInit, BookPageControlTypeEnum.Hidden)) {
+        return '';
+    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Checkbox)) {
         return html`
             <input
-                type="text"
+                type="checkbox"
                 .value=${value || ''}
                 ${listen('input', (event) => {
-                    const inputElement = event.currentTarget;
+                    const inputElement = extractEventTarget(event, HTMLInputElement);
 
-                    if (!(inputElement instanceof HTMLInputElement)) {
-                        throw new Error("Din't get an input element from the event target.");
-                    }
+                    valueChange(inputElement.checked);
+                })}
+            />
+        `;
+    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Color)) {
+        return html`
+            <input
+                type="color"
+                .value=${value || ''}
+                ${listen('input', (event) => {
+                    const inputElement = extractEventTarget(event, HTMLInputElement);
 
                     valueChange(inputElement.value);
                 })}
             />
         `;
+    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Text)) {
+        return html`
+            <input
+                type="text"
+                .value=${value || ''}
+                ${listen('input', (event) => {
+                    const inputElement = extractEventTarget(event, HTMLInputElement);
+
+                    valueChange(inputElement.value);
+                })}
+            />
+        `;
+    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Dropdown)) {
+        return html`
+            <select
+                .value=${value}
+                ${listen('input', (event) => {
+                    const selectElement = extractEventTarget(event, HTMLSelectElement);
+
+                    valueChange(selectElement.value);
+                })}
+            >
+                ${controlInit.options.map((optionLabel, optionIndex) => {
+                    return html`
+                        <option ?selected=${optionIndex === value} value=${optionIndex}>
+                            ${optionLabel}
+                        </option>
+                    `;
+                })}
+            </select>
+        `;
     } else {
         return html`
-            <p class="error">${controlType} controls are not implemented yet.</p>
+            <p class="error">${controlInit.controlType} controls are not implemented yet.</p>
         `;
     }
 }

@@ -1,6 +1,20 @@
-import {BookPage, BookPageControlTypeEnum, defineBookPage} from 'element-book';
+import {BookPage, BookPageControlTypeEnum, defineBookPage, definePageControl} from 'element-book';
+import {css, html, unsafeCSS} from 'element-vir';
 
-const parentPage1 = defineBookPage({title: 'Parent Page 1', parent: undefined});
+const parentPage1 = defineBookPage({
+    title: 'Parent Page 1',
+    parent: undefined,
+    controls: {
+        'Parent Control': definePageControl({
+            controlType: BookPageControlTypeEnum.Color,
+            initValue: '#33ccff',
+        }),
+        'Hidden control': definePageControl({
+            controlType: BookPageControlTypeEnum.Hidden,
+            initValue: new RegExp('this can be anything'),
+        }),
+    },
+});
 const parentPage2 = defineBookPage({title: 'Parent Page 2', parent: undefined});
 const subPage = defineBookPage({title: 'Sub Page 1', parent: parentPage2});
 
@@ -46,10 +60,23 @@ const duplicateErrorPage = defineBookPage({
 const testPage3 = defineBookPage({
     title: 'test 3',
     controls: {
-        thing: {
+        thing: definePageControl({
             initValue: 'there',
             controlType: BookPageControlTypeEnum.Text,
-        },
+        }),
+        thing2: definePageControl({
+            initValue: false,
+            controlType: BookPageControlTypeEnum.Checkbox,
+        }),
+        thing3: definePageControl({
+            initValue: 1,
+            controlType: BookPageControlTypeEnum.Dropdown,
+            options: [
+                'hello',
+                'hi',
+                'yo',
+            ],
+        }),
     },
     parent: parentPage1,
     elementExamplesCallback({defineExample}) {
@@ -61,19 +88,33 @@ const testPage3 = defineBookPage({
         });
         defineExample({
             title: 'example 3 2',
+            styles: css`
+                .color-control {
+                    width: 20px;
+                    height: 20px;
+                }
+            `,
             renderCallback({controls}) {
-                return `hello ${controls.thing}`;
+                const colorControlStyles = css`
+                    background-color: ${unsafeCSS(controls['Parent Control'])};
+                `;
+
+                return html`
+                    hello ${controls.thing}, ${controls.thing2}
+                    <div style=${colorControlStyles} class="color-control"></div>
+                    selected: ${controls.thing3} ${controls['Hidden control']}
+                `;
             },
         });
         defineExample({
             title: 'example with error',
-            renderCallback({controls}) {
+            renderCallback() {
                 return `broken`;
             },
         });
         defineExample({
             title: 'example with error',
-            renderCallback({controls}) {
+            renderCallback() {
                 return `broken`;
             },
         });

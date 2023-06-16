@@ -4,13 +4,24 @@ export type BookPageControl<ControlType extends BookPageControlTypeEnum = BookPa
         initValue: BookPageControlValueType[ControlType];
         /** The name and label for the control. */
         controlName: string;
-    };
+    } & (ControlType extends BookPageControlTypeEnum.Dropdown
+        ? {
+              options: string[];
+          }
+        : {});
 
 export type BookPageControlInit<ControlType extends BookPageControlTypeEnum> = Omit<
     BookPageControl<ControlType>,
     // 'controlName' will be inserted later by the page
     'controlName'
 >;
+
+export function isControlInitType<SpecificControlType extends BookPageControlTypeEnum>(
+    controlInit: BookPageControlInit<any>,
+    specificType: SpecificControlType,
+): controlInit is BookPageControlInit<SpecificControlType> {
+    return controlInit.controlType === specificType;
+}
 
 /**
  * Define a page control. This doesn't do anything fancy (in fact it only returns the input) but it
@@ -34,7 +45,11 @@ export enum BookPageControlTypeEnum {
     Color = 'color',
     Dropdown = 'dropdown',
     Text = 'text',
+    /** Hidden controls allow any values but they aren't displayed to the user for editing. */
+    Hidden = 'hidden',
 }
+
+const anySymbol = Symbol('any-type');
 
 const controlValueTypes = {
     [BookPageControlTypeEnum.Checkbox]: false,
@@ -42,6 +57,7 @@ const controlValueTypes = {
     /** The number type here indicates which index in the options are selected. */
     [BookPageControlTypeEnum.Dropdown]: 0,
     [BookPageControlTypeEnum.Text]: '',
+    [BookPageControlTypeEnum.Hidden]: anySymbol as any,
 } satisfies Readonly<Record<BookPageControlTypeEnum, any>>;
 
 export type BookPageControlValueType = typeof controlValueTypes;
@@ -62,6 +78,11 @@ export function checkControls(
             controlEntry,
         ]) => {
             const expectedInitDefault = controlValueTypes[controlEntry.controlType];
+
+            if (expectedInitDefault === anySymbol) {
+                return;
+            }
+
             if (typeof expectedInitDefault !== typeof controlEntry.initValue) {
                 errors.push(
                     new Error(
