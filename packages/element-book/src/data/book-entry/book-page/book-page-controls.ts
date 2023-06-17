@@ -44,9 +44,10 @@ export enum BookPageControlTypeEnum {
     Checkbox = 'checkbox',
     Color = 'color',
     Dropdown = 'dropdown',
-    Text = 'text',
     /** Hidden controls allow any values but they aren't displayed to the user for editing. */
     Hidden = 'hidden',
+    Number = 'number',
+    Text = 'text',
 }
 
 const anySymbol = Symbol('any-type');
@@ -56,8 +57,9 @@ const controlValueTypes = {
     [BookPageControlTypeEnum.Color]: '',
     /** The number type here indicates which index in the options are selected. */
     [BookPageControlTypeEnum.Dropdown]: 0,
-    [BookPageControlTypeEnum.Text]: '',
     [BookPageControlTypeEnum.Hidden]: anySymbol as any,
+    [BookPageControlTypeEnum.Number]: 0,
+    [BookPageControlTypeEnum.Text]: '',
 } satisfies Readonly<Record<BookPageControlTypeEnum, any>>;
 
 export type BookPageControlValueType = typeof controlValueTypes;

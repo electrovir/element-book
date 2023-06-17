@@ -84,7 +84,7 @@ function createControlInput(
         return html`
             <input
                 type="checkbox"
-                .value=${value || ''}
+                .value=${value}
                 ${listen('input', (event) => {
                     const inputElement = extractEventTarget(event, HTMLInputElement);
 
@@ -96,7 +96,7 @@ function createControlInput(
         return html`
             <input
                 type="color"
-                .value=${value || ''}
+                .value=${value}
                 ${listen('input', (event) => {
                     const inputElement = extractEventTarget(event, HTMLInputElement);
 
@@ -108,7 +108,19 @@ function createControlInput(
         return html`
             <input
                 type="text"
-                .value=${value || ''}
+                .value=${value}
+                ${listen('input', (event) => {
+                    const inputElement = extractEventTarget(event, HTMLInputElement);
+
+                    valueChange(inputElement.value);
+                })}
+            />
+        `;
+    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Number)) {
+        return html`
+            <input
+                type="number"
+                .value=${value}
                 ${listen('input', (event) => {
                     const inputElement = extractEventTarget(event, HTMLInputElement);
 
