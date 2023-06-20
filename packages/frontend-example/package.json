@@ -14,7 +14,7 @@
     "dependencies": {
         "@augment-vir/browser": "^15.1.0",
         "element-book": "*",
-        "element-vir": "^13.0.4"
+        "element-vir": "^14.0.0"
     },
     "devDependencies": {
         "@augment-vir/node-js": "^15.1.0",

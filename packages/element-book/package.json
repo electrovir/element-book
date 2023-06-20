@@ -42,12 +42,12 @@
         "@augment-vir/browser": "^15.1.0",
         "@augment-vir/common": "^15.1.0",
         "colorjs.io": "0.4.3",
-        "element-vir": "^13.0.4",
+        "element-vir": "^14.0.0",
         "lit-css-vars": "^2.0.3",
         "object-shape-tester": "^0.3.0",
         "spa-router-vir": "^2.1.0",
         "typed-event-target": "^1.2.1",
-        "vira": "^0.3.1"
+        "vira": "^0.4.0"
     },
     "devDependencies": {
         "@augment-vir/browser-testing": "^15.1.0",
