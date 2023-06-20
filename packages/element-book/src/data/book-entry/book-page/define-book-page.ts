@@ -11,13 +11,15 @@ import {titleToUrlBreadcrumb} from '../url-breadcrumbs';
 import {BookPage} from './book-page';
 import {BookPageControlsInitBase} from './book-page-controls';
 
+export type DefineExampleCallback<
+    ControlsInit extends BookPageControlsInitBase = BookPageControlsInitBase,
+> = <StateInit extends PropertyInitMapBase, RenderOutput>(
+    exampleInit: BookElementExampleInit<ControlsInit, StateInit, RenderOutput>,
+) => void;
+
 export type ElementExamplesDefiner<
     ControlsInit extends BookPageControlsInitBase = BookPageControlsInitBase,
-> = (params: {
-    defineExample: <StateInit extends PropertyInitMapBase, RenderOutput>(
-        exampleInit: BookElementExampleInit<ControlsInit, StateInit, RenderOutput>,
-    ) => void;
-}) => void;
+> = (params: {defineExample: DefineExampleCallback<ControlsInit>}) => void;
 
 type CollapseControlsInit<
     ParentPage extends BookPage | undefined,
