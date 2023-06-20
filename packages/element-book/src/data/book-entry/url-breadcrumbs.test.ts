@@ -40,8 +40,8 @@ describe(listUrlBreadcrumbs.name, () => {
                 false,
             ],
             expect: [
-                examplePage.title,
                 exampleTopLevelPage.title,
+                examplePage.title,
             ].map(titleToUrlBreadcrumb),
         },
         {
@@ -51,8 +51,8 @@ describe(listUrlBreadcrumbs.name, () => {
                 true,
             ],
             expect: [
-                examplePage.title,
                 exampleTopLevelPage.title,
+                examplePage.title,
                 examplePageNested.title,
             ].map(titleToUrlBreadcrumb),
         },

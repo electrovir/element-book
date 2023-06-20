@@ -1,5 +1,5 @@
 import {extractEventTarget} from '@augment-vir/browser';
-import {PropertyValueType} from '@augment-vir/common';
+import {PropertyValueType, isRuntimeTypeOf} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen} from 'element-vir';
 import {BookPage} from '../../../../data/book-entry/book-page/book-page';
 import {
@@ -9,11 +9,17 @@ import {
     BookPageControlsValues,
     isControlInitType,
 } from '../../../../data/book-entry/book-page/book-page-controls';
+import {colorThemeCssVars} from '../../../color-theme/color-theme';
 import {defineBookElement} from '../../define-book-element';
 
 export const BookPageControls = defineBookElement<{
     config: BookPage['controls'];
-    fullUrlBreadcrumbs: ReadonlyArray<string>;
+    /**
+     * If an object (or Record) is given for this input, then each key of the object must correspond
+     * to one of the controls from the input config and the value for each key will be the
+     * breadcrumbs for that specific config.
+     */
+    fullUrlBreadcrumbs: ReadonlyArray<string> | Record<string, ReadonlyArray<string>>;
     currentValues: Record<string, BookPageControl['initValue']>;
 }>()({
     tagName: 'book-page-controls',
@@ -23,11 +29,20 @@ export const BookPageControls = defineBookElement<{
             newValues: BookPageControlsValues;
         }>(),
     },
-    styles: css`
+    hostClasses: {
+        'book-page-controls-has-controls': ({inputs}) => !!Object.keys(inputs.config).length,
+    },
+    styles: ({hostClasses}) => css`
         :host {
             display: flex;
             flex-wrap: wrap;
+            opacity: 0.7;
             gap: 16px;
+            color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
+        }
+
+        ${hostClasses['book-page-controls-has-controls'].selector} {
+            margin-top: 8px;
         }
 
         .control-wrapper {
@@ -42,18 +57,39 @@ export const BookPageControls = defineBookElement<{
         }
     `,
     renderCallback({inputs, dispatch, events}) {
+        if (!Object.entries(inputs.config).length) {
+            return '';
+        }
+
         return Object.entries(inputs.config).map(
             ([
                 controlName,
                 controlInit,
             ]) => {
+                if (controlInit.controlType === BookPageControlTypeEnum.Hidden) {
+                    return '';
+                }
+
                 const controlInputTemplate = createControlInput(
                     inputs.currentValues[controlName],
                     controlInit,
                     (newValue) => {
+                        const fullUrlBreadcrumbs = isRuntimeTypeOf(
+                            inputs.fullUrlBreadcrumbs,
+                            'array',
+                        )
+                            ? inputs.fullUrlBreadcrumbs
+                            : inputs.fullUrlBreadcrumbs[controlName];
+
+                        if (!fullUrlBreadcrumbs) {
+                            throw new Error(
+                                `Failed to find breadcrumbs from given control name: '${controlName}'`,
+                            );
+                        }
+
                         dispatch(
                             new events.controlValueChange({
-                                fullUrlBreadcrumbs: inputs.fullUrlBreadcrumbs,
+                                fullUrlBreadcrumbs,
                                 newValues: {
                                     ...inputs.currentValues,
                                     [controlName]: newValue,

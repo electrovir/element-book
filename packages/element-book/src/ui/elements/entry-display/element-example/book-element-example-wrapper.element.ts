@@ -39,7 +39,7 @@ export const BookElementExampleWrapper = defineBookElement<{
             max-width: 100%;
         }
 
-        .individual-example-wrapper:hover ${BookElementExampleControls} {
+        ${BookElementExampleControls} {
             color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
         }
     `,

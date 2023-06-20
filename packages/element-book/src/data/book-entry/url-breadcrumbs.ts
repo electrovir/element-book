@@ -6,8 +6,8 @@ export function listUrlBreadcrumbs(entry: BookEntry, includeSelf: boolean): stri
 
     if (entry.parent) {
         return [
-            titleToUrlBreadcrumb(entry.parent.title),
             ...listUrlBreadcrumbs(entry.parent, false),
+            titleToUrlBreadcrumb(entry.parent.title),
         ].concat(includeSelf ? [entryBreadcrumb] : []);
     } else if (includeSelf) {
         return [entryBreadcrumb];

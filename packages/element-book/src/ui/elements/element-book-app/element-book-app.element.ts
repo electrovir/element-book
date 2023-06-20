@@ -253,6 +253,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             router: state.router!,
                             debug,
                             currentControls,
+                            originalTree: originalTree.tree,
                         })}
                     >
                         <slot

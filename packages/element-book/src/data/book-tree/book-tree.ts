@@ -17,13 +17,15 @@ export function isBookTreeNode<SpecificType extends BookEntryTypeEnum>(
     input: unknown,
     entryType: SpecificType,
 ): input is BookTreeNode<SpecificType> {
+    return !!(isAnyBookTreeNode(input) && (input.entry as BookEntry).entryType === entryType);
+}
+
+export function isAnyBookTreeNode(input: unknown): input is BookTreeNode<BookEntryTypeEnum> {
     return !!(
         typedHasProperties(input, [
             isBookTreeNodeMarker,
             'entry',
-        ]) &&
-        input[isBookTreeNodeMarker] &&
-        (input.entry as BookEntry).entryType === entryType
+        ]) && input[isBookTreeNodeMarker]
     );
 }
 
@@ -90,6 +92,10 @@ function getOrAddImmediateParent(
     entry: BookEntry,
     debug: boolean,
 ): BookTreeNode {
+    if (!entry.parent) {
+        return tree;
+    }
+
     const immediateParent = traverseToImmediateParent(entry, tree);
 
     if (immediateParent) {
@@ -181,14 +187,19 @@ function addEntryToTree({
     }
 }
 
-function traverseToImmediateParent(
-    entry: Readonly<BookEntry>,
+export function traverseToImmediateParent(
+    entryOrNode: Readonly<BookEntry> | BookTreeNode,
     currentTree: Readonly<BookTreeNode>,
-) {
-    const topDownAncestryChain = listUrlBreadcrumbs(entry, false)
-        // reverse so we get the top most ancestor first in the list
-        .reverse();
-    const immediateParentNode: BookTreeNode | undefined = topDownAncestryChain.reduce(
+): BookTreeNode | undefined {
+    const breadcrumbs: string[] = isAnyBookTreeNode(entryOrNode)
+        ? entryOrNode.fullUrlBreadcrumbs.slice(0, -1)
+        : listUrlBreadcrumbs(entryOrNode, false);
+
+    if (!breadcrumbs.length) {
+        return undefined;
+    }
+
+    const immediateParentNode: BookTreeNode | undefined = breadcrumbs.reduce(
         (currentAncestor, nextBreadcrumb) => {
             if (!currentAncestor) {
                 return undefined;

@@ -58,7 +58,7 @@ export const BookBreadcrumbsBar = defineBookElement<{
                     }
                     const preThrottleValue = inputElement.value;
                     // throttle it a bit
-                    await wait(300);
+                    await wait(200);
 
                     if (inputElement.value !== preThrottleValue) {
                         return;

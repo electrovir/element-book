@@ -39,7 +39,6 @@ export const BookPageWrapper = defineBookElement<{
             align-items: flex-start;
             display: flex;
             flex-direction: column;
-            margin-bottom: 24px;
         }
 
         ${BookRouteLink} {
