@@ -1,7 +1,6 @@
-import {Overwrite, RequireNonVoid} from '@augment-vir/common';
+import {Overwrite, RequireNonVoid, SetOptionalAndNullable} from '@augment-vir/common';
 import {PropertyInitMapBase, RenderParams, TypedEvent} from 'element-vir';
 import {CSSResult} from 'lit';
-import {SetOptional} from 'type-fest';
 import {BaseBookEntry} from '../base-book-entry';
 import {BookEntryTypeEnum} from '../book-entry-type';
 import {BookPage} from '../book-page/book-page';
@@ -50,7 +49,7 @@ export type BookElementExampleInit<
     Controls extends BookPageControlsInitBase,
     StateInit extends PropertyInitMapBase,
     RenderOutput,
-> = SetOptional<
+> = SetOptionalAndNullable<
     Omit<BookElementExample<Controls, StateInit, RenderOutput>, 'entryType' | 'parent' | 'errors'>,
     'descriptionParagraphs'
 >;
