@@ -29,7 +29,7 @@ type OptionalConfig = {
          * Path to this page, used for routing. For example, if this page is hosted at
          * www.example.org/my-page then this value should be `my-page`.
          */
-        basePath?: string;
+        basePath?: string | undefined;
     };
     /**
      * Current route paths for element-book to handle. These are intended to come from a router

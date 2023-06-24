@@ -16,7 +16,7 @@ export type BookPageControlInit<ControlType extends BookPageControlTypeEnum> = O
     'controlName'
 >;
 
-export function isControlInitType<SpecificControlType extends BookPageControlTypeEnum>(
+export function isControlInitType<const SpecificControlType extends BookPageControlTypeEnum>(
     controlInit: BookPageControlInit<any>,
     specificType: SpecificControlType,
 ): controlInit is BookPageControlInit<SpecificControlType> {
@@ -27,7 +27,7 @@ export function isControlInitType<SpecificControlType extends BookPageControlTyp
  * Define a page control. This doesn't do anything fancy (in fact it only returns the input) but it
  * helps immensely with type inference.
  */
-export function definePageControl<ControlType extends BookPageControlTypeEnum>(
+export function definePageControl<const ControlType extends BookPageControlTypeEnum>(
     controlInit: BookPageControlInit<ControlType>,
 ) {
     return controlInit;

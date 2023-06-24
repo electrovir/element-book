@@ -6,7 +6,7 @@ import {BookRoot} from './book-root';
 
 export type BookEntry = BookPage | BookRoot | BookElementExample;
 
-export function isBookEntry<SpecificType extends BookEntryTypeEnum>(
+export function isBookEntry<const SpecificType extends BookEntryTypeEnum>(
     entry: unknown,
     entryType: SpecificType,
 ): entry is Extract<BookEntry, {entryType: SpecificType}> {

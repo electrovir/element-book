@@ -6,14 +6,14 @@ import {bookEntryVerifiers} from '../book-entry/verify-book-entry';
 import {BookTree, BookTreeNode, isBookTreeNodeMarker} from './book-tree-node';
 import {addTreeToCache, getTreeFromCache} from './tree-cache';
 
-export function doesNodeHaveEntryType<EntryType extends BookEntryTypeEnum>(
+export function doesNodeHaveEntryType<const EntryType extends BookEntryTypeEnum>(
     node: BookTreeNode<any>,
     entryType: EntryType,
 ): node is BookTreeNode<EntryType> {
     return node.entry.entryType === entryType;
 }
 
-export function isBookTreeNode<SpecificType extends BookEntryTypeEnum>(
+export function isBookTreeNode<const SpecificType extends BookEntryTypeEnum>(
     input: unknown,
     entryType: SpecificType,
 ): input is BookTreeNode<SpecificType> {

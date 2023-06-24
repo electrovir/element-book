@@ -24,14 +24,14 @@ export type BookElementExample<
         entryType: BookEntryTypeEnum.ElementExample;
     } & {
         /** Initialize the state for this example. */
-        stateInitStatic?: StateInit;
+        stateInitStatic?: StateInit | undefined;
         /** Specify which events this example should intercept (so the user can see them). */
-        showEvents?: ReadonlyArray<string | TypedEvent>;
+        showEvents?: ReadonlyArray<string | TypedEvent> | undefined;
         /**
          * Style the element example. You can even use the :host selector to style this specific
          * example's wrapper element!
          */
-        styles?: CSSResult;
+        styles?: CSSResult | undefined;
         /** Render the example. */
         renderCallback: RequireNonVoid<
             RenderOutput,
