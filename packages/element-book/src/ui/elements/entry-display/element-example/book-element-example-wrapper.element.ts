@@ -40,6 +40,10 @@ export const BookElementExampleWrapper = defineBookElement<{
         }
 
         ${BookElementExampleControls} {
+            color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
+        }
+
+        :host(:hover) ${BookElementExampleControls} {
             color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
         }
     `,

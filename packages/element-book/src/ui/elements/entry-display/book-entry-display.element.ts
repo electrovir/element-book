@@ -39,14 +39,14 @@ export const BookEntryDisplay = defineBookElement<{
         }
 
         .inline-entry {
-            margin-top: 32px;
-        }
-
-        .inline-entry + .inline-entry {
-            margin-left: 16px;
+            margin: 8px;
         }
 
         * + .block-entry {
+            margin-top: 32px;
+        }
+
+        .block-entry + * {
             margin-top: 32px;
         }
 

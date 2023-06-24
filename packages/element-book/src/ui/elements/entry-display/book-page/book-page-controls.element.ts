@@ -1,6 +1,7 @@
 import {extractEventTarget} from '@augment-vir/browser';
 import {PropertyValueType, isRuntimeTypeOf} from '@augment-vir/common';
-import {css, defineElementEvent, html, listen} from 'element-vir';
+import {assign, css, defineElementEvent, html, listen, renderIf} from 'element-vir';
+import {Options24Icon, ViraIcon} from 'vira';
 import {BookPage} from '../../../../data/book-entry/book-page/book-page';
 import {
     BookPageControl,
@@ -36,8 +37,11 @@ export const BookPageControls = defineBookElement<{
         :host {
             display: flex;
             flex-wrap: wrap;
-            opacity: 0.7;
+            align-items: flex-end;
+            padding-left: 36px;
+            align-content: flex-start;
             gap: 16px;
+            row-gap: 10px;
             color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
         }
 
@@ -46,6 +50,7 @@ export const BookPageControls = defineBookElement<{
         }
 
         .control-wrapper {
+            position: relative;
             display: flex;
             gap: 4px;
             flex-direction: column;
@@ -55,6 +60,13 @@ export const BookPageControls = defineBookElement<{
             font-weight: bold;
             color: red;
         }
+
+        ${ViraIcon}.options-icon {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            margin-left: -32px;
+        }
     `,
     renderCallback({inputs, dispatch, events}) {
         if (!Object.entries(inputs.config).length) {
@@ -62,10 +74,13 @@ export const BookPageControls = defineBookElement<{
         }
 
         return Object.entries(inputs.config).map(
-            ([
-                controlName,
-                controlInit,
-            ]) => {
+            (
+                [
+                    controlName,
+                    controlInit,
+                ],
+                index,
+            ) => {
                 if (controlInit.controlType === BookPageControlTypeEnum.Hidden) {
                     return '';
                 }
@@ -99,10 +114,21 @@ export const BookPageControls = defineBookElement<{
                     },
                 );
                 return html`
-                    <label class="control-wrapper">
-                        <span>${controlName}</span>
-                        ${controlInputTemplate}
-                    </label>
+                    <div class="control-wrapper">
+                        ${renderIf(
+                            index === 0,
+                            html`
+                                <${ViraIcon}
+                                    class="options-icon"
+                                    ${assign(ViraIcon, {icon: Options24Icon})}
+                                ></${ViraIcon}>
+                            `,
+                        )}
+                        <label class="control-wrapper">
+                            <span>${controlName}</span>
+                            ${controlInputTemplate}
+                        </label>
+                    </div>
                 `;
             },
         );

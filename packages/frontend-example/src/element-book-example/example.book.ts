@@ -23,12 +23,16 @@ function createExamplePage(index: number, parent: BookPage) {
         title: `test ${index}`,
         parent,
         elementExamplesCallback({defineExample}) {
-            defineExample({
-                title: 'example',
-                renderCallback() {
-                    return 'element example here';
-                },
-            });
+            Array(20)
+                .fill(0)
+                .forEach((value, exampleIndex) => {
+                    defineExample({
+                        title: `example ${index} ${exampleIndex}`,
+                        renderCallback() {
+                            return 'element example here';
+                        },
+                    });
+                });
         },
     });
 

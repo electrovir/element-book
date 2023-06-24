@@ -9,6 +9,8 @@ describe(defineBookPage.name, () => {
         return defineBookPage({
             parent: undefined,
             title: 'example page',
+            /** Test that we can assign undefined here. */
+            descriptionParagraphs: undefined,
             controls: {
                 exampleControl: definePageControl({
                     initValue: 'nope',

@@ -1,6 +1,5 @@
-import {PropertyValueType, isTruthy} from '@augment-vir/common';
+import {PropertyValueType, SetOptionalAndNullable, isTruthy} from '@augment-vir/common';
 import {PropertyInitMapBase} from 'element-vir';
-import {SetOptional} from 'type-fest';
 import {InfiniteRecursionLimiter} from '../../../util/type';
 import {
     BookElementExample,
@@ -36,7 +35,7 @@ type CollapseControlsInit<
 export type BookPageInit<
     ParentPage extends BookPage | undefined,
     CurrentControlsInit extends BookPageControlsInitBase,
-> = SetOptional<
+> = SetOptionalAndNullable<
     Omit<BookPage<ParentPage, CurrentControlsInit>, 'entryType' | 'elementExamples' | 'errors'>,
     'controls' | 'descriptionParagraphs'
 > & {
