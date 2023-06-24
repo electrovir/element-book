@@ -200,9 +200,9 @@ function createControlInput(
                     valueChange(selectElement.value);
                 })}
             >
-                ${controlInit.options.map((optionLabel, optionIndex) => {
+                ${controlInit.options.map((optionLabel) => {
                     return html`
-                        <option ?selected=${optionIndex === value} value=${optionIndex}>
+                        <option ?selected=${optionLabel === value} value=${optionLabel}>
                             ${optionLabel}
                         </option>
                     `;

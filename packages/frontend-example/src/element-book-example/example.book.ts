@@ -73,7 +73,7 @@ const testPage3 = defineBookPage({
             controlType: BookPageControlTypeEnum.Checkbox,
         }),
         thing3: definePageControl({
-            initValue: 1,
+            initValue: 'hello',
             controlType: BookPageControlTypeEnum.Dropdown,
             options: [
                 'hello',

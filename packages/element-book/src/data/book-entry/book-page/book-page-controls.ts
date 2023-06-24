@@ -55,8 +55,7 @@ const anySymbol = Symbol('any-type');
 const controlValueTypes = {
     [BookPageControlTypeEnum.Checkbox]: false,
     [BookPageControlTypeEnum.Color]: '',
-    /** The number type here indicates which index in the options are selected. */
-    [BookPageControlTypeEnum.Dropdown]: 0,
+    [BookPageControlTypeEnum.Dropdown]: '',
     [BookPageControlTypeEnum.Hidden]: anySymbol as any,
     [BookPageControlTypeEnum.Number]: 0,
     [BookPageControlTypeEnum.Text]: '',
