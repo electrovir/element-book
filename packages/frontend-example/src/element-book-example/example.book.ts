@@ -126,12 +126,12 @@ const testPage3 = defineBookPage({
 });
 
 export const entries = [
+    parentPage1,
     createExamplePage(0, parentPage2),
     subPage,
     ...Array(100)
         .fill(0)
         .map((_value, index) => createExamplePage(index + 1, subPage)),
-    parentPage1,
     duplicateErrorPage,
     duplicateErrorPage,
     testPage3,

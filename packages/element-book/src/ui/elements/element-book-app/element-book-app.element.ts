@@ -17,7 +17,7 @@ import {createBookRouter} from '../../../routing/create-book-router';
 import {ColorTheme, colorThemeCssVars, setThemeCssVars} from '../../color-theme/color-theme';
 import {ThemeConfig, createTheme} from '../../color-theme/create-color-theme';
 import {ChangeRouteEvent} from '../../events/change-route.event';
-import {BookNav} from '../book-nav.element';
+import {BookNav, scrollSelectedNavElementIntoView} from '../book-nav.element';
 import {BookError} from '../common/book-error.element';
 import {BookEntryDisplay} from '../entry-display/book-entry-display.element';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element';
@@ -83,6 +83,11 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             top: 0;
         }
     `,
+    initCallback({host}) {
+        setTimeout(() => {
+            scrollNav(host);
+        }, 1000);
+    },
     cleanupCallback({state, updateState}) {
         if (state.router) {
             state.router.removeAllRouteListeners();
@@ -213,6 +218,14 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             );
                         }
                         updateRoutes(event.detail);
+
+                        const navElement = host.shadowRoot.querySelector(BookNav.tagName);
+
+                        if (!(navElement instanceof BookNav)) {
+                            throw new Error(`Failed to find child '${BookNav.tagName}'`);
+                        }
+
+                        scrollNav(host);
                     })}
                     ${listen(BookPageControls.events.controlValueChange, (event) => {
                         if (!state.treeBasedCurrentControls) {
@@ -271,3 +284,13 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
         }
     },
 });
+
+async function scrollNav(host: typeof ElementBookApp.instanceType) {
+    const navElement = host.shadowRoot.querySelector(BookNav.tagName);
+
+    if (!(navElement instanceof BookNav)) {
+        throw new Error(`Failed to find child '${BookNav.tagName}'`);
+    }
+
+    await scrollSelectedNavElementIntoView(navElement);
+}

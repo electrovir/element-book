@@ -1,6 +1,6 @@
 {
     "name": "@element-book/frontend-example",
-    "version": "7.0.3",
+    "version": "7.0.4",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "scripts": {
@@ -12,18 +12,19 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^15.2.1",
+        "@augment-vir/browser": "^15.3.0",
         "element-book": "*",
         "element-vir": "^14.0.3"
     },
     "devDependencies": {
-        "@augment-vir/node-js": "^15.2.1",
+        "@augment-vir/node-js": "^15.3.0",
         "@open-wc/testing": "^3.2.0",
         "@types/mocha": "^10.0.1",
         "@web/dev-server-esbuild": "^0.4.1",
         "@web/test-runner": "^0.16.1",
         "@web/test-runner-commands": "^0.7.0",
         "@web/test-runner-playwright": "^0.10.1",
+        "esbuild": "^0.18.7",
         "istanbul-smart-text-reporter": "^1.1.2",
         "typescript": "^5.1.3",
         "vite": "^4.3.9",

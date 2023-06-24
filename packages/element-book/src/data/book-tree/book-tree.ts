@@ -213,30 +213,12 @@ export function traverseToImmediateParent(
     return immediateParentNode;
 }
 
-export function getSortedNodeChildren(
-    nodeA: Readonly<BookTreeNode>,
-    nodeB: Readonly<BookTreeNode>,
-): number {
-    if (nodeA.entry.entryType !== nodeB.entry.entryType) {
-        if (isBookEntry(nodeA.entry, BookEntryTypeEnum.ElementExample)) {
-            return -1;
-        }
-        if (isBookEntry(nodeB.entry, BookEntryTypeEnum.ElementExample)) {
-            return 1;
-        }
-    }
-
-    return nodeA.entry.title.localeCompare(nodeB.entry.title);
-}
-
 export function flattenTree(node: Readonly<BookTreeNode>): BookTreeNode[] {
     const hasErrors: boolean = !!node.entry.errors.length;
 
     const childNodes = hasErrors
         ? []
-        : Object.values(node.children)
-              .sort(getSortedNodeChildren)
-              .map((child) => flattenTree(child));
+        : Object.values(node.children).map((child) => flattenTree(child));
 
     const entries: BookTreeNode[] = [
         node,

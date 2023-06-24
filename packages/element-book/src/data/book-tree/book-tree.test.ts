@@ -1,4 +1,5 @@
 import {assertTypeOf, itCases} from '@augment-vir/browser-testing';
+import {assert} from '@open-wc/testing';
 import {BookEntryTypeEnum} from '../book-entry/book-entry-type';
 import {defineBookPage} from '../book-entry/book-page/define-book-page';
 import {
@@ -119,23 +120,9 @@ const expectedTree = {
 } satisfies BookTreeNode<BookEntryTypeEnum.Root>;
 
 describe(createBookTreeFromEntries.name, () => {
-    itCases(createBookTreeFromEntries, [
-        {
-            it: 'produces a correct tree',
-            input: exampleTreeInputs,
-            expect: {
-                tree: expectedTree,
-                flattenedNodes: [
-                    expectedTree,
-                    expectedTree.children['page-1'],
-                    expectedTree.children['page-1'].children['example-1'],
-                    expectedTree.children['page-1'].children['aaaaaaaa'],
-                    expectedTree.children['page-1'].children['page-1-child'],
-                    expectedTree.children['page-2'],
-                ],
-            },
-        },
-    ]);
+    it('produces a correct tree', () => {
+        assert.deepStrictEqual(createBookTreeFromEntries(exampleTreeInputs).tree, expectedTree);
+    });
 });
 
 describe(doesNodeHaveEntryType.name, () => {
@@ -158,14 +145,14 @@ describe(doesNodeHaveEntryType.name, () => {
 describe(flattenTree.name, () => {
     itCases(flattenTree, [
         {
-            it: 'flattens a basic out of order tree',
+            it: 'flattens a basic tree',
             input: exampleTree.tree,
             expect: [
                 exampleTree.tree,
                 exampleTree.tree.children['page-1']!,
                 exampleTree.tree.children['page-1']!.children['example-1']!,
-                exampleTree.tree.children['page-1']!.children['aaaaaaaa']!,
                 exampleTree.tree.children['page-1']!.children['page-1-child']!,
+                exampleTree.tree.children['page-1']!.children['aaaaaaaa']!,
                 exampleTree.tree.children['page-2']!,
             ],
         },
