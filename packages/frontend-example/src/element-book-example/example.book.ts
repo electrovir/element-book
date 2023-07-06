@@ -1,7 +1,15 @@
-import {BookPage, BookPageControlTypeEnum, defineBookPage, definePageControl} from 'element-book';
+import {
+    BookPage,
+    BookPageControlTypeEnum,
+    defineBookPage,
+    defineBookPageWithGlobals,
+    definePageControl,
+} from 'element-book';
 import {css, html, unsafeCSS} from 'element-vir';
 
-const parentPage1 = defineBookPage({
+const parentPage1 = defineBookPageWithGlobals<{
+    testGlobalControl: 'it worked!';
+}>()({
     title: 'Parent Page 1',
     parent: undefined,
     controls: {
@@ -107,6 +115,8 @@ const testPage3 = defineBookPage({
                     hello ${controls.thing}, ${controls.thing2}
                     <div style=${colorControlStyles} class="color-control"></div>
                     selected: ${controls.thing3} ${controls['Hidden control']}
+                    <br />
+                    global: ${controls.testGlobalControl}
                 `;
             },
         });

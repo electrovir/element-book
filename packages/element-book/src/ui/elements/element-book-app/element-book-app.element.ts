@@ -22,7 +22,7 @@ import {BookError} from '../common/book-error.element';
 import {BookEntryDisplay} from '../entry-display/book-entry-display.element';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element';
 import {ElementBookSlotName} from './element-book-app-slots';
-import {ElementBookConfig} from './element-book-config';
+import {ElementBookConfig, GlobalValues} from './element-book-config';
 import {getCurrentNodes} from './get-current-nodes';
 
 type ColorThemeState = {config: ThemeConfig | undefined; theme: ColorTheme};
@@ -41,7 +41,8 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
         } as ColorThemeState,
         treeBasedCurrentControls: undefined as
             | {
-                  trigger: ElementBookConfig['entries'];
+                  entries: ElementBookConfig['entries'];
+                  globalControls: GlobalValues;
                   currentControls: CurrentControls;
               }
             | undefined,
@@ -161,12 +162,17 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
 
             if (
                 !state.treeBasedCurrentControls ||
-                state.treeBasedCurrentControls.trigger !== inputs.entries
+                state.treeBasedCurrentControls.entries !== inputs.entries ||
+                state.treeBasedCurrentControls.globalControls !== inputs.globalControls
             ) {
                 updateState({
                     treeBasedCurrentControls: {
-                        trigger: inputs.entries,
-                        currentControls: createControlsFromTree(originalTree.tree),
+                        entries: inputs.entries,
+                        globalControls: inputs.globalControls ?? {},
+                        currentControls: createControlsFromTree(
+                            originalTree.tree,
+                            inputs.globalControls ?? {},
+                        ),
                     },
                 });
             }

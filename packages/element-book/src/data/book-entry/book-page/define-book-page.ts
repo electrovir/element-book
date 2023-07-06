@@ -1,5 +1,6 @@
 import {PropertyValueType, SetOptionalAndNullable, isTruthy} from '@augment-vir/common';
 import {PropertyInitMapBase} from 'element-vir';
+import {GlobalValues} from '../../../ui/elements/element-book-app/element-book-config';
 import {InfiniteRecursionLimiter} from '../../../util/type';
 import {
     BookElementExample,
@@ -11,14 +12,16 @@ import {BookPage} from './book-page';
 import {BookPageControlsInitBase} from './book-page-controls';
 
 export type DefineExampleCallback<
+    GlobalValuesType extends GlobalValues = {},
     ControlsInit extends BookPageControlsInitBase = BookPageControlsInitBase,
 > = <StateInit extends PropertyInitMapBase, RenderOutput>(
-    exampleInit: BookElementExampleInit<ControlsInit, StateInit, RenderOutput>,
+    exampleInit: BookElementExampleInit<GlobalValuesType, ControlsInit, StateInit, RenderOutput>,
 ) => void;
 
 export type ElementExamplesDefiner<
+    GlobalValuesType extends GlobalValues = {},
     ControlsInit extends BookPageControlsInitBase = BookPageControlsInitBase,
-> = (params: {defineExample: DefineExampleCallback<ControlsInit>}) => void;
+> = (params: {defineExample: DefineExampleCallback<GlobalValuesType, ControlsInit>}) => void;
 
 type CollapseControlsInit<
     ParentPage extends BookPage | undefined,
@@ -27,28 +30,73 @@ type CollapseControlsInit<
     RecursionDepth = InfiniteRecursionLimiter,
 > = CurrentControlsInit &
     (RecursionDepth extends [any, ...infer RemainingDepth]
-        ? ParentPage extends BookPage<infer GrandParentPage, infer ParentControls>
+        ? ParentPage extends BookPage<
+              infer GlobalValuesType,
+              infer GrandParentPage,
+              infer ParentControls
+          >
             ? CollapseControlsInit<GrandParentPage, ParentControls, RemainingDepth>
             : {}
         : {});
 
+type CollapseGlobalValuesType<
+    ParentPage extends BookPage | undefined,
+    GlobalValuesType extends GlobalValues,
+    /** Prevent infinite recursion TypeScript errors. */
+    RecursionDepth = InfiniteRecursionLimiter,
+> = GlobalValuesType &
+    (RecursionDepth extends [any, ...infer RemainingDepth]
+        ? ParentPage extends BookPage<
+              infer GlobalValuesType,
+              infer GrandParentPage,
+              infer ParentControls
+          >
+            ? CollapseGlobalValuesType<GrandParentPage, GlobalValuesType, RemainingDepth>
+            : {}
+        : {});
+
 export type BookPageInit<
+    GlobalValuesType extends GlobalValues,
     ParentPage extends BookPage | undefined,
     CurrentControlsInit extends BookPageControlsInitBase,
 > = SetOptionalAndNullable<
-    Omit<BookPage<ParentPage, CurrentControlsInit>, 'entryType' | 'elementExamples' | 'errors'>,
+    Omit<
+        BookPage<any, ParentPage, CurrentControlsInit>,
+        'entryType' | 'elementExamples' | 'errors'
+    >,
     'controls' | 'descriptionParagraphs'
 > & {
     elementExamplesCallback?:
-        | ElementExamplesDefiner<CollapseControlsInit<ParentPage, CurrentControlsInit>>
+        | ElementExamplesDefiner<
+              CollapseGlobalValuesType<ParentPage, GlobalValuesType>,
+              CollapseControlsInit<ParentPage, CurrentControlsInit>
+          >
         | undefined;
 };
 
+/**
+ * Allows insertion of the global values type to a page. This is not necessary if you aren't using
+ * global values in your element-book instance.
+ */
+export function defineBookPageWithGlobals<const GlobalValuesType extends GlobalValues = {}>() {
+    return <
+        const ParentPage extends BookPage | undefined = undefined,
+        const ControlsInit extends BookPageControlsInitBase = {},
+    >(
+        pageInit: BookPageInit<GlobalValuesType, ParentPage, ControlsInit>,
+    ): BookPage<GlobalValuesType, ParentPage, ControlsInit> => {
+        return defineBookPage(pageInit);
+    };
+}
+
 export function defineBookPage<
-    const ParentPage extends BookPage | undefined,
+    const GlobalValuesType extends GlobalValues = {},
+    const ParentPage extends BookPage | undefined = undefined,
     const ControlsInit extends BookPageControlsInitBase = {},
->(pageInit: BookPageInit<ParentPage, ControlsInit>): BookPage<ParentPage, ControlsInit> {
-    const page: BookPage<ParentPage, ControlsInit> = {
+>(
+    pageInit: BookPageInit<GlobalValuesType, ParentPage, ControlsInit>,
+): BookPage<GlobalValuesType, ParentPage, ControlsInit> {
+    const page: BookPage<GlobalValuesType, ParentPage, ControlsInit> = {
         ...pageInit,
         entryType: BookEntryTypeEnum.Page,
         elementExamples: {},
@@ -62,7 +110,7 @@ export function defineBookPage<
     if (pageInit.elementExamplesCallback) {
         pageInit.elementExamplesCallback({
             defineExample(elementExampleInit) {
-                const newExample: BookElementExample<any, any, any> = {
+                const newExample: BookElementExample<any, any, any, any> = {
                     ...elementExampleInit,
                     entryType: BookEntryTypeEnum.ElementExample,
                     parent: page,

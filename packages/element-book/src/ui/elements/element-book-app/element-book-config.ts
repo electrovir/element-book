@@ -7,6 +7,8 @@ export type ElementBookConfig = {
     entries: ReadonlyArray<BookEntry>;
 } & PartialAndUndefined<OptionalConfig>;
 
+export type GlobalValues = Readonly<Record<string, unknown>>;
+
 type OptionalConfig = {
     /** The base theme color from which all other element-book colors will be generated from. */
     themeColor: string;
@@ -14,6 +16,7 @@ type OptionalConfig = {
     everythingTitle: string;
     everythingDescriptionParagraphs: ReadonlyArray<string>;
     debug: boolean;
+    globalControls: GlobalValues;
 } & RequireExactlyOne<{
     /**
      * Set this internal router config if element-book is intended to be the current website's

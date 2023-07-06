@@ -2,7 +2,7 @@ import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
 import {createObservableProperty} from 'element-vir';
 import {BookPageControlTypeEnum, definePageControl} from './book-page-controls';
-import {defineBookPage} from './define-book-page';
+import {defineBookPage, defineBookPageWithGlobals} from './define-book-page';
 
 describe(defineBookPage.name, () => {
     it('has proper defineExample types', () => {
@@ -128,7 +128,7 @@ describe('BookPageControlValues', () => {
     });
 
     it('reads controls from nested parents', () => {
-        const superParent = defineBookPage({
+        const superParent = defineBookPageWithGlobals<{globalThing: string}>()({
             parent: undefined,
             title: 'super parent',
             controls: {
@@ -162,6 +162,7 @@ describe('BookPageControlValues', () => {
                             }>();
                             assertTypeOf(controls.derp).toEqualTypeOf<string>();
                             assertTypeOf(controls.superParentControl).toEqualTypeOf<string>();
+                            assertTypeOf(controls.globalThing).toEqualTypeOf<string>();
 
                             assertTypeOf(controls).toMatchTypeOf<{
                                 derp: string;

@@ -55,6 +55,10 @@ export const VirApp = defineElementNoInputs({
                     },
                     everythingTitle: 'All',
                     debug: true,
+
+                    globalControls: {
+                        testGlobalControl: 'it worked!',
+                    },
                 })}
                 ${listen(ElementBookApp.events.pathUpdate, (event) => {
                     updateState({paths: event.detail});

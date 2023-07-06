@@ -1,4 +1,5 @@
 import {copyThroughJson, mapObjectValues} from '@augment-vir/common';
+import {GlobalValues} from '../../../ui/elements/element-book-app/element-book-config';
 import {isBookTreeNode} from '../../book-tree/book-tree';
 import {BookTreeNode} from '../../book-tree/book-tree-node';
 import {BookEntryTypeEnum} from '../book-entry-type';
@@ -89,7 +90,10 @@ export function createNewCurrentControls(
     return newCurrentControls;
 }
 
-export function createControlsFromTree(node: BookTreeNode): CurrentControls {
+export function createControlsFromTree(
+    node: BookTreeNode,
+    globalControls: GlobalValues,
+): CurrentControls {
     const currentControls: CurrentControls = mapObjectValues(
         node.children,
         (childName, child): ControlsWrapper => {
@@ -101,10 +105,13 @@ export function createControlsFromTree(node: BookTreeNode): CurrentControls {
             }
 
             return {
-                children: createControlsFromTree(child),
-                controls: mapObjectValues(child.entry.controls, (name, setup) => {
-                    return setup.initValue;
-                }),
+                children: createControlsFromTree(child, {}),
+                controls: {
+                    ...globalControls,
+                    ...mapObjectValues(child.entry.controls, (name, setup) => {
+                        return setup.initValue;
+                    }),
+                },
             };
         },
     );

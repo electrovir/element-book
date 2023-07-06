@@ -1,6 +1,6 @@
 {
     "name": "@element-book/root",
-    "version": "7.0.8",
+    "version": "8.0.0",
     "private": true,
     "homepage": "https://github.com/electrovir/element-book",
     "bugs": {

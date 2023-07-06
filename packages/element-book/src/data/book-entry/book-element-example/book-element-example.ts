@@ -1,19 +1,22 @@
 import {Overwrite, RequireNonVoid, SetOptionalAndNullable} from '@augment-vir/common';
 import {PropertyInitMapBase, RenderParams, TypedEvent} from 'element-vir';
 import {CSSResult} from 'lit';
+import {GlobalValues} from '../../../ui/elements/element-book-app/element-book-config';
 import {BaseBookEntry} from '../base-book-entry';
 import {BookEntryTypeEnum} from '../book-entry-type';
 import {BookPage} from '../book-page/book-page';
 import {BookPageControlsInitBase, ControlsToValues} from '../book-page/book-page-controls';
 
 export type BookPageExampleRenderParams<
+    GlobalValuesType extends GlobalValues,
     ControlsInit extends BookPageControlsInitBase,
     StateInit extends PropertyInitMapBase,
 > = Pick<RenderParams<any, any, StateInit, any, any, any>, 'state' | 'updateState'> & {
-    controls: ControlsToValues<ControlsInit>;
+    controls: ControlsToValues<ControlsInit> & GlobalValuesType;
 };
 
 export type BookElementExample<
+    GlobalValuesType extends GlobalValues = {},
     ControlsInit extends BookPageControlsInitBase = {},
     StateInit extends PropertyInitMapBase = {},
     RenderOutput = unknown,
@@ -35,7 +38,13 @@ export type BookElementExample<
         /** Render the example. */
         renderCallback: RequireNonVoid<
             RenderOutput,
-            (renderParams: BookPageExampleRenderParams<ControlsInit, StateInit>) => RenderOutput,
+            (
+                renderParams: BookPageExampleRenderParams<
+                    GlobalValuesType,
+                    ControlsInit,
+                    StateInit
+                >,
+            ) => RenderOutput,
             'renderCallback is missing a return statement'
         >;
     }
@@ -46,10 +55,14 @@ export type BookElementExample<
  * filling in by the parent.
  */
 export type BookElementExampleInit<
+    GlobalValuesType extends GlobalValues,
     Controls extends BookPageControlsInitBase,
     StateInit extends PropertyInitMapBase,
     RenderOutput,
 > = SetOptionalAndNullable<
-    Omit<BookElementExample<Controls, StateInit, RenderOutput>, 'entryType' | 'parent' | 'errors'>,
+    Omit<
+        BookElementExample<GlobalValuesType, Controls, StateInit, RenderOutput>,
+        'entryType' | 'parent' | 'errors'
+    >,
     'descriptionParagraphs'
 >;
