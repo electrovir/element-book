@@ -1,10 +1,10 @@
 {
-    "watch": ["./packages/element-book/"],
+    "exec": "cd packages/element-book && npm run compile",
+    "exitcrash": false,
+    "ext": "js,json,html,css,ts,tsx,jsx",
     "ignore": [
         "*.test.ts",
         "dist/**"
     ],
-    "exitcrash": false,
-    "ext": "js,json,html,css,ts,tsx,jsx",
-    "exec": "cd packages/element-book && npm run compile"
+    "watch": ["./packages/element-book/"]
 }

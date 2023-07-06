@@ -1,4 +1,6 @@
 export * from './data/book-entry/book-element-example/book-element-example';
+export * from './data/book-entry/book-entry';
+export * from './data/book-entry/book-entry-type';
 export * from './data/book-entry/book-page/book-page';
 export * from './data/book-entry/book-page/book-page-controls';
 export * from './data/book-entry/book-page/define-book-page';

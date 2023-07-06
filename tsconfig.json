@@ -1,12 +1,12 @@
 {
-    "extends": "virmator/base-configs/base-tsconfig.json",
     "compilerOptions": {
-        "preserveSymlinks": true,
-        "noEmitOnError": false
+        "noEmitOnError": false,
+        "preserveSymlinks": true
     },
     "exclude": [
         "./configs",
         "./dist",
         "./node_modules"
-    ]
+    ],
+    "extends": "virmator/base-configs/base-tsconfig.json"
 }
