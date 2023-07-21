@@ -1,6 +1,6 @@
 {
     "name": "element-book",
-    "version": "9.0.0",
+    "version": "9.0.1",
     "keywords": [
         "book",
         "design system",
@@ -42,12 +42,12 @@
         "@augment-vir/browser": "^15.4.1",
         "@augment-vir/common": "^15.4.1",
         "colorjs.io": "0.4.5",
-        "element-vir": "^15.0.0",
+        "element-vir": "^15.0.1",
         "lit-css-vars": "^2.0.3",
         "object-shape-tester": "^0.3.0",
         "spa-router-vir": "^2.1.1",
         "typed-event-target": "^1.3.1",
-        "vira": "^0.6.2"
+        "vira": "^0.6.3"
     },
     "devDependencies": {
         "@augment-vir/browser-testing": "^15.4.1",
