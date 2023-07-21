@@ -1,5 +1,5 @@
 import {ElementBookApp, ElementBookSlotName} from 'element-book';
-import {assign, css, defineElementNoInputs, html, listen} from 'element-vir';
+import {css, defineElementNoInputs, html, listen} from 'element-vir';
 import {entries} from '../../element-book-example/example.book';
 
 export const VirApp = defineElementNoInputs({
@@ -46,20 +46,19 @@ export const VirApp = defineElementNoInputs({
                     type="color"
                 />
             </label>
-            <${ElementBookApp}
-                ${assign(ElementBookApp, {
-                    entries,
-                    themeColor: state.themeColor,
-                    internalRouterConfig: {
-                        useInternalRouter: true,
-                    },
-                    everythingTitle: 'All',
-                    debug: true,
+            <${ElementBookApp.assign({
+                entries,
+                themeColor: state.themeColor,
+                internalRouterConfig: {
+                    useInternalRouter: true,
+                },
+                everythingTitle: 'All',
+                debug: true,
 
-                    globalValues: {
-                        testGlobalControl: 'it worked!',
-                    },
-                })}
+                globalValues: {
+                    testGlobalControl: 'it worked!',
+                },
+            })}
                 ${listen(ElementBookApp.events.pathUpdate, (event) => {
                     updateState({paths: event.detail});
                 })}

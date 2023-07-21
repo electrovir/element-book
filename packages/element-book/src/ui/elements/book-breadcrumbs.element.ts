@@ -1,4 +1,4 @@
-import {assign, css, html} from 'element-vir';
+import {css, html} from 'element-vir';
 import {BookFullRoute, BookMainRoute, BookRouter} from '../../routing/book-routing';
 import {BookRouteLink} from './common/book-route-link.element';
 import {defineBookElement} from './define-book-element';
@@ -39,19 +39,17 @@ export const BookBreadcrumbs = defineBookElement<{
                   `;
 
             return html`
-                <${BookRouteLink}
-                    ${assign(BookRouteLink, {
-                        route: {
-                            hash: undefined,
-                            search: undefined,
-                            paths: [
-                                BookMainRoute.Book,
-                                ...fullPathSoFar,
-                            ],
-                        },
-                        router: inputs.router,
-                    })}
-                >
+                <${BookRouteLink.assign({
+                    route: {
+                        hash: undefined,
+                        search: undefined,
+                        paths: [
+                            BookMainRoute.Book,
+                            ...fullPathSoFar,
+                        ],
+                    },
+                    router: inputs.router,
+                })}>
                     ${currentPath}
                 </${BookRouteLink}>
                 ${spacer}

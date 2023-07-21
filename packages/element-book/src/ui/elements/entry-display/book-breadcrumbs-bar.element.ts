@@ -1,5 +1,5 @@
 import {wait} from '@augment-vir/common';
-import {assign, css, html, listen, renderIf} from 'element-vir';
+import {css, html, listen, renderIf} from 'element-vir';
 import {
     BookFullRoute,
     BookMainRoute,
@@ -39,12 +39,10 @@ export const BookBreadcrumbsBar = defineBookElement<{
                     &nbsp;
                 `,
                 html`
-                    <${BookBreadcrumbs}
-                        ${assign(BookBreadcrumbs, {
-                            currentRoute: inputs.currentRoute,
-                            router: inputs.router,
-                        })}
-                    ></${BookBreadcrumbs}>
+                    <${BookBreadcrumbs.assign({
+                        currentRoute: inputs.currentRoute,
+                        router: inputs.router,
+                    })}></${BookBreadcrumbs}>
                 `,
             )}
             <input

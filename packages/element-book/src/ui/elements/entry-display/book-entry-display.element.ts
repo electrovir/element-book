@@ -68,13 +68,11 @@ export const BookEntryDisplay = defineBookElement<{
         });
 
         return html`
-            <${BookBreadcrumbsBar}
-                ${assign(BookBreadcrumbsBar, {
-                    currentSearch,
-                    currentRoute: inputs.currentRoute,
-                    router: inputs.router,
-                })}
-            ></${BookBreadcrumbsBar}>
+            <${BookBreadcrumbsBar.assign({
+                currentSearch,
+                currentRoute: inputs.currentRoute,
+                router: inputs.router,
+            })}></${BookBreadcrumbsBar}>
             <div class="all-book-entries-wrapper">${entryTemplates}</div>
             <slot name=${ElementBookSlotName.Footer}></slot>
         `;
@@ -179,13 +177,11 @@ function createNodeTemplates({
     const hiddenAncestorControlsTemplate =
         hiddenAncestorControls && isLengthAtLeast(currentNodes, 1)
             ? html`
-                  <${BookPageControls}
-                      ${assign(BookPageControls, {
-                          config: hiddenAncestorControls.config,
-                          currentValues: hiddenAncestorControls.current,
-                          fullUrlBreadcrumbs: hiddenAncestorControls.breadcrumbs,
-                      })}
-                  ></${BookPageControls}>
+                  <${BookPageControls.assign({
+                      config: hiddenAncestorControls.config,
+                      currentValues: hiddenAncestorControls.current,
+                      fullUrlBreadcrumbs: hiddenAncestorControls.breadcrumbs,
+                  })}></${BookPageControls}>
               `
             : '';
 
@@ -195,14 +191,13 @@ function createNodeTemplates({
         (currentNode, index) => {
             if (isBookTreeNode(currentNode, BookEntryTypeEnum.Page)) {
                 return html`
-                    <${BookPageWrapper}
+                    <${BookPageWrapper.assign({
+                        isTopLevel,
+                        pageNode: currentNode,
+                        currentControls,
+                        router,
+                    })}
                         class="block-entry"
-                        ${assign(BookPageWrapper, {
-                            isTopLevel,
-                            pageNode: currentNode,
-                            currentControls,
-                            router,
-                        })}
                     ></${BookPageWrapper}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryTypeEnum.ElementExample)) {
@@ -212,13 +207,12 @@ function createNodeTemplates({
                 );
 
                 return html`
-                    <${BookElementExampleWrapper}
+                    <${BookElementExampleWrapper.assign({
+                        elementExampleNode: currentNode,
+                        currentPageControls: controlsForElementExample,
+                        router,
+                    })}
                         class="inline-entry"
-                        ${assign(BookElementExampleWrapper, {
-                            elementExampleNode: currentNode,
-                            currentPageControls: controlsForElementExample,
-                            router,
-                        })}
                     ></${BookElementExampleWrapper}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryTypeEnum.Root)) {

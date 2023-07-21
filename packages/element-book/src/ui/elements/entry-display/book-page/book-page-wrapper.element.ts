@@ -1,5 +1,5 @@
 import {combineErrors} from '@augment-vir/common';
-import {assign, css, html} from 'element-vir';
+import {css, html} from 'element-vir';
 import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
 import {
     CurrentControls,
@@ -67,41 +67,33 @@ export const BookPageWrapper = defineBookElement<{
         return html`
             <div class="page-header block-entry">
                 <div class="title-group">
-                    <${BookRouteLink}
-                        ${assign(BookRouteLink, {
-                            route: {
-                                paths: linkPaths,
-                                hash: undefined,
-                                search: undefined,
-                            },
-                            router: inputs.router,
-                        })}
-                    >
+                    <${BookRouteLink.assign({
+                        route: {
+                            paths: linkPaths,
+                            hash: undefined,
+                            search: undefined,
+                        },
+                        router: inputs.router,
+                    })}>
                         ${titleTemplate}
                     </${BookRouteLink}>
                     ${!!error
                         ? html`
-                              <${BookError}
-                                  ${assign(BookError, {message: error.message})}
-                              ></${BookError}>
+                              <${BookError.assign({message: error.message})}></${BookError}>
                           `
                         : html`
-                              <${BookEntryDescription}
-                                  ${assign(BookEntryDescription, {
-                                      descriptionParagraphs:
-                                          inputs.pageNode.entry.descriptionParagraphs ?? [],
-                                  })}
-                              ></${BookEntryDescription}>
-                              <${BookPageControls}
-                                  ${assign(BookPageControls, {
-                                      config: inputs.pageNode.entry.controls,
-                                      currentValues: traverseCurrentControls(
-                                          inputs.currentControls,
-                                          inputs.pageNode.fullUrlBreadcrumbs,
-                                      ),
-                                      fullUrlBreadcrumbs: inputs.pageNode.fullUrlBreadcrumbs,
-                                  })}
-                              ></${BookPageControls}>
+                              <${BookEntryDescription.assign({
+                                  descriptionParagraphs:
+                                      inputs.pageNode.entry.descriptionParagraphs ?? [],
+                              })}></${BookEntryDescription}>
+                              <${BookPageControls.assign({
+                                  config: inputs.pageNode.entry.controls,
+                                  currentValues: traverseCurrentControls(
+                                      inputs.currentControls,
+                                      inputs.pageNode.fullUrlBreadcrumbs,
+                                  ),
+                                  fullUrlBreadcrumbs: inputs.pageNode.fullUrlBreadcrumbs,
+                              })}></${BookPageControls}>
                           `}
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import {checkIfEntirelyInScrollView, waitForAnimationFrame} from '@augment-vir/browser';
 import {areJsonEqual} from '@augment-vir/common';
-import {assign, classMap, css, html, renderIf} from 'element-vir';
+import {classMap, css, html, renderIf} from 'element-vir';
 import {Element16Icon, ViraIcon} from 'vira';
 import {BookEntryTypeEnum} from '../../data/book-entry/book-entry-type';
 import {isBookTreeNode} from '../../data/book-tree/book-tree';
@@ -85,16 +85,15 @@ export const BookNav = defineBookElement<{
 
             return html`
                 <li style=${liStyle}>
-                    <${BookRouteLink}
-                        ${assign(BookRouteLink, {
-                            router: inputs.router,
-                            route: {
-                                paths: [
-                                    BookMainRoute.Book,
-                                    ...treeNode.fullUrlBreadcrumbs,
-                                ],
-                            },
-                        })}
+                    <${BookRouteLink.assign({
+                        router: inputs.router,
+                        route: {
+                            paths: [
+                                BookMainRoute.Book,
+                                ...treeNode.fullUrlBreadcrumbs,
+                            ],
+                        },
+                    })}
                         class=${classMap({
                             'title-row': true,
                             selected: inputs.selectedPath
@@ -106,9 +105,7 @@ export const BookNav = defineBookElement<{
                             ${renderIf(
                                 isBookTreeNode(treeNode, BookEntryTypeEnum.ElementExample),
                                 html`
-                                    <${ViraIcon}
-                                        ${assign(ViraIcon, {icon: Element16Icon})}
-                                    ></${ViraIcon}>
+                                    <${ViraIcon.assign({icon: Element16Icon})}></${ViraIcon}>
                                 `,
                             )}
                             ${treeNode.entry.title}

@@ -1,4 +1,4 @@
-import {assign, css, html} from 'element-vir';
+import {css, html} from 'element-vir';
 import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
 import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
 import {BookMainRoute, BookRouter} from '../../../../routing/book-routing';
@@ -26,16 +26,14 @@ export const BookElementExampleControls = defineBookElement<{
         ] as const;
 
         return html`
-            <${BookRouteLink}
-                ${assign(BookRouteLink, {
-                    route: {
-                        paths: linkPaths,
-                        hash: undefined,
-                        search: undefined,
-                    },
-                    router: inputs.router,
-                })}
-            >
+            <${BookRouteLink.assign({
+                route: {
+                    paths: linkPaths,
+                    hash: undefined,
+                    search: undefined,
+                },
+                router: inputs.router,
+            })}>
                 ${inputs.elementExampleNode.entry.title}
             </${BookRouteLink}>
         `;

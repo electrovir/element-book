@@ -1,4 +1,5 @@
-import {assign, css, html} from 'element-vir';
+import {omitObjectKeys} from '@augment-vir/common';
+import {css, html} from 'element-vir';
 import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
 import {BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls';
 import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
@@ -50,12 +51,10 @@ export const BookElementExampleWrapper = defineBookElement<{
     renderCallback({inputs}) {
         return html`
             <div class="individual-example-wrapper">
-                <${BookElementExampleControls}
-                    ${assign(BookElementExampleControls, inputs)}
-                ></${BookElementExampleControls}>
-                <${BookElementExampleViewer}
-                    ${assign(BookElementExampleViewer, inputs)}
-                ></${BookElementExampleViewer}>
+                <${BookElementExampleControls.assign(
+                    omitObjectKeys(inputs, ['currentPageControls']),
+                )}></${BookElementExampleControls}>
+                <${BookElementExampleViewer.assign(inputs)}></${BookElementExampleViewer}>
             </div>
         `;
     },

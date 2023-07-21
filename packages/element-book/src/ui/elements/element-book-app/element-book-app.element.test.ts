@@ -1,7 +1,7 @@
 import {queryThroughShadow} from '@augment-vir/browser';
 import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture} from '@open-wc/testing';
-import {assign, html} from 'element-vir';
+import {html} from 'element-vir';
 import {defineBookPage} from '../../../data/book-entry/book-page/define-book-page';
 import {BookError} from '../common/book-error.element';
 import {ElementBookApp} from './element-book-app.element';
@@ -11,11 +11,9 @@ describe(ElementBookApp.tagName, () => {
     async function setupEntriesTest(entries: ElementBookConfig['entries']) {
         const elementBookAppInstance = await renderFixture(
             html`
-                <${ElementBookApp}
-                    ${assign(ElementBookApp, {
-                        entries,
-                    })}
-                ></${ElementBookApp}>
+                <${ElementBookApp.assign({
+                    entries,
+                })}></${ElementBookApp}>
             `,
         );
 

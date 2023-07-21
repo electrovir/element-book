@@ -1,5 +1,5 @@
 import {combineErrors, extractErrorMessage} from '@augment-vir/common';
-import {assign, html, renderIf} from 'element-vir';
+import {html, renderIf} from 'element-vir';
 import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
 import {BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls';
 import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
@@ -62,13 +62,11 @@ export const BookElementExampleViewer = defineBookElement<{
         } catch (error) {
             console.error(error);
             return html`
-                <${BookError}
-                    ${assign(BookError, {
-                        message: `${
-                            inputs.elementExampleNode.entry.title
-                        } failed: ${extractErrorMessage(error)}`,
-                    })}
-                ></${BookError}>
+                <${BookError.assign({
+                    message: `${
+                        inputs.elementExampleNode.entry.title
+                    } failed: ${extractErrorMessage(error)}`,
+                })}></${BookError}>
             `;
         }
     },

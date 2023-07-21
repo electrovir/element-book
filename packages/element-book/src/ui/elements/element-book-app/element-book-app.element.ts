@@ -1,5 +1,5 @@
 import {areJsonEqual, extractErrorMessage} from '@augment-vir/common';
-import {assign, css, defineElement, defineElementEvent, html, listen} from 'element-vir';
+import {css, defineElement, defineElementEvent, html, listen} from 'element-vir';
 import {
     CurrentControls,
     createControlsFromTree,
@@ -198,9 +198,9 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
 
             if (!currentControls) {
                 return html`
-                    <${BookError}
-                        ${assign(BookError, {message: 'Failed to generate page controls.'})}
-                    ></${BookError}>
+                    <${BookError.assign({
+                        message: 'Failed to generate page controls.',
+                    })}></${BookError}>
                 `;
             }
 
@@ -251,30 +251,24 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                         });
                     })}
                 >
-                    <${BookNav}
-                        ${assign(BookNav, {
-                            flattenedNodes: originalTree.flattenedNodes,
-                            router: state.router,
-                            selectedPath: searchQuery
-                                ? undefined
-                                : state.currentRoute.paths.slice(1),
-                        })}
-                    >
+                    <${BookNav.assign({
+                        flattenedNodes: originalTree.flattenedNodes,
+                        router: state.router,
+                        selectedPath: searchQuery ? undefined : state.currentRoute.paths.slice(1),
+                    })}>
                         <slot
                             name=${ElementBookSlotName.NavHeader}
                             slot=${ElementBookSlotName.NavHeader}
                         ></slot>
                     </${BookNav}>
-                    <${BookEntryDisplay}
-                        ${assign(BookEntryDisplay, {
-                            currentRoute: state.currentRoute,
-                            currentNodes,
-                            router: state.router!,
-                            debug,
-                            currentControls,
-                            originalTree: originalTree.tree,
-                        })}
-                    >
+                    <${BookEntryDisplay.assign({
+                        currentRoute: state.currentRoute,
+                        currentNodes,
+                        router: state.router!,
+                        debug,
+                        currentControls,
+                        originalTree: originalTree.tree,
+                    })}>
                         <slot
                             name=${ElementBookSlotName.Footer}
                             slot=${ElementBookSlotName.Footer}
