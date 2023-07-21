@@ -16,7 +16,7 @@ type OptionalConfig = {
     everythingTitle: string;
     everythingDescriptionParagraphs: ReadonlyArray<string>;
     debug: boolean;
-    globalControls: GlobalValues;
+    globalValues: GlobalValues;
 } & RequireExactlyOne<{
     /**
      * Set this internal router config if element-book is intended to be the current website's

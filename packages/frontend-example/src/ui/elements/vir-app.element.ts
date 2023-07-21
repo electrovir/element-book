@@ -56,7 +56,7 @@ export const VirApp = defineElementNoInputs({
                     everythingTitle: 'All',
                     debug: true,
 
-                    globalControls: {
+                    globalValues: {
                         testGlobalControl: 'it worked!',
                     },
                 })}

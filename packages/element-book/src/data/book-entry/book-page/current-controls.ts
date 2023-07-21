@@ -92,7 +92,7 @@ export function createNewCurrentControls(
 
 export function createControlsFromTree(
     node: BookTreeNode,
-    globalControls: GlobalValues,
+    globalValues: GlobalValues,
 ): CurrentControls {
     const currentControls: CurrentControls = mapObjectValues(
         node.children,
@@ -107,7 +107,7 @@ export function createControlsFromTree(
             return {
                 children: createControlsFromTree(child, {}),
                 controls: {
-                    ...globalControls,
+                    ...globalValues,
                     ...mapObjectValues(child.entry.controls, (name, setup) => {
                         return setup.initValue;
                     }),

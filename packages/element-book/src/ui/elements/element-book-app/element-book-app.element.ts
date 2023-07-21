@@ -42,7 +42,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
         treeBasedCurrentControls: undefined as
             | {
                   entries: ElementBookConfig['entries'];
-                  globalControls: GlobalValues;
+                  globalValues: GlobalValues;
                   currentControls: CurrentControls;
               }
             | undefined,
@@ -163,15 +163,15 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             if (
                 !state.treeBasedCurrentControls ||
                 state.treeBasedCurrentControls.entries !== inputs.entries ||
-                state.treeBasedCurrentControls.globalControls !== inputs.globalControls
+                state.treeBasedCurrentControls.globalValues !== inputs.globalValues
             ) {
                 updateState({
                     treeBasedCurrentControls: {
                         entries: inputs.entries,
-                        globalControls: inputs.globalControls ?? {},
+                        globalValues: inputs.globalValues ?? {},
                         currentControls: createControlsFromTree(
                             originalTree.tree,
-                            inputs.globalControls ?? {},
+                            inputs.globalValues ?? {},
                         ),
                     },
                 });
