@@ -43,8 +43,18 @@ export function searchFlattenedNodes({
 }): ReadonlyArray<BookTreeNode> {
     const includeInSearchResults: SearchInclusions = {};
 
+    function addChildren(treeNode: BookTreeNode) {
+        const childrenKeys = Object.values(treeNode.children).map((child) => {
+            addChildren(child);
+            return createBreadcrumbsSearchKey(child.fullUrlBreadcrumbs);
+        });
+
+        childrenKeys.forEach((keyToInclude) => (includeInSearchResults[keyToInclude] = true));
+    }
+
     flattenedNodes.forEach((treeNode) => {
         const matchesErrors = treeNode.entry.errors.length && isSearchingForErrors(searchQuery);
+        const currentNodeSearchKey = createBreadcrumbsSearchKey(treeNode.fullUrlBreadcrumbs);
         const shouldInclude =
             fuzzySearch({
                 searchIn: [
@@ -54,15 +64,18 @@ export function searchFlattenedNodes({
                     .join(' ')
                     .toLowerCase(),
                 searchQuery: searchQuery.toLowerCase(),
-            }) || matchesErrors;
+            }) ||
+            matchesErrors ||
+            includeInSearchResults[currentNodeSearchKey];
 
         if (shouldInclude) {
             const keysToInclude = getFullTreeKeysToInclude(treeNode.fullUrlBreadcrumbs);
 
+            addChildren(treeNode);
+
             keysToInclude.forEach((keyToInclude) => (includeInSearchResults[keyToInclude] = true));
         } else {
-            const currentNodeKey = createBreadcrumbsSearchKey(treeNode.fullUrlBreadcrumbs);
-            includeInSearchResults[currentNodeKey] = false;
+            includeInSearchResults[currentNodeSearchKey] = false;
         }
     });
 
