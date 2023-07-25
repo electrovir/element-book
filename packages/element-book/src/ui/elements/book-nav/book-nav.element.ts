@@ -5,7 +5,7 @@ import {Element16Icon, ViraIcon} from 'vira';
 import {BookEntryTypeEnum} from '../../../data/book-entry/book-entry-type';
 import {isBookTreeNode} from '../../../data/book-tree/book-tree';
 import {BookTreeNode} from '../../../data/book-tree/book-tree-node';
-import {BookMainRoute, BookRouter} from '../../../routing/book-routing';
+import {BookMainRoute, BookRouter, defaultBookFullRoute} from '../../../routing/book-routing';
 import {colorThemeCssVars} from '../../color-theme/color-theme';
 import {BookRouteLink} from '../common/book-route-link.element';
 import {defineBookElement} from '../define-book-element';
@@ -120,7 +120,12 @@ export const BookNav = defineBookElement<{
         });
 
         return html`
-            <slot name=${ElementBookSlotName.NavHeader}></slot>
+            <${BookRouteLink.assign({
+                route: defaultBookFullRoute,
+                router: inputs.router,
+            })}>
+                <slot name=${ElementBookSlotName.NavHeader}>Book</slot>
+            </${BookRouteLink}>
             <ul>
                 ${navTreeTemplates}
             </ul>

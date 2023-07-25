@@ -1,3 +1,4 @@
+import {waitForAnimationFrame} from '@augment-vir/browser';
 import {areJsonEqual, extractErrorMessage} from '@augment-vir/common';
 import {css, defineElement, defineElementEvent, html, listen} from 'element-vir';
 import {
@@ -35,6 +36,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     stateInitStatic: {
         currentRoute: defaultBookFullRoute,
         router: undefined as undefined | BookRouter,
+        loading: false,
         colors: {
             config: undefined,
             theme: createTheme(undefined),
@@ -82,11 +84,16 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             overflow-y: auto;
             max-height: 100%;
             top: 0;
+            max-width: min(400px, 40%);
+        }
+
+        .loading {
+            padding: 64px;
         }
     `,
     initCallback({host, state}) {
         setTimeout(() => {
-            scrollNav(host, extractSearchQuery(state.currentRoute.paths));
+            scrollNav(host, extractSearchQuery(state.currentRoute.paths), state.currentRoute);
         }, 1000);
     },
     cleanupCallback({state, updateState}) {
@@ -209,10 +216,18 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             return html`
                 <div
                     class="root"
-                    ${listen(ChangeRouteEvent, (event) => {
+                    ${listen(ChangeRouteEvent, async (event) => {
                         const entryDisplay = host.shadowRoot.querySelector(
                             BookEntryDisplay.tagName,
                         );
+                        updateState({loading: true});
+
+                        /** Wait for the loading div to show up. */
+                        while (!host.shadowRoot.querySelector('.loading')) {
+                            console.log('waiting');
+                            await waitForAnimationFrame();
+                        }
+                        await waitForAnimationFrame();
 
                         if (entryDisplay) {
                             entryDisplay.scroll({top: 0, behavior: 'smooth'});
@@ -229,7 +244,9 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             throw new Error(`Failed to find child '${BookNav.tagName}'`);
                         }
 
-                        scrollNav(host, searchQuery);
+                        updateState({loading: false});
+
+                        scrollNav(host, searchQuery, state.currentRoute);
                     })}
                     ${listen(BookPageControls.events.controlValueChange, (event) => {
                         if (!state.treeBasedCurrentControls) {
@@ -259,19 +276,25 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             slot=${ElementBookSlotName.NavHeader}
                         ></slot>
                     </${BookNav}>
-                    <${BookEntryDisplay.assign({
-                        currentRoute: state.currentRoute,
-                        currentNodes,
-                        router: state.router!,
-                        debug,
-                        currentControls,
-                        originalTree: originalTree.tree,
-                    })}>
-                        <slot
-                            name=${ElementBookSlotName.Footer}
-                            slot=${ElementBookSlotName.Footer}
-                        ></slot>
-                    </${BookEntryDisplay}>
+                    ${state.loading
+                        ? html`
+                              <div class="loading">Loading...</div>
+                          `
+                        : html`
+                              <${BookEntryDisplay.assign({
+                                  currentRoute: state.currentRoute,
+                                  currentNodes,
+                                  router: state.router!,
+                                  debug,
+                                  currentControls,
+                                  originalTree: originalTree.tree,
+                              })}>
+                                  <slot
+                                      name=${ElementBookSlotName.Footer}
+                                      slot=${ElementBookSlotName.Footer}
+                                  ></slot>
+                              </${BookEntryDisplay}>
+                          `}
                 </div>
             `;
         } catch (error) {
@@ -283,9 +306,16 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     },
 });
 
-async function scrollNav(host: typeof ElementBookApp.instanceType, searchQuery: string) {
+async function scrollNav(
+    host: typeof ElementBookApp.instanceType,
+    searchQuery: string,
+    currentRoutes: BookFullRoute,
+) {
     /** If there is a search query, then there will be no selected nav to scroll to. */
     if (searchQuery) {
+        return;
+    }
+    if (currentRoutes.paths.length <= 1) {
         return;
     }
     const navElement = host.shadowRoot.querySelector(BookNav.tagName);
