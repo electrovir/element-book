@@ -1,6 +1,6 @@
 import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
-import {createObservableProperty} from 'element-vir';
+import {createObservablePropertyWithSetter} from 'element-vir';
 import {BookPageControlTypeEnum, definePageControl} from './book-page-controls';
 import {defineBookPage, defineBookPageWithGlobals} from './define-book-page';
 
@@ -34,17 +34,17 @@ describe(defineBookPage.name, () => {
                 defineExample({
                     title: 'example with observable property state',
                     stateInitStatic: {
-                        observable: createObservableProperty<number | undefined>(undefined),
+                        observable: createObservablePropertyWithSetter<number | undefined>(
+                            undefined,
+                        ),
                     },
                     descriptionParagraphs: [
                         'yo',
                         'what up',
                     ],
                     renderCallback({state, updateState}) {
-                        if (state.observable === undefined) {
-                            updateState({
-                                observable: 5,
-                            });
+                        if (state.observable.value === undefined) {
+                            state.observable.setValue(5);
                         }
                         return '';
                     },

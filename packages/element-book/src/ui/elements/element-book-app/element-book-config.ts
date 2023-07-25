@@ -12,10 +12,7 @@ export type GlobalValues = Readonly<Record<string, unknown>>;
 type OptionalConfig = {
     /** The base theme color from which all other element-book colors will be generated from. */
     themeColor: string;
-    /** The title to use for the "Everything" nav link. */
-    everythingTitle: string;
-    everythingDescriptionParagraphs: ReadonlyArray<string>;
-    debug: boolean;
+    _debug: boolean;
     globalValues: GlobalValues;
 } & RequireExactlyOne<{
     /**

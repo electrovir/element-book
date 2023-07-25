@@ -2,14 +2,15 @@ import {checkIfEntirelyInScrollView, waitForAnimationFrame} from '@augment-vir/b
 import {areJsonEqual} from '@augment-vir/common';
 import {classMap, css, html, renderIf} from 'element-vir';
 import {Element16Icon, ViraIcon} from 'vira';
-import {BookEntryTypeEnum} from '../../data/book-entry/book-entry-type';
-import {isBookTreeNode} from '../../data/book-tree/book-tree';
-import {BookTreeNode} from '../../data/book-tree/book-tree-node';
-import {BookMainRoute, BookRouter} from '../../routing/book-routing';
-import {colorThemeCssVars} from '../color-theme/color-theme';
-import {BookRouteLink} from './common/book-route-link.element';
-import {defineBookElement} from './define-book-element';
-import {ElementBookSlotName} from './element-book-app/element-book-app-slots';
+import {BookEntryTypeEnum} from '../../../data/book-entry/book-entry-type';
+import {isBookTreeNode} from '../../../data/book-tree/book-tree';
+import {BookTreeNode} from '../../../data/book-tree/book-tree-node';
+import {BookMainRoute, BookRouter} from '../../../routing/book-routing';
+import {colorThemeCssVars} from '../../color-theme/color-theme';
+import {BookRouteLink} from '../common/book-route-link.element';
+import {defineBookElement} from '../define-book-element';
+import {ElementBookSlotName} from '../element-book-app/element-book-app-slots';
+import {shouldShowTreeNodeInNav} from './book-nav-filter';
 
 export const BookNav = defineBookElement<{
     flattenedNodes: ReadonlyArray<Readonly<BookTreeNode>>;
@@ -79,8 +80,11 @@ export const BookNav = defineBookElement<{
     `,
     renderCallback({inputs}) {
         const navTreeTemplates = inputs.flattenedNodes.map((treeNode) => {
+            if (!shouldShowTreeNodeInNav(treeNode, inputs.selectedPath)) {
+                return;
+            }
             const liStyle = css`
-                --book-nav-internal-indent: ${treeNode.fullUrlBreadcrumbs.length};
+                --book-nav-internal-indent: ${treeNode.fullUrlBreadcrumbs.length - 1};
             `;
 
             return html`

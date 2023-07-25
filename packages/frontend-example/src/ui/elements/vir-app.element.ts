@@ -52,8 +52,7 @@ export const VirApp = defineElementNoInputs({
                 internalRouterConfig: {
                     useInternalRouter: true,
                 },
-                everythingTitle: 'All',
-                debug: true,
+                _debug: true,
 
                 globalValues: {
                     testGlobalControl: 'it worked!',

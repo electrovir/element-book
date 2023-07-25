@@ -175,7 +175,9 @@ function createNodeTemplates({
         : undefined;
 
     const hiddenAncestorControlsTemplate =
-        hiddenAncestorControls && isLengthAtLeast(currentNodes, 1)
+        hiddenAncestorControls &&
+        Object.values(hiddenAncestorControls.config).length &&
+        isLengthAtLeast(currentNodes, 1)
             ? html`
                   <${BookPageControls.assign({
                       config: hiddenAncestorControls.config,
@@ -216,9 +218,7 @@ function createNodeTemplates({
                     ></${BookElementExampleWrapper}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryTypeEnum.Root)) {
-                return html`
-                    <h1>${currentNode.entry.title}</h1>
-                `;
+                return html``;
             } else {
                 return html`
                     <${BookError}

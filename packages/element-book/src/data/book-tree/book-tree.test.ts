@@ -1,7 +1,7 @@
 import {assertTypeOf, itCases} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
+import {treeExample} from '../../test/example-tree.test-helper';
 import {BookEntryTypeEnum} from '../book-entry/book-entry-type';
-import {defineBookPage} from '../book-entry/book-page/define-book-page';
 import {
     createBookTreeFromEntries,
     createEmptyBookTreeRoot,
@@ -9,45 +9,6 @@ import {
     flattenTree,
 } from './book-tree';
 import {BookTreeNode, isBookTreeNodeMarker} from './book-tree-node';
-
-const page1 = defineBookPage({
-    parent: undefined,
-    title: 'page 1',
-    elementExamplesCallback({defineExample}) {
-        defineExample({
-            title: 'example 1',
-            renderCallback() {
-                return 'hi';
-            },
-        });
-    },
-});
-
-const exampleEntries = [
-    page1,
-    defineBookPage({
-        parent: undefined,
-        title: 'page 2',
-    }),
-    defineBookPage({
-        parent: page1,
-        title: 'page 1 child',
-    }),
-    defineBookPage({
-        parent: page1,
-        title: 'aaaaaaaa',
-        descriptionParagraphs: ['this page should be sorted above page 1 child'],
-    }),
-];
-
-const exampleTreeInputs = {
-    entries: exampleEntries,
-    debug: false,
-    everythingDescriptionParagraphs: [],
-    everythingTitle: 'all',
-} as const;
-
-const exampleTree = createBookTreeFromEntries(exampleTreeInputs);
 
 const expectedTree = {
     [isBookTreeNodeMarker]: true,
@@ -61,7 +22,7 @@ const expectedTree = {
                     [isBookTreeNodeMarker]: true,
                     manuallyAdded: true,
                     children: {},
-                    entry: page1.elementExamples['example-1']!,
+                    entry: treeExample.entries[0].elementExamples['example-1']!,
                     urlBreadcrumb: 'example-1',
                     fullUrlBreadcrumbs: [
                         'page-1',
@@ -72,7 +33,7 @@ const expectedTree = {
                     [isBookTreeNodeMarker]: true,
                     manuallyAdded: true,
                     children: {},
-                    entry: exampleEntries[2]!,
+                    entry: treeExample.entries[2],
                     urlBreadcrumb: 'page-1-child',
                     fullUrlBreadcrumbs: [
                         'page-1',
@@ -83,7 +44,7 @@ const expectedTree = {
                     [isBookTreeNodeMarker]: true,
                     manuallyAdded: true,
                     children: {},
-                    entry: exampleEntries[3]!,
+                    entry: treeExample.entries[3],
                     urlBreadcrumb: 'aaaaaaaa',
                     fullUrlBreadcrumbs: [
                         'page-1',
@@ -91,7 +52,7 @@ const expectedTree = {
                     ],
                 },
             },
-            entry: page1,
+            entry: treeExample.entries[0],
             fullUrlBreadcrumbs: [
                 'page-1',
             ],
@@ -101,7 +62,7 @@ const expectedTree = {
             [isBookTreeNodeMarker]: true,
             manuallyAdded: true,
             children: {},
-            entry: exampleEntries[1]!,
+            entry: treeExample.entries[1],
             urlBreadcrumb: 'page-2',
             fullUrlBreadcrumbs: [
                 'page-2',
@@ -113,7 +74,7 @@ const expectedTree = {
         entryType: BookEntryTypeEnum.Root,
         errors: [],
         parent: undefined,
-        title: 'all',
+        title: '',
     },
     urlBreadcrumb: '',
     fullUrlBreadcrumbs: [],
@@ -121,13 +82,16 @@ const expectedTree = {
 
 describe(createBookTreeFromEntries.name, () => {
     it('produces a correct tree', () => {
-        assert.deepStrictEqual(createBookTreeFromEntries(exampleTreeInputs).tree, expectedTree);
+        assert.deepStrictEqual(
+            createBookTreeFromEntries(treeExample.treeInputs).tree,
+            expectedTree,
+        );
     });
 });
 
 describe(doesNodeHaveEntryType.name, () => {
     it('type guards', () => {
-        const emptyTreeRootNode = createEmptyBookTreeRoot('empty title', []) as any;
+        const emptyTreeRootNode = createEmptyBookTreeRoot() as any;
 
         assertTypeOf(emptyTreeRootNode).not.toEqualTypeOf<BookTreeNode<BookEntryTypeEnum.Page>>();
         if (doesNodeHaveEntryType(emptyTreeRootNode, BookEntryTypeEnum.Page)) {
@@ -146,14 +110,14 @@ describe(flattenTree.name, () => {
     itCases(flattenTree, [
         {
             it: 'flattens a basic tree',
-            input: exampleTree.tree,
+            input: treeExample.tree,
             expect: [
-                exampleTree.tree,
-                exampleTree.tree.children['page-1']!,
-                exampleTree.tree.children['page-1']!.children['example-1']!,
-                exampleTree.tree.children['page-1']!.children['page-1-child']!,
-                exampleTree.tree.children['page-1']!.children['aaaaaaaa']!,
-                exampleTree.tree.children['page-2']!,
+                treeExample.tree,
+                treeExample.tree.children['page-1']!,
+                treeExample.tree.children['page-1']!.children['example-1']!,
+                treeExample.tree.children['page-1']!.children['page-1-child']!,
+                treeExample.tree.children['page-1']!.children['aaaaaaaa']!,
+                treeExample.tree.children['page-2']!,
             ],
         },
     ]);

@@ -35,8 +35,6 @@ describe(searchFlattenedNodes.name, () => {
                 childB,
             ],
             debug: false,
-            everythingDescriptionParagraphs: [],
-            everythingTitle: 'root',
         });
 
         const flattenedOriginalNodeTitles = originalTree.flattenedNodes.map(
@@ -51,7 +49,7 @@ describe(searchFlattenedNodes.name, () => {
         const searchedTitles = searchedNodes.map((searchedNode) => searchedNode.entry.title);
 
         assert.deepStrictEqual(flattenedOriginalNodeTitles, [
-            'root',
+            '',
             'child A',
             'child-c',
             'example A',

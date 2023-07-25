@@ -17,7 +17,7 @@ import {createBookRouter} from '../../../routing/create-book-router';
 import {ColorTheme, colorThemeCssVars, setThemeCssVars} from '../../color-theme/color-theme';
 import {ThemeConfig, createTheme} from '../../color-theme/create-color-theme';
 import {ChangeRouteEvent} from '../../events/change-route.event';
-import {BookNav, scrollSelectedNavElementIntoView} from '../book-nav.element';
+import {BookNav, scrollSelectedNavElementIntoView} from '../book-nav/book-nav.element';
 import {BookError} from '../common/book-error.element';
 import {BookEntryDisplay} from '../entry-display/book-entry-display.element';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element';
@@ -84,9 +84,9 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             top: 0;
         }
     `,
-    initCallback({host}) {
+    initCallback({host, state}) {
         setTimeout(() => {
-            scrollNav(host);
+            scrollNav(host, extractSearchQuery(state.currentRoute.paths));
         }, 1000);
     },
     cleanupCallback({state, updateState}) {
@@ -151,12 +151,10 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 setThemeCssVars(host, newTheme);
             }
 
-            const debug: boolean = inputs.debug ?? false;
+            const debug: boolean = inputs._debug ?? false;
 
             const originalTree = createBookTreeFromEntries({
                 entries: inputs.entries,
-                everythingTitle: inputs.everythingTitle,
-                everythingDescriptionParagraphs: inputs.everythingDescriptionParagraphs ?? [],
                 debug,
             });
 
@@ -204,7 +202,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 `;
             }
 
-            if (inputs.debug) {
+            if (inputs._debug) {
                 console.info({currentControls});
             }
 
@@ -231,7 +229,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             throw new Error(`Failed to find child '${BookNav.tagName}'`);
                         }
 
-                        scrollNav(host);
+                        scrollNav(host, searchQuery);
                     })}
                     ${listen(BookPageControls.events.controlValueChange, (event) => {
                         if (!state.treeBasedCurrentControls) {
@@ -285,7 +283,11 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     },
 });
 
-async function scrollNav(host: typeof ElementBookApp.instanceType) {
+async function scrollNav(host: typeof ElementBookApp.instanceType, searchQuery: string) {
+    /** If there is a search query, then there will be no selected nav to scroll to. */
+    if (searchQuery) {
+        return;
+    }
     const navElement = host.shadowRoot.querySelector(BookNav.tagName);
 
     if (!(navElement instanceof BookNav)) {

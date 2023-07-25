@@ -8,7 +8,6 @@ describe('ElementBookConfig', () => {
         acceptsElementBookConfig({
             entries: [],
             elementBookRoutePaths: [],
-            everythingTitle: '',
             themeColor: 'blue',
         });
         // it's fine with elementBookRoutePaths and everything else
@@ -17,7 +16,6 @@ describe('ElementBookConfig', () => {
             internalRouterConfig: {
                 useInternalRouter: true,
             },
-            everythingTitle: '',
             themeColor: 'blue',
         });
         // if they're combined we get a TS error
@@ -29,7 +27,6 @@ describe('ElementBookConfig', () => {
                     useInternalRouter: true,
                 },
                 elementBookRoutePaths: [],
-                everythingTitle: '',
                 themeColor: 'blue',
             },
         );

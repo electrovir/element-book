@@ -1,4 +1,4 @@
-import {makeWritable, typedHasProperties} from '@augment-vir/common';
+import {typedHasProperties} from '@augment-vir/common';
 import {BookEntry, isBookEntry} from '../book-entry/book-entry';
 import {BookEntryTypeEnum} from '../book-entry/book-entry-type';
 import {listUrlBreadcrumbs, titleToUrlBreadcrumb} from '../book-entry/url-breadcrumbs';
@@ -29,18 +29,15 @@ export function isAnyBookTreeNode(input: unknown): input is BookTreeNode<BookEnt
     );
 }
 
-export function createEmptyBookTreeRoot(
-    title: string | undefined,
-    descriptionParagraphs: ReadonlyArray<string>,
-): BookTreeNode<BookEntryTypeEnum.Root> {
+export function createEmptyBookTreeRoot(): BookTreeNode<BookEntryTypeEnum.Root> {
     const rootNode: Readonly<BookTreeNode<BookEntryTypeEnum.Root>> = {
         [isBookTreeNodeMarker]: true,
         entry: {
             entryType: BookEntryTypeEnum.Root,
-            title: title || 'Everything',
+            title: '',
             parent: undefined,
             errors: [],
-            descriptionParagraphs: makeWritable(descriptionParagraphs),
+            descriptionParagraphs: [],
         },
         urlBreadcrumb: '',
         fullUrlBreadcrumbs: [],
@@ -53,13 +50,9 @@ export function createEmptyBookTreeRoot(
 
 export function createBookTreeFromEntries({
     entries,
-    everythingTitle,
-    everythingDescriptionParagraphs,
     debug,
 }: {
     entries: ReadonlyArray<BookEntry>;
-    everythingTitle: string | undefined;
-    everythingDescriptionParagraphs: ReadonlyArray<string>;
     debug: boolean;
 }): BookTree {
     const cachedTree = getTreeFromCache(entries);
@@ -67,7 +60,7 @@ export function createBookTreeFromEntries({
         return cachedTree;
     }
 
-    const tree = createEmptyBookTreeRoot(everythingTitle, everythingDescriptionParagraphs);
+    const tree = createEmptyBookTreeRoot();
 
     entries.forEach((newEntry) => addEntryToTree({tree, newEntry, debug, manuallyAdded: true}));
 
