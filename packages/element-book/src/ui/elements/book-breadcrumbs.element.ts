@@ -5,7 +5,7 @@ import {defineBookElement} from './define-book-element';
 
 export const BookBreadcrumbs = defineBookElement<{
     currentRoute: Readonly<BookFullRoute>;
-    router: BookRouter;
+    router: BookRouter | undefined;
 }>()({
     tagName: 'book-breadcrumbs',
     styles: css`

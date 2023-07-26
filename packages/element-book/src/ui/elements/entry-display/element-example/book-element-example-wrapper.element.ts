@@ -12,7 +12,7 @@ import {BookElementExampleViewer} from './book-element-example-viewer.element';
 export const BookElementExampleWrapper = defineBookElement<{
     elementExampleNode: BookTreeNode<BookEntryTypeEnum.ElementExample>;
     currentPageControls: BookPageControlsValues;
-    router: BookRouter;
+    router: BookRouter | undefined;
 }>()({
     tagName: 'book-element-example-wrapper',
     styles: css`

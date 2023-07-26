@@ -11,7 +11,7 @@ import {defineBookElement} from '../../define-book-element';
 export const BookElementExampleViewer = defineBookElement<{
     elementExampleNode: BookTreeNode<BookEntryTypeEnum.ElementExample>;
     currentPageControls: BookPageControlsValues;
-    router: BookRouter;
+    router: BookRouter | undefined;
 }>()({
     tagName: 'book-element-example-viewer',
     stateInitStatic: {

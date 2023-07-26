@@ -8,7 +8,7 @@ import {defineBookElement} from '../../define-book-element';
 
 export const BookElementExampleControls = defineBookElement<{
     elementExampleNode: BookTreeNode<BookEntryTypeEnum.ElementExample>;
-    router: BookRouter;
+    router: BookRouter | undefined;
 }>()({
     tagName: 'book-element-example-controls',
     styles: css`

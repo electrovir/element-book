@@ -2,11 +2,14 @@ import {assign, css, html, repeat} from 'element-vir';
 import {BookEntryTypeEnum} from '../../../data/book-entry/book-entry-type';
 
 import {isLengthAtLeast, mapObjectValues} from '@augment-vir/common';
-import {BookPageControlsInitBase} from '../../../data/book-entry/book-page/book-page-controls';
 import {
-    CurrentControls,
-    traverseCurrentControls,
-} from '../../../data/book-entry/book-page/current-controls';
+    BookPageControlsInitBase,
+    BookPageControlsValues,
+} from '../../../data/book-entry/book-page/book-page-controls';
+import {
+    ControlsWrapper,
+    traverseControls,
+} from '../../../data/book-entry/book-page/controls-wrapper';
 import {isBookTreeNode, traverseToImmediateParent} from '../../../data/book-tree/book-tree';
 import {BookTreeNode} from '../../../data/book-tree/book-tree-node';
 import {BookFullRoute, BookRouter, extractSearchQuery} from '../../../routing/book-routing';
@@ -22,9 +25,9 @@ export const BookEntryDisplay = defineBookElement<{
     currentRoute: Readonly<BookFullRoute>;
     currentNodes: ReadonlyArray<BookTreeNode>;
     originalTree: Readonly<BookTreeNode<BookEntryTypeEnum.Root>>;
-    router: BookRouter;
+    router: BookRouter | undefined;
     debug: boolean;
-    currentControls: CurrentControls;
+    controls: ControlsWrapper;
 }>()({
     tagName: 'book-entry-display',
     styles: css`
@@ -63,7 +66,7 @@ export const BookEntryDisplay = defineBookElement<{
             isTopLevel: true,
             router: inputs.router,
             isSearching: !!currentSearch,
-            currentControls: inputs.currentControls,
+            controls: inputs.controls,
             originalTree: inputs.originalTree,
         });
 
@@ -81,13 +84,13 @@ export const BookEntryDisplay = defineBookElement<{
 
 type FlattenedControls = {
     config: BookPageControlsInitBase;
-    current: CurrentControls;
+    current: BookPageControlsValues;
     breadcrumbs: Record<string, ReadonlyArray<string>>;
 };
 
 function getFlattenedControlsFromHiddenParents(
     currentNodes: ReadonlyArray<BookTreeNode>,
-    currentControls: CurrentControls,
+    currentControls: ControlsWrapper,
     currentNode: BookTreeNode,
     originalTree: Readonly<BookTreeNode<BookEntryTypeEnum.Root>>,
 ): FlattenedControls | undefined {
@@ -109,7 +112,7 @@ function getFlattenedControlsFromHiddenParents(
         isBookTreeNode(currentNode, BookEntryTypeEnum.Page) &&
         !currentNodes.includes(currentNode)
     ) {
-        const currentEntryControls = traverseCurrentControls(
+        const currentEntryControls = traverseControls(
             currentControls,
             currentNode.fullUrlBreadcrumbs,
         );
@@ -147,14 +150,14 @@ function createNodeTemplates({
     isTopLevel,
     router,
     isSearching,
-    currentControls,
+    controls,
     originalTree,
 }: {
     currentNodes: ReadonlyArray<BookTreeNode>;
     isTopLevel: boolean;
-    router: BookRouter;
+    router: BookRouter | undefined;
     isSearching: boolean;
-    currentControls: CurrentControls;
+    controls: ControlsWrapper;
     originalTree: Readonly<BookTreeNode<BookEntryTypeEnum.Root>>;
 }): unknown {
     if (!currentNodes.length && isSearching) {
@@ -168,7 +171,7 @@ function createNodeTemplates({
     const hiddenAncestorControls = isLengthAtLeast(currentNodes, 1)
         ? getFlattenedControlsFromHiddenParents(
               currentNodes,
-              currentControls,
+              controls,
               currentNodes[0],
               originalTree,
           )
@@ -196,15 +199,15 @@ function createNodeTemplates({
                     <${BookPageWrapper.assign({
                         isTopLevel,
                         pageNode: currentNode,
-                        currentControls,
+                        controls: controls,
                         router,
                     })}
                         class="block-entry"
                     ></${BookPageWrapper}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryTypeEnum.ElementExample)) {
-                const controlsForElementExample = traverseCurrentControls(
-                    currentControls,
+                const controlsForElementExample = traverseControls(
+                    controls,
                     currentNode.fullUrlBreadcrumbs.slice(0, -1),
                 );
 

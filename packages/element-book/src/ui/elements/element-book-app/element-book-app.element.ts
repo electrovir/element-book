@@ -2,10 +2,10 @@ import {waitForAnimationFrame} from '@augment-vir/browser';
 import {areJsonEqual, extractErrorMessage} from '@augment-vir/common';
 import {css, defineElement, defineElementEvent, html, listen} from 'element-vir';
 import {
-    CurrentControls,
-    createControlsFromTree,
-    createNewCurrentControls,
-} from '../../../data/book-entry/book-page/current-controls';
+    ControlsWrapper,
+    createNewControls,
+    updateTreeControls,
+} from '../../../data/book-entry/book-page/controls-wrapper';
 import {createBookTreeFromEntries} from '../../../data/book-tree/book-tree';
 import {searchFlattenedNodes} from '../../../data/book-tree/search-nodes';
 import {
@@ -41,11 +41,11 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             config: undefined,
             theme: createTheme(undefined),
         } as ColorThemeState,
-        treeBasedCurrentControls: undefined as
+        treeBasedControls: undefined as
             | {
                   entries: ElementBookConfig['entries'];
-                  globalValues: GlobalValues;
-                  currentControls: CurrentControls;
+                  lastGlobalInputs: GlobalValues;
+                  controls: ControlsWrapper;
               }
             | undefined,
     },
@@ -103,6 +103,10 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
         }
     },
     renderCallback: ({state, inputs, host, updateState, dispatch, events}) => {
+        if (inputs._debug) {
+            console.info('rendering element-book app');
+        }
+
         try {
             function updateRoutes(newRoute: Partial<BookFullRoute>) {
                 if (state.router) {
@@ -166,18 +170,21 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             });
 
             if (
-                !state.treeBasedCurrentControls ||
-                state.treeBasedCurrentControls.entries !== inputs.entries ||
-                state.treeBasedCurrentControls.globalValues !== inputs.globalValues
+                !state.treeBasedControls ||
+                state.treeBasedControls.entries !== inputs.entries ||
+                state.treeBasedControls.lastGlobalInputs !== inputs.globalValues
             ) {
+                if (inputs._debug) {
+                    console.info('regenerating global controls');
+                }
                 updateState({
-                    treeBasedCurrentControls: {
+                    treeBasedControls: {
                         entries: inputs.entries,
-                        globalValues: inputs.globalValues ?? {},
-                        currentControls: createControlsFromTree(
-                            originalTree.tree,
-                            inputs.globalValues ?? {},
-                        ),
+                        lastGlobalInputs: inputs.globalValues ?? {},
+                        controls: updateTreeControls(originalTree.tree, {
+                            children: state.treeBasedControls?.controls?.children,
+                            controls: inputs.globalValues,
+                        }),
                     },
                 });
             }
@@ -199,7 +206,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                     updateRoutes,
                 );
 
-            const currentControls = state.treeBasedCurrentControls?.currentControls;
+            const currentControls = state.treeBasedControls?.controls;
 
             if (!currentControls) {
                 return html`
@@ -224,7 +231,6 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
 
                         /** Wait for the loading div to show up. */
                         while (!host.shadowRoot.querySelector('.loading')) {
-                            console.log('waiting');
                             await waitForAnimationFrame();
                         }
                         await waitForAnimationFrame();
@@ -249,19 +255,19 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                         scrollNav(host, searchQuery, state.currentRoute);
                     })}
                     ${listen(BookPageControls.events.controlValueChange, (event) => {
-                        if (!state.treeBasedCurrentControls) {
+                        if (!state.treeBasedControls) {
                             return;
                         }
-                        const newControls = createNewCurrentControls(
+                        const newControls = createNewControls(
                             currentControls,
                             event.detail.fullUrlBreadcrumbs,
                             event.detail.newValues,
                         );
 
                         updateState({
-                            treeBasedCurrentControls: {
-                                ...state.treeBasedCurrentControls,
-                                currentControls: newControls,
+                            treeBasedControls: {
+                                ...state.treeBasedControls,
+                                controls: newControls,
                             },
                         });
                     })}
@@ -284,9 +290,9 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                               <${BookEntryDisplay.assign({
                                   currentRoute: state.currentRoute,
                                   currentNodes,
-                                  router: state.router!,
+                                  router: state.router,
                                   debug,
-                                  currentControls,
+                                  controls: currentControls,
                                   originalTree: originalTree.tree,
                               })}>
                                   <slot

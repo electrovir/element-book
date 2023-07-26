@@ -7,7 +7,7 @@ export type ElementBookConfig = {
     entries: ReadonlyArray<BookEntry>;
 } & PartialAndUndefined<OptionalConfig>;
 
-export type GlobalValues = Readonly<Record<string, unknown>>;
+export type GlobalValues = Readonly<Record<string, unknown>> | undefined;
 
 type OptionalConfig = {
     /** The base theme color from which all other element-book colors will be generated from. */

@@ -2,9 +2,9 @@ import {combineErrors} from '@augment-vir/common';
 import {css, html} from 'element-vir';
 import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
 import {
-    CurrentControls,
-    traverseCurrentControls,
-} from '../../../../data/book-entry/book-page/current-controls';
+    ControlsWrapper,
+    traverseControls,
+} from '../../../../data/book-entry/book-page/controls-wrapper';
 import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
 import {BookMainRoute, BookRouter} from '../../../../routing/book-routing';
 import {BookError} from '../../common/book-error.element';
@@ -16,8 +16,8 @@ import {BookPageControls} from './book-page-controls.element';
 export const BookPageWrapper = defineBookElement<{
     isTopLevel: boolean;
     pageNode: BookTreeNode<BookEntryTypeEnum.Page>;
-    router: BookRouter;
-    currentControls: CurrentControls;
+    router: BookRouter | undefined;
+    controls: ControlsWrapper;
 }>()({
     tagName: 'book-page-wrapper',
     styles: css`
@@ -88,8 +88,8 @@ export const BookPageWrapper = defineBookElement<{
                               })}></${BookEntryDescription}>
                               <${BookPageControls.assign({
                                   config: inputs.pageNode.entry.controls,
-                                  currentValues: traverseCurrentControls(
-                                      inputs.currentControls,
+                                  currentValues: traverseControls(
+                                      inputs.controls,
                                       inputs.pageNode.fullUrlBreadcrumbs,
                                   ),
                                   fullUrlBreadcrumbs: inputs.pageNode.fullUrlBreadcrumbs,

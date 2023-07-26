@@ -14,7 +14,7 @@ import {defineBookElement} from '../define-book-element';
 export const BookBreadcrumbsBar = defineBookElement<{
     currentSearch: string;
     currentRoute: BookFullRoute;
-    router: BookRouter;
+    router: BookRouter | undefined;
 }>()({
     tagName: 'book-breadcrumbs-bar',
     styles: css`

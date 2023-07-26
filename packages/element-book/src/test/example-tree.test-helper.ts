@@ -40,8 +40,6 @@ const exampleTreeInputs = {
 
 const tree = createBookTreeFromEntries(exampleTreeInputs);
 
-console.log(tree.flattenedNodes);
-
 export const treeExample = {
     tree: tree.tree,
     flattenedNodes: tree.flattenedNodes as [

@@ -103,7 +103,7 @@ const testPage3 = defineBookPage({
             styles: css`
                 .color-control {
                     width: 20px;
-                    height: 20px;
+                    height: 20px;);
                 }
             `,
             renderCallback({controls}) {
