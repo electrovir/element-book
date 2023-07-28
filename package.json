@@ -1,6 +1,6 @@
 {
     "name": "@element-book/root",
-    "version": "10.0.1",
+    "version": "10.0.2",
     "private": true,
     "homepage": "https://github.com/electrovir/element-book",
     "bugs": {
@@ -51,7 +51,7 @@
         "prettier-plugin-packagejson": "^2.4.5",
         "prettier-plugin-sort-json": "^1.0.0",
         "prettier-plugin-toml": "^0.3.1",
-        "virmator": "^7.2.5"
+        "virmator": "^7.3.0"
     },
     "overrides": {
         "semver": "npm:semver@v7.5.2",
