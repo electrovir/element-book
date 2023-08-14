@@ -51,6 +51,7 @@ export const VirApp = defineElementNoInputs({
                 themeColor: state.themeColor,
                 internalRouterConfig: {
                     useInternalRouter: true,
+                    basePath: 'element-book',
                 },
                 _debug: true,
 
