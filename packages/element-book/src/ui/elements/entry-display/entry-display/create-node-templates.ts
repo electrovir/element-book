@@ -1,86 +1,21 @@
-import {assign, css, html, repeat} from 'element-vir';
-import {BookEntryTypeEnum} from '../../../data/book-entry/book-entry-type';
-
 import {isLengthAtLeast, mapObjectValues} from '@augment-vir/common';
+import {assign, html, repeat} from 'element-vir';
+import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
 import {
     BookPageControlsInitBase,
     BookPageControlsValues,
-} from '../../../data/book-entry/book-page/book-page-controls';
+} from '../../../../data/book-entry/book-page/book-page-controls';
 import {
     ControlsWrapper,
     traverseControls,
-} from '../../../data/book-entry/book-page/controls-wrapper';
-import {isBookTreeNode, traverseToImmediateParent} from '../../../data/book-tree/book-tree';
-import {BookTreeNode} from '../../../data/book-tree/book-tree-node';
-import {BookFullRoute, BookRouter, extractSearchQuery} from '../../../routing/book-routing';
-import {BookError} from '../common/book-error.element';
-import {defineBookElement} from '../define-book-element';
-import {ElementBookSlotName} from '../element-book-app/element-book-app-slots';
-import {BookBreadcrumbsBar} from './book-breadcrumbs-bar.element';
-import {BookPageControls} from './book-page/book-page-controls.element';
-import {BookPageWrapper} from './book-page/book-page-wrapper.element';
-import {BookElementExampleWrapper} from './element-example/book-element-example-wrapper.element';
-
-export const BookEntryDisplay = defineBookElement<{
-    currentRoute: Readonly<BookFullRoute>;
-    currentNodes: ReadonlyArray<BookTreeNode>;
-    originalTree: Readonly<BookTreeNode<BookEntryTypeEnum.Root>>;
-    router: BookRouter | undefined;
-    debug: boolean;
-    controls: ControlsWrapper;
-}>()({
-    tagName: 'book-entry-display',
-    styles: css`
-        :host {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .all-book-entries-wrapper {
-            flex-grow: 1;
-            padding: 32px;
-        }
-
-        .inline-entry {
-            margin: 8px;
-        }
-
-        * + .block-entry {
-            margin-top: 32px;
-        }
-
-        .block-entry + * {
-            margin-top: 32px;
-        }
-
-        h1 {
-            margin: 0;
-            padding: 0;
-        }
-    `,
-    renderCallback: ({inputs}) => {
-        const currentSearch = extractSearchQuery(inputs.currentRoute.paths);
-
-        const entryTemplates = createNodeTemplates({
-            currentNodes: inputs.currentNodes,
-            isTopLevel: true,
-            router: inputs.router,
-            isSearching: !!currentSearch,
-            controls: inputs.controls,
-            originalTree: inputs.originalTree,
-        });
-
-        return html`
-            <${BookBreadcrumbsBar.assign({
-                currentSearch,
-                currentRoute: inputs.currentRoute,
-                router: inputs.router,
-            })}></${BookBreadcrumbsBar}>
-            <div class="all-book-entries-wrapper">${entryTemplates}</div>
-            <slot name=${ElementBookSlotName.Footer}></slot>
-        `;
-    },
-});
+} from '../../../../data/book-entry/book-page/controls-wrapper';
+import {isBookTreeNode, traverseToImmediateParent} from '../../../../data/book-tree/book-tree';
+import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
+import {BookRouter} from '../../../../routing/book-routing';
+import {BookError} from '../../common/book-error.element';
+import {BookPageControls} from '../book-page/book-page-controls.element';
+import {BookPageWrapper} from '../book-page/book-page-wrapper.element';
+import {BookElementExampleWrapper} from '../element-example/book-element-example-wrapper.element';
 
 type FlattenedControls = {
     config: BookPageControlsInitBase;
@@ -145,7 +80,7 @@ function getFlattenedControlsFromHiddenParents(
     );
 }
 
-function createNodeTemplates({
+export function createNodeTemplates({
     currentNodes,
     isTopLevel,
     router,

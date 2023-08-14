@@ -20,8 +20,9 @@ import {ThemeConfig, createTheme} from '../../color-theme/create-color-theme';
 import {ChangeRouteEvent} from '../../events/change-route.event';
 import {BookNav, scrollSelectedNavElementIntoView} from '../book-nav/book-nav.element';
 import {BookError} from '../common/book-error.element';
-import {BookEntryDisplay} from '../entry-display/book-entry-display.element';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element';
+import {BookEntryDisplay} from '../entry-display/entry-display/book-entry-display.element';
+import {isEntryLoadingShowing} from '../entry-display/entry-display/is-entry-loading-showing';
 import {ElementBookSlotName} from './element-book-app-slots';
 import {ElementBookConfig, GlobalValues} from './element-book-config';
 import {getCurrentNodes} from './get-current-nodes';
@@ -85,10 +86,6 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             max-height: 100%;
             top: 0;
             max-width: min(400px, 40%);
-        }
-
-        .loading {
-            padding: 64px;
         }
     `,
     initCallback({host, state}) {
@@ -228,9 +225,16 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             BookEntryDisplay.tagName,
                         );
                         updateState({loading: true});
+                        const entryDisplayChild = host.shadowRoot.querySelector(
+                            BookEntryDisplay.tagName,
+                        );
+
+                        if (!(entryDisplayChild instanceof BookEntryDisplay)) {
+                            throw new Error(`Failed to find '${BookEntryDisplay.tagName}' child.`);
+                        }
 
                         /** Wait for the loading div to show up. */
-                        while (!host.shadowRoot.querySelector('.loading')) {
+                        while (!isEntryLoadingShowing(entryDisplayChild)) {
                             await waitForAnimationFrame();
                         }
                         await waitForAnimationFrame();
@@ -282,25 +286,20 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             slot=${ElementBookSlotName.NavHeader}
                         ></slot>
                     </${BookNav}>
-                    ${state.loading
-                        ? html`
-                              <div class="loading">Loading...</div>
-                          `
-                        : html`
-                              <${BookEntryDisplay.assign({
-                                  currentRoute: state.currentRoute,
-                                  currentNodes,
-                                  router: state.router,
-                                  debug,
-                                  controls: currentControls,
-                                  originalTree: originalTree.tree,
-                              })}>
-                                  <slot
-                                      name=${ElementBookSlotName.Footer}
-                                      slot=${ElementBookSlotName.Footer}
-                                  ></slot>
-                              </${BookEntryDisplay}>
-                          `}
+                    <${BookEntryDisplay.assign({
+                        controls: currentControls,
+                        currentNodes,
+                        currentRoute: state.currentRoute,
+                        debug,
+                        originalTree: originalTree.tree,
+                        router: state.router,
+                        showLoading: state.loading,
+                    })}>
+                        <slot
+                            name=${ElementBookSlotName.Footer}
+                            slot=${ElementBookSlotName.Footer}
+                        ></slot>
+                    </${BookEntryDisplay}>
                 </div>
             `;
         } catch (error) {
