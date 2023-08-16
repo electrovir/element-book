@@ -19,8 +19,6 @@ export const BookBreadcrumbsBar = defineBookElement<{
     tagName: 'book-breadcrumbs-bar',
     styles: css`
         :host {
-            position: sticky;
-            top: 0;
             border-bottom: 1px solid
                 ${colorThemeCssVars['element-book-page-foreground-faint-level-2-color'].value};
             padding: 4px 8px;

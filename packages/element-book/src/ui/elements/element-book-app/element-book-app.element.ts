@@ -22,7 +22,6 @@ import {BookNav, scrollSelectedNavElementIntoView} from '../book-nav/book-nav.el
 import {BookError} from '../common/book-error.element';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element';
 import {BookEntryDisplay} from '../entry-display/entry-display/book-entry-display.element';
-import {isEntryLoadingShowing} from '../entry-display/entry-display/is-entry-loading-showing';
 import {ElementBookSlotName} from './element-book-app-slots';
 import {ElementBookConfig, GlobalValues} from './element-book-config';
 import {getCurrentNodes} from './get-current-nodes';
@@ -37,7 +36,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     stateInitStatic: {
         currentRoute: defaultBookFullRoute,
         router: undefined as undefined | BookRouter,
-        loading: false,
+        loading: true,
         colors: {
             config: undefined,
             theme: createTheme(undefined),
@@ -91,7 +90,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     initCallback({host, state}) {
         setTimeout(() => {
             scrollNav(host, extractSearchQuery(state.currentRoute.paths), state.currentRoute);
-        }, 1000);
+        }, 500);
     },
     cleanupCallback({state, updateState}) {
         if (state.router) {
@@ -104,27 +103,45 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             console.info('rendering element-book app');
         }
 
-        try {
-            function updateRoutes(newRoute: Partial<BookFullRoute>) {
-                if (state.router) {
-                    state.router.setRoutes(newRoute);
-                } else {
-                    updateState({
-                        currentRoute: {
-                            ...state.currentRoute,
-                            ...newRoute,
-                        },
-                    });
-                }
+        function mergeRoutes(newRouteInput: Partial<BookFullRoute>) {
+            return {
+                ...state.currentRoute,
+                ...newRouteInput,
+            };
+        }
 
-                if (
-                    inputs.elementBookRoutePaths &&
-                    !areJsonEqual(inputs.elementBookRoutePaths, state.currentRoute.paths)
-                ) {
-                    dispatch(new events.pathUpdate(newRoute.paths ?? []));
-                }
+        function areRoutesNew(newRouteInput: Partial<BookFullRoute>) {
+            const newRoute = mergeRoutes(newRouteInput);
+
+            return !areJsonEqual(state.currentRoute, newRoute);
+        }
+
+        function updateRoutes(newRouteInput: Partial<BookFullRoute>) {
+            if (!areRoutesNew(newRouteInput)) {
+                return;
+            }
+            const newRoute = mergeRoutes(newRouteInput);
+
+            if (state.router) {
+                state.router.setRoutes(newRoute);
+            } else {
+                updateState({
+                    currentRoute: {
+                        ...state.currentRoute,
+                        ...newRoute,
+                    },
+                });
             }
 
+            if (
+                inputs.elementBookRoutePaths &&
+                !areJsonEqual(inputs.elementBookRoutePaths, state.currentRoute.paths)
+            ) {
+                dispatch(new events.pathUpdate(newRoute.paths ?? []));
+            }
+        }
+
+        try {
             if (
                 inputs.elementBookRoutePaths &&
                 !areJsonEqual(inputs.elementBookRoutePaths, state.currentRoute.paths)
@@ -221,41 +238,21 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 <div
                     class="root"
                     ${listen(ChangeRouteEvent, async (event) => {
-                        const entryDisplay = host.shadowRoot.querySelector(
-                            BookEntryDisplay.tagName,
-                        );
+                        const newRoute = event.detail;
+
+                        if (!areRoutesNew(newRoute)) {
+                            return;
+                        }
+
                         updateState({loading: true});
-                        const entryDisplayChild = host.shadowRoot.querySelector(
-                            BookEntryDisplay.tagName,
-                        );
 
-                        if (!(entryDisplayChild instanceof BookEntryDisplay)) {
-                            throw new Error(`Failed to find '${BookEntryDisplay.tagName}' child.`);
-                        }
-
-                        /** Wait for the loading div to show up. */
-                        while (!isEntryLoadingShowing(entryDisplayChild)) {
-                            await waitForAnimationFrame();
-                        }
-                        await waitForAnimationFrame();
-
-                        if (entryDisplay) {
-                            entryDisplay.scroll({top: 0, behavior: 'smooth'});
-                        } else {
-                            console.error(
-                                `Failed to find '${BookEntryDisplay.tagName}' for scrolling.`,
-                            );
-                        }
-                        updateRoutes(event.detail);
+                        updateRoutes(newRoute);
 
                         const navElement = host.shadowRoot.querySelector(BookNav.tagName);
 
                         if (!(navElement instanceof BookNav)) {
                             throw new Error(`Failed to find child '${BookNav.tagName}'`);
                         }
-
-                        updateState({loading: false});
-
                         scrollNav(host, searchQuery, state.currentRoute);
                     })}
                     ${listen(BookPageControls.events.controlValueChange, (event) => {
@@ -294,7 +291,24 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                         originalTree: originalTree.tree,
                         router: state.router,
                         showLoading: state.loading,
-                    })}>
+                    })}
+                        ${listen(BookEntryDisplay.events.loadingRender, async (event) => {
+                            await waitForAnimationFrame();
+                            const entryDisplay = host.shadowRoot.querySelector(
+                                BookEntryDisplay.tagName,
+                            );
+
+                            if (entryDisplay) {
+                                entryDisplay.scroll({top: 0, behavior: 'instant'});
+                            } else {
+                                console.error(
+                                    `Failed to find '${BookEntryDisplay.tagName}' for scrolling.`,
+                                );
+                            }
+                            await waitForAnimationFrame();
+                            updateState({loading: !event.detail});
+                        })}
+                    >
                         <slot
                             name=${ElementBookSlotName.Footer}
                             slot=${ElementBookSlotName.Footer}

@@ -1,6 +1,6 @@
 import {queryThroughShadow} from '@augment-vir/browser';
 import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
-import {assert, fixture as renderFixture} from '@open-wc/testing';
+import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {html} from 'element-vir';
 import {defineBookPage} from '../../../data/book-entry/book-page/define-book-page';
 import {BookError} from '../common/book-error.element';
@@ -22,16 +22,25 @@ describe(ElementBookApp.tagName, () => {
         return elementBookAppInstance;
     }
 
-    function getBookErrorMessage(
+    async function getBookErrorMessage(
         elementBookAppInstance: (typeof ElementBookApp)['instanceType'],
-    ): string {
-        const errorWrapper = queryThroughShadow({
-            element: elementBookAppInstance,
-            query: BookError.tagName,
-        });
+    ): Promise<string> {
+        let errorWrapper: Element | undefined;
+
+        await waitUntil(() => {
+            try {
+                errorWrapper = queryThroughShadow({
+                    element: elementBookAppInstance,
+                    query: BookError.tagName,
+                });
+                typedAssertInstanceOf(errorWrapper, BookError);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }, `Failed to find ${BookError.tagName}`);
 
         typedAssertInstanceOf(errorWrapper, BookError);
-
         return errorWrapper.shadowRoot.innerHTML;
     }
 
@@ -46,9 +55,8 @@ describe(ElementBookApp.tagName, () => {
                 title: 'duplicate title',
             }),
         ]);
-
         assert.include(
-            getBookErrorMessage(elementBookAppInstance),
+            await getBookErrorMessage(elementBookAppInstance),
             "Cannot create duplicate 'duplicate-title'",
         );
     });
@@ -78,7 +86,7 @@ describe(ElementBookApp.tagName, () => {
         ]);
 
         assert.include(
-            getBookErrorMessage(elementBookAppInstance),
+            await getBookErrorMessage(elementBookAppInstance),
             "Example title 'duplicate example' in page 'title' is already taken.",
         );
     });
@@ -92,7 +100,7 @@ describe(ElementBookApp.tagName, () => {
         ]);
 
         assert.include(
-            getBookErrorMessage(elementBookAppInstance),
+            await getBookErrorMessage(elementBookAppInstance),
             'Cannot define an element-book page with an empty title.',
         );
     });

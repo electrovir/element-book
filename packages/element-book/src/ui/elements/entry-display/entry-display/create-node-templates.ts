@@ -1,5 +1,5 @@
 import {isLengthAtLeast, mapObjectValues} from '@augment-vir/common';
-import {assign, html, repeat} from 'element-vir';
+import {HTMLTemplateResult, html, repeat} from 'element-vir';
 import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
 import {
     BookPageControlsInitBase,
@@ -94,7 +94,7 @@ export function createNodeTemplates({
     isSearching: boolean;
     controls: ControlsWrapper;
     originalTree: Readonly<BookTreeNode<BookEntryTypeEnum.Root>>;
-}): unknown {
+}): unknown[] {
     if (!currentNodes.length && isSearching) {
         return [
             html`
@@ -128,7 +128,7 @@ export function createNodeTemplates({
     const templates = repeat(
         currentNodes,
         (node) => node.fullUrlBreadcrumbs.join('>'),
-        (currentNode, index) => {
+        (currentNode, index): HTMLTemplateResult | string => {
             if (isBookTreeNode(currentNode, BookEntryTypeEnum.Page)) {
                 return html`
                     <${BookPageWrapper.assign({
@@ -156,14 +156,13 @@ export function createNodeTemplates({
                     ></${BookElementExampleWrapper}>
                 `;
             } else if (isBookTreeNode(currentNode, BookEntryTypeEnum.Root)) {
-                return html``;
+                return '';
             } else {
                 return html`
-                    <${BookError}
+                    <${BookError.assign({
+                        message: `Unknown entry type for rendering: '${currentNode.entry.entryType}'`,
+                    })}
                         class="block-entry"
-                        ${assign(BookError, {
-                            message: `Unknown entry type for rendering: '${currentNode.entry.entryType}'`,
-                        })}
                     ></${BookError}>
                 `;
             }
@@ -173,5 +172,5 @@ export function createNodeTemplates({
     return [
         hiddenAncestorControlsTemplate,
         templates,
-    ];
+    ].flat();
 }

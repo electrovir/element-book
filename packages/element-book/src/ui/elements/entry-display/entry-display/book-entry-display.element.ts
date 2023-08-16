@@ -1,6 +1,6 @@
-import {css, html, renderIf, unsafeCSS} from 'element-vir';
+import {css, defineElementEvent, html, onDomCreated, renderIf} from 'element-vir';
+import {LoaderAnimated24Icon, ViraIcon, viraAnimationDurations} from 'vira';
 import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
-
 import {ControlsWrapper} from '../../../../data/book-entry/book-page/controls-wrapper';
 import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
 import {BookFullRoute, BookRouter, extractSearchQuery} from '../../../../routing/book-routing';
@@ -8,7 +8,6 @@ import {defineBookElement} from '../../define-book-element';
 import {ElementBookSlotName} from '../../element-book-app/element-book-app-slots';
 import {BookBreadcrumbsBar} from '../book-breadcrumbs-bar.element';
 import {createNodeTemplates} from './create-node-templates';
-import {loadingClassName} from './is-entry-loading-showing';
 
 export const BookEntryDisplay = defineBookElement<{
     controls: ControlsWrapper;
@@ -24,6 +23,7 @@ export const BookEntryDisplay = defineBookElement<{
         :host {
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .all-book-entries-wrapper {
@@ -48,12 +48,41 @@ export const BookEntryDisplay = defineBookElement<{
             padding: 0;
         }
 
-        .${unsafeCSS(loadingClassName)} {
+        ${BookBreadcrumbsBar} {
+            position: sticky;
+            top: 0;
+        }
+
+        .loading {
             flex-grow: 1;
             padding: 64px;
+            position: absolute;
+            background-color: white;
+            animation: fade-in linear
+                ${viraAnimationDurations['vira-interaction-animation-duration'].value} forwards;
+            z-index: 100;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
     `,
-    renderCallback: ({inputs}) => {
+    events: {
+        loadingRender: defineElementEvent<boolean>(),
+    },
+    stateInitStatic: {
+        lastElement: undefined as undefined | Element,
+    },
+    renderCallback: ({inputs, dispatch, events, state, updateState}) => {
         const currentSearch = extractSearchQuery(inputs.currentRoute.paths);
 
         const entryTemplates = createNodeTemplates({
@@ -75,13 +104,34 @@ export const BookEntryDisplay = defineBookElement<{
             ${renderIf(
                 inputs.showLoading,
                 html`
-                    <div class=${loadingClassName}>Loading...</div>
+                    <div
+                        ${onDomCreated(() => {
+                            dispatch(new events.loadingRender(true));
+                        })}
+                        class="loading"
+                    >
+                        <${ViraIcon.assign({icon: LoaderAnimated24Icon})}></${ViraIcon}>
+                    </div>
+                    ${renderIf(
+                        !!state.lastElement,
+                        html`
+                            ${state.lastElement}
+                            <slot name=${ElementBookSlotName.Footer}></slot>
+                        `,
+                    )}
                 `,
                 html`
-                    <div class="all-book-entries-wrapper">${entryTemplates}</div>
+                    <div
+                        ${onDomCreated((element) => {
+                            updateState({lastElement: element});
+                        })}
+                        class="all-book-entries-wrapper"
+                    >
+                        ${entryTemplates}
+                    </div>
+                    <slot name=${ElementBookSlotName.Footer}></slot>
                 `,
             )}
-            <slot name=${ElementBookSlotName.Footer}></slot>
         `;
     },
 });
