@@ -14,6 +14,7 @@ type OptionalConfig = {
     themeColor: string;
     _debug: boolean;
     globalValues: GlobalValues;
+    preventWindowTitleChange: boolean;
 } & RequireExactlyOne<{
     /**
      * Set this internal router config if element-book is intended to be the current website's

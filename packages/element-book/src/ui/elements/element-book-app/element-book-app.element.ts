@@ -1,5 +1,5 @@
 import {waitForAnimationFrame} from '@augment-vir/browser';
-import {areJsonEqual, extractErrorMessage} from '@augment-vir/common';
+import {areJsonEqual, extractErrorMessage, isTruthy} from '@augment-vir/common';
 import {css, defineElement, defineElementEvent, html, listen} from 'element-vir';
 import {
     ControlsWrapper,
@@ -48,6 +48,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                   controls: ControlsWrapper;
               }
             | undefined,
+        originalWindowTitle: undefined as string | undefined,
     },
     styles: css`
         :host {
@@ -114,6 +115,20 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             const newRoute = mergeRoutes(newRouteInput);
 
             return !areJsonEqual(state.currentRoute, newRoute);
+        }
+
+        function updateWindowTitle(topNodeTitle: string | undefined) {
+            if (!inputs.preventWindowTitleChange) {
+                if (!state.originalWindowTitle) {
+                    updateState({originalWindowTitle: document.title});
+                }
+                document.title = [
+                    state.originalWindowTitle,
+                    topNodeTitle,
+                ]
+                    .filter(isTruthy)
+                    .join(' - ');
+            }
         }
 
         function updateRoutes(newRouteInput: Partial<BookFullRoute>) {
@@ -219,6 +234,8 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                     state.currentRoute.paths,
                     updateRoutes,
                 );
+
+            updateWindowTitle(currentNodes[0]?.entry.title);
 
             const currentControls = state.treeBasedControls?.controls;
 
