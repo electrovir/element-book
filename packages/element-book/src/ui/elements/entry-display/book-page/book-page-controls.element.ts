@@ -1,7 +1,7 @@
 import {extractEventTarget} from '@augment-vir/browser';
 import {PropertyValueType, isRuntimeTypeOf} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
-import {Options24Icon, ViraIcon} from 'vira';
+import {Options24Icon, ViraIcon, ViraInput} from 'vira';
 import {BookPage} from '../../../../data/book-entry/book-page/book-page';
 import {
     BookPageControl,
@@ -59,6 +59,11 @@ export const BookPageControls = defineBookElement<{
         .error {
             font-weight: bold;
             color: red;
+        }
+
+        ${ViraInput} {
+            height: 24px;
+            max-width: 128px;
         }
 
         ${ViraIcon}.options-icon {
@@ -167,15 +172,15 @@ function createControlInput(
         `;
     } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Text)) {
         return html`
-            <input
-                type="text"
-                .value=${value}
-                ${listen('input', (event) => {
-                    const inputElement = extractEventTarget(event, HTMLInputElement);
-
-                    valueChange(inputElement.value);
+            <${ViraInput.assign({
+                value: String(value),
+                showClearButton: true,
+                disableBrowserHelps: true,
+            })}
+                ${listen(ViraInput.events.valueChange, (event) => {
+                    valueChange(event.detail);
                 })}
-            />
+            ></${ViraInput}>
         `;
     } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Number)) {
         return html`
