@@ -1,6 +1,6 @@
 {
     "name": "@element-book/frontend-example",
-    "version": "10.1.0",
+    "version": "10.1.1",
     "private": true,
     "license": "(MIT or CC0 1.0)",
     "scripts": {
@@ -12,12 +12,12 @@
         "test:types": "tsc --noEmit"
     },
     "dependencies": {
-        "@augment-vir/browser": "^16.4.1",
+        "@augment-vir/browser": "^18.0.0",
         "element-book": "*",
-        "element-vir": "^16.3.1"
+        "element-vir": "^16.3.2"
     },
     "devDependencies": {
-        "@augment-vir/node-js": "^16.4.1",
+        "@augment-vir/node-js": "^18.0.0",
         "@open-wc/testing": "^3.2.0",
         "@types/mocha": "^10.0.1",
         "@web/dev-server-esbuild": "^0.4.1",
