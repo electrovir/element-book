@@ -1,4 +1,4 @@
-import {PartialAndUndefined, copyThroughJson, mapObjectValues} from '@augment-vir/common';
+import {PartialAndUndefined, mapObjectValues} from '@augment-vir/common';
 import {isBookTreeNode} from '../../book-tree/book-tree';
 import {BookTreeNode} from '../../book-tree/book-tree-node';
 import {BookEntryTypeEnum} from '../book-entry-type';
@@ -54,11 +54,11 @@ function traverseAndInsertNewControls(
 }
 
 export function createNewControls(
-    controlsWrapper: ControlsWrapper,
+    controlsWrapper: Readonly<ControlsWrapper>,
     breadcrumbsForNewValue: ReadonlyArray<string>,
     newValues: BookPageControlsValues,
 ): ControlsWrapper {
-    const newControls = copyThroughJson(controlsWrapper);
+    const newControls = {...controlsWrapper};
 
     traverseAndInsertNewControls(
         newControls,

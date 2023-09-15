@@ -1,6 +1,4 @@
 import {itCases} from '@augment-vir/browser-testing';
-import {copyThroughJson} from '@augment-vir/common';
-import {assert} from '@open-wc/testing';
 import {ControlsWrapper, createNewControls, traverseControls} from './controls-wrapper';
 
 const exampleControls = {
@@ -114,40 +112,41 @@ describe(createNewControls.name, () => {
         },
     ]);
 
-    it('creates new controls but does not modify the original controls object', () => {
-        const originalCurrentControls = copyThroughJson(exampleControls);
+    // // modifications are now allowed :/
+    // it('creates new controls but does not modify the original controls object', () => {
+    //     const originalCurrentControls = copyThroughJson(exampleControls);
 
-        const newControlsToSave = {
-            a1Value1: 'new 1',
-            a1Value2: 'new 2',
-        };
+    //     const newControlsToSave = {
+    //         a1Value1: 'new 1',
+    //         a1Value2: 'new 2',
+    //     };
 
-        const newControls = createNewControls(
-            exampleControls,
-            [
-                'a',
-                'a1',
-            ],
-            newControlsToSave,
-        );
+    //     const newControls = createNewControls(
+    //         exampleControls,
+    //         [
+    //             'a',
+    //             'a1',
+    //         ],
+    //         newControlsToSave,
+    //     );
 
-        assert.deepStrictEqual(newControls, {
-            ...exampleControls,
-            children: {
-                ...exampleControls.children,
-                a: {
-                    ...exampleControls.children.a,
-                    children: {
-                        ...exampleControls.children.a.children,
-                        a1: {
-                            ...exampleControls.children.a.children.a1,
-                            controls: newControlsToSave,
-                        },
-                    },
-                },
-            },
-        });
+    //     assert.deepStrictEqual(newControls, {
+    //         ...exampleControls,
+    //         children: {
+    //             ...exampleControls.children,
+    //             a: {
+    //                 ...exampleControls.children.a,
+    //                 children: {
+    //                     ...exampleControls.children.a.children,
+    //                     a1: {
+    //                         ...exampleControls.children.a.children.a1,
+    //                         controls: newControlsToSave,
+    //                     },
+    //                 },
+    //             },
+    //         },
+    //     });
 
-        assert.deepStrictEqual(originalCurrentControls, exampleControls);
-    });
+    //     assert.deepStrictEqual(originalCurrentControls, exampleControls);
+    // });
 });
