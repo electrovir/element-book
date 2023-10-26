@@ -1,7 +1,6 @@
 import {typedHasProperty} from '@augment-vir/common';
-import {BookElementExample} from './book-element-example/book-element-example';
 import {BookEntryTypeEnum} from './book-entry-type';
-import {BookPage} from './book-page/book-page';
+import {BookElementExample, BookPage} from './book-page/book-page';
 import {BookRoot} from './book-root';
 
 export type BookEntry = BookPage | BookRoot | BookElementExample;

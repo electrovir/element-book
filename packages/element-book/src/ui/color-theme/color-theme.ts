@@ -1,5 +1,5 @@
 import {isRuntimeTypeOf, typedHasProperties, typedHasProperty} from '@augment-vir/common';
-import {CSSResult} from 'lit';
+import {CSSResult} from 'element-vir';
 import {SingleCssVarDefinition, defineCssVars, setCssVarValue} from 'lit-css-vars';
 import {NestedType} from '../../util/type';
 

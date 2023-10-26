@@ -1,5 +1,4 @@
-import {randomString} from '@augment-vir/browser';
-import {isRuntimeTypeOf} from '@augment-vir/common';
+import {isRuntimeTypeOf, randomString} from '@augment-vir/common';
 import {fuzzySearch} from '../../util/fuzzy-search';
 import {BookTreeNode} from './book-tree-node';
 

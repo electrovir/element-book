@@ -1,6 +1,6 @@
 import {PartialAndUndefined, mapObjectValues} from '@augment-vir/common';
 import Color from 'colorjs.io';
-import {CSSResult, unsafeCSS} from 'lit';
+import {CSSResult, unsafeCSS} from 'element-vir';
 import {RequireExactlyOne} from 'type-fest';
 import {NestedType} from '../../util/type';
 import {ColorTheme} from './color-theme';

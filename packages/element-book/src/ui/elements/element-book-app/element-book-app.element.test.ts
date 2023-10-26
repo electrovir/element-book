@@ -1,7 +1,7 @@
 import {queryThroughShadow} from '@augment-vir/browser';
-import {typedAssertInstanceOf} from '@augment-vir/browser-testing';
 import {assert, fixture as renderFixture, waitUntil} from '@open-wc/testing';
 import {html} from 'element-vir';
+import {assertInstanceOf} from 'run-time-assertions';
 import {defineBookPage} from '../../../data/book-entry/book-page/define-book-page';
 import {BookError} from '../common/book-error.element';
 import {ElementBookApp} from './element-book-app.element';
@@ -9,15 +9,13 @@ import {ElementBookConfig} from './element-book-config';
 
 describe(ElementBookApp.tagName, () => {
     async function setupEntriesTest(entries: ElementBookConfig['entries']) {
-        const elementBookAppInstance = await renderFixture(
-            html`
-                <${ElementBookApp.assign({
-                    entries,
-                })}></${ElementBookApp}>
-            `,
-        );
+        const elementBookAppInstance = await renderFixture(html`
+            <${ElementBookApp.assign({
+                entries,
+            })}></${ElementBookApp}>
+        `);
 
-        typedAssertInstanceOf(elementBookAppInstance, ElementBookApp);
+        assertInstanceOf(elementBookAppInstance, ElementBookApp);
 
         return elementBookAppInstance;
     }
@@ -33,14 +31,14 @@ describe(ElementBookApp.tagName, () => {
                     element: elementBookAppInstance,
                     query: BookError.tagName,
                 });
-                typedAssertInstanceOf(errorWrapper, BookError);
+                assertInstanceOf(errorWrapper, BookError);
                 return true;
             } catch (error) {
                 return false;
             }
         }, `Failed to find ${BookError.tagName}`);
 
-        typedAssertInstanceOf(errorWrapper, BookError);
+        assertInstanceOf(errorWrapper, BookError);
         return errorWrapper.shadowRoot.innerHTML;
     }
 

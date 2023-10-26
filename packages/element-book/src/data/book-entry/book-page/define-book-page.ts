@@ -1,14 +1,10 @@
 import {PropertyValueType, SetOptionalAndNullable, isTruthy} from '@augment-vir/common';
 import {PropertyInitMapBase} from 'element-vir';
-import {GlobalValues} from '../../../ui/elements/element-book-app/element-book-config';
+import {GlobalValues} from '../../../ui/elements/element-book-app/global-values';
 import {InfiniteRecursionLimiter} from '../../../util/type';
-import {
-    BookElementExample,
-    BookElementExampleInit,
-} from '../book-element-example/book-element-example';
 import {BookEntryTypeEnum} from '../book-entry-type';
 import {titleToUrlBreadcrumb} from '../url-breadcrumbs';
-import {BookPage} from './book-page';
+import {BookElementExample, BookElementExampleInit, BookPage} from './book-page';
 import {BookPageControlsInitBase} from './book-page-controls';
 
 export type DefineExampleCallback<

@@ -23,10 +23,9 @@ export const BookError = defineBookElement<{message: string | ReadonlyArray<stri
             : [inputs.message];
 
         return paragraphs.map(
-            (paragraph) =>
-                html`
-                    <p>${paragraph}</p>
-                `,
+            (paragraph) => html`
+                <p>${paragraph}</p>
+            `,
         );
     },
 });

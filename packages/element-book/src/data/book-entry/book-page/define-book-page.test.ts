@@ -1,6 +1,6 @@
-import {assertTypeOf} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
 import {createObservablePropertyWithSetter} from 'element-vir';
+import {assertTypeOf} from 'run-time-assertions';
 import {BookPageControlTypeEnum, definePageControl} from './book-page-controls';
 import {defineBookPage, defineBookPageWithGlobals} from './define-book-page';
 

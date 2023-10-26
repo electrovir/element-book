@@ -1,7 +1,7 @@
 import {extractEventTarget} from '@augment-vir/browser';
 import {PropertyValueType, isRuntimeTypeOf} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
-import {Options24Icon, ViraIcon, ViraInput} from 'vira';
+import {CloseX24Icon, ViraIcon, ViraInput} from 'vira';
 import {BookPage} from '../../../../data/book-entry/book-page/book-page';
 import {
     BookPageControl,
@@ -123,7 +123,7 @@ export const BookPageControls = defineBookElement<{
                         ${renderIf(
                             index === 0,
                             html`
-                                <${ViraIcon.assign({icon: Options24Icon})}
+                                <${ViraIcon.assign({icon: CloseX24Icon})}
                                     class="options-icon"
                                 ></${ViraIcon}>
                             `,

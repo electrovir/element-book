@@ -23,8 +23,9 @@ import {BookError} from '../common/book-error.element';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element';
 import {BookEntryDisplay} from '../entry-display/entry-display/book-entry-display.element';
 import {ElementBookSlotName} from './element-book-app-slots';
-import {ElementBookConfig, GlobalValues} from './element-book-config';
+import {ElementBookConfig} from './element-book-config';
 import {getCurrentNodes} from './get-current-nodes';
+import {GlobalValues} from './global-values';
 
 type ColorThemeState = {config: ThemeConfig | undefined; theme: ColorTheme};
 

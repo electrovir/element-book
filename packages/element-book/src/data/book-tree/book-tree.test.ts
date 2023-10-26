@@ -1,5 +1,6 @@
-import {assertTypeOf, itCases} from '@augment-vir/browser-testing';
+import {itCases} from '@augment-vir/browser-testing';
 import {assert} from '@open-wc/testing';
+import {assertTypeOf} from 'run-time-assertions';
 import {treeExample} from '../../test/example-tree.test-helper';
 import {BookEntryTypeEnum} from '../book-entry/book-entry-type';
 import {

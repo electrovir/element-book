@@ -1,4 +1,4 @@
-import {assertTypeOf} from '@augment-vir/browser-testing';
+import {assertTypeOf} from 'run-time-assertions';
 import {BookEntry} from './book-entry';
 import {BookEntryTypeEnum} from './book-entry-type';
 
