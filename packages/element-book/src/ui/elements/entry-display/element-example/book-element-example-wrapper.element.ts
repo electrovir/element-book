@@ -20,6 +20,7 @@ export const BookElementExampleWrapper = defineBookElement<{
             display: inline-flex;
             flex-direction: column;
             gap: 24px;
+            max-width: 100%;
         }
 
         .examples-wrapper {
