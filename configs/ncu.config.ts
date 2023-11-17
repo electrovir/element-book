@@ -8,6 +8,8 @@ export const ncuConfig: RunOptions = {
     // exclude these
     reject: [
         ...baseNcuConfig.reject,
+        /** Not ready for v5 yet. */
+        'vite',
     ],
     // include only these
     filter: [],
