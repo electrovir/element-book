@@ -1,6 +1,7 @@
-import {isRuntimeTypeOf, typedHasProperties, typedHasProperty} from '@augment-vir/common';
+import {typedHasProperties, typedHasProperty} from '@augment-vir/common';
 import {CSSResult} from 'element-vir';
 import {SingleCssVarDefinition, defineCssVars, setCssVarValue} from 'lit-css-vars';
+import {isRunTimeType} from 'run-time-assertions';
 import {NestedType} from '../../util/type';
 
 export type ColorPair = {background: CSSResult; foreground: CSSResult};
@@ -89,7 +90,7 @@ function isCssVarDefinition(input: unknown): input is SingleCssVarDefinition {
             'value',
             'default',
         ]) &&
-        isRuntimeTypeOf(input.default, 'string') &&
+        isRunTimeType(input.default, 'string') &&
         isCssResult(input.name) &&
         isCssResult(input.value)
     );

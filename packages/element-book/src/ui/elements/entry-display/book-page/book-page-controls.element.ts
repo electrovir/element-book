@@ -1,6 +1,7 @@
 import {extractEventTarget} from '@augment-vir/browser';
-import {PropertyValueType, isRuntimeTypeOf} from '@augment-vir/common';
+import {PropertyValueType} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
+import {isRunTimeType} from 'run-time-assertions';
 import {Options24Icon, ViraIcon, ViraInput} from 'vira';
 import {BookPage} from '../../../../data/book-entry/book-page/book-page';
 import {
@@ -94,10 +95,7 @@ export const BookPageControls = defineBookElement<{
                     inputs.currentValues[controlName],
                     controlInit,
                     (newValue) => {
-                        const fullUrlBreadcrumbs = isRuntimeTypeOf(
-                            inputs.fullUrlBreadcrumbs,
-                            'array',
-                        )
+                        const fullUrlBreadcrumbs = isRunTimeType(inputs.fullUrlBreadcrumbs, 'array')
                             ? inputs.fullUrlBreadcrumbs
                             : inputs.fullUrlBreadcrumbs[controlName];
 

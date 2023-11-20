@@ -1,5 +1,5 @@
-import {isRuntimeTypeOf} from '@augment-vir/common';
 import {css, html} from 'element-vir';
+import {isRunTimeType} from 'run-time-assertions';
 import {defineBookElement} from '../define-book-element';
 
 export const BookError = defineBookElement<{message: string | ReadonlyArray<string>}>()({
@@ -18,7 +18,7 @@ export const BookError = defineBookElement<{message: string | ReadonlyArray<stri
         }
     `,
     renderCallback({inputs}) {
-        const paragraphs = isRuntimeTypeOf(inputs.message, 'array')
+        const paragraphs = isRunTimeType(inputs.message, 'array')
             ? inputs.message
             : [inputs.message];
 
