@@ -1,4 +1,9 @@
-export enum BookEntryTypeEnum {
+/**
+ * All possible types for element-book entries.
+ *
+ * @category Internal
+ */
+export enum BookEntryType {
     /** A single element example. */
     ElementExample = 'element-example',
     /** An individual book page with element examples and/or sub-pages. */
@@ -7,7 +12,12 @@ export enum BookEntryTypeEnum {
     Root = 'root',
 }
 
+/**
+ * A union of all possible element-book entry types.
+ *
+ * @category Internal
+ */
 export type AnyBookEntryType =
-    | BookEntryTypeEnum.ElementExample
-    | BookEntryTypeEnum.Page
-    | BookEntryTypeEnum.Root;
+    | BookEntryType.ElementExample
+    | BookEntryType.Page
+    | BookEntryType.Root;

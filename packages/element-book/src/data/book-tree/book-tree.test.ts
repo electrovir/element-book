@@ -1,15 +1,14 @@
-import {itCases} from '@augment-vir/browser-testing';
-import {assert} from '@open-wc/testing';
-import {assertTypeOf} from 'run-time-assertions';
-import {treeExample} from '../../test/example-tree.test-helper';
-import {BookEntryTypeEnum} from '../book-entry/book-entry-type';
+import {assert} from '@augment-vir/assert';
+import {describe, it, itCases} from '@augment-vir/test';
+import {treeExample} from '../../test/example-tree.test-helper.js';
+import {BookEntryType} from '../book-entry/book-entry-type.js';
+import {type BookTreeNode, isBookTreeNodeMarker} from './book-tree-node.js';
 import {
     createBookTreeFromEntries,
     createEmptyBookTreeRoot,
     doesNodeHaveEntryType,
     flattenTree,
-} from './book-tree';
-import {BookTreeNode, isBookTreeNodeMarker} from './book-tree-node';
+} from './book-tree.js';
 
 const expectedTree = {
     [isBookTreeNodeMarker]: true,
@@ -23,6 +22,7 @@ const expectedTree = {
                     [isBookTreeNodeMarker]: true,
                     manuallyAdded: true,
                     children: {},
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     entry: treeExample.entries[0].elementExamples['example-1']!,
                     urlBreadcrumb: 'example-1',
                     fullUrlBreadcrumbs: [
@@ -72,21 +72,18 @@ const expectedTree = {
     },
     entry: {
         descriptionParagraphs: [],
-        entryType: BookEntryTypeEnum.Root,
+        entryType: BookEntryType.Root,
         errors: [],
         parent: undefined,
         title: '',
     },
     urlBreadcrumb: '',
     fullUrlBreadcrumbs: [],
-} satisfies BookTreeNode<BookEntryTypeEnum.Root>;
+} satisfies BookTreeNode<BookEntryType.Root>;
 
 describe(createBookTreeFromEntries.name, () => {
     it('produces a correct tree', () => {
-        assert.deepStrictEqual(
-            createBookTreeFromEntries(treeExample.treeInputs).tree,
-            expectedTree,
-        );
+        assert.deepEquals(createBookTreeFromEntries(treeExample.treeInputs).tree, expectedTree);
     });
 });
 
@@ -94,15 +91,11 @@ describe(doesNodeHaveEntryType.name, () => {
     it('type guards', () => {
         const emptyTreeRootNode = createEmptyBookTreeRoot() as any;
 
-        assertTypeOf(emptyTreeRootNode).not.toEqualTypeOf<BookTreeNode<BookEntryTypeEnum.Page>>();
-        if (doesNodeHaveEntryType(emptyTreeRootNode, BookEntryTypeEnum.Page)) {
-            assertTypeOf(emptyTreeRootNode).toEqualTypeOf<BookTreeNode<BookEntryTypeEnum.Page>>();
-            assertTypeOf(emptyTreeRootNode.entry.entryType).toEqualTypeOf<
-                typeof BookEntryTypeEnum.Page
-            >();
-            assertTypeOf(emptyTreeRootNode).not.toEqualTypeOf<
-                BookTreeNode<BookEntryTypeEnum.Root>
-            >();
+        assert.tsType(emptyTreeRootNode).notEquals<BookTreeNode<BookEntryType.Page>>();
+        if (doesNodeHaveEntryType(emptyTreeRootNode, BookEntryType.Page)) {
+            assert.tsType(emptyTreeRootNode).equals<BookTreeNode<BookEntryType.Page>>();
+            assert.tsType(emptyTreeRootNode.entry.entryType).equals<typeof BookEntryType.Page>();
+            assert.tsType(emptyTreeRootNode).notEquals<BookTreeNode<BookEntryType.Root>>();
         }
     });
 });
@@ -114,10 +107,15 @@ describe(flattenTree.name, () => {
             input: treeExample.tree,
             expect: [
                 treeExample.tree,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 treeExample.tree.children['page-1']!,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 treeExample.tree.children['page-1']!.children['example-1']!,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 treeExample.tree.children['page-1']!.children['page-1-child']!,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 treeExample.tree.children['page-1']!.children['aaaaaaaa']!,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 treeExample.tree.children['page-2']!,
             ],
         },

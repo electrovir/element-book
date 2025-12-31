@@ -1,8 +1,15 @@
+/**
+ * Defines a nested type.
+ *
+ * @category Internal
+ */
 export type NestedType<SubType> = {[prop: PropertyKey]: SubType | NestedType<SubType>};
 
 /**
  * The TypeScript compiler is hard-coded to prevent recursion deeper than 50, so this helps us make
  * sure we stay below that limit.
+ *
+ * @category Internal
  */
 export type InfiniteRecursionLimiter = [
     30,

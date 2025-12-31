@@ -1,8 +1,8 @@
 import {ElementBookApp, ElementBookSlotName} from 'element-book';
-import {css, defineElementNoInputs, html, listen} from 'element-vir';
-import {entries} from '../../element-book-example/example.book';
+import {css, defineElement, html, listen} from 'element-vir';
+import {pages} from '../../element-book-example/example.book.js';
 
-export const VirApp = defineElementNoInputs({
+export const VirApp = defineElement()({
     tagName: 'vir-app',
     styles: css`
         :host {
@@ -16,7 +16,6 @@ export const VirApp = defineElementNoInputs({
 
         ${ElementBookApp} {
             flex-grow: 1;
-            overflow: hidden;
             max-width: 100%;
             box-sizing: border-box;
         }
@@ -27,11 +26,13 @@ export const VirApp = defineElementNoInputs({
             margin-bottom: 16px;
         }
     `,
-    stateInitStatic: {
-        themeColor: undefined as string | undefined,
-        paths: ['book'] as ReadonlyArray<string>,
+    state() {
+        return {
+            themeColor: undefined as string | undefined,
+            paths: ['book'] as ReadonlyArray<string>,
+        };
     },
-    renderCallback: ({state, updateState}) => {
+    render: ({state, updateState}) => {
         return html`
             <label>
                 Theme color
@@ -39,7 +40,7 @@ export const VirApp = defineElementNoInputs({
                     ${listen('input', (event) => {
                         const element = event.currentTarget;
                         if (!(element instanceof HTMLInputElement)) {
-                            throw new Error('input element not found for input event');
+                            throw new TypeError('input element not found for input event');
                         }
                         updateState({themeColor: element.value});
                     })}
@@ -47,7 +48,7 @@ export const VirApp = defineElementNoInputs({
                 />
             </label>
             <${ElementBookApp.assign({
-                entries,
+                pages,
                 themeColor: state.themeColor,
                 internalRouterConfig: {
                     useInternalRouter: true,

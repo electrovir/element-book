@@ -1,24 +1,30 @@
 import {css, defineElementEvent, html, onDomCreated, renderIf} from 'element-vir';
 import {LoaderAnimated24Icon, ViraIcon, viraAnimationDurations} from 'vira';
-import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
-import {ControlsWrapper} from '../../../../data/book-entry/book-page/controls-wrapper';
-import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
-import {BookFullRoute, BookRouter, extractSearchQuery} from '../../../../routing/book-routing';
-import {defineBookElement} from '../../define-book-element';
-import {ElementBookSlotName} from '../../element-book-app/element-book-app-slots';
-import {BookBreadcrumbsBar} from '../book-breadcrumbs-bar.element';
-import {createNodeTemplates} from './create-node-templates';
+import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
+import {type ControlsWrapper} from '../../../../data/book-entry/book-page/controls-wrapper.js';
+import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
+import {type BookRouter} from '../../../../routing/book-router.js';
+import {type BookFullRoute, extractSearchQuery} from '../../../../routing/book-routing.js';
+import {defineBookElement} from '../../define-book-element.js';
+import {ElementBookSlotName} from '../../element-book-app/element-book-app-slots.js';
+import {BookBreadcrumbsBar} from '../book-breadcrumbs-bar.element.js';
+import {createNodeTemplates} from './create-node-templates.js';
 
 export const BookEntryDisplay = defineBookElement<{
     controls: ControlsWrapper;
     currentNodes: ReadonlyArray<BookTreeNode>;
     currentRoute: Readonly<BookFullRoute>;
     debug: boolean;
-    originalTree: Readonly<BookTreeNode<BookEntryTypeEnum.Root>>;
+    originalTree: Readonly<BookTreeNode<BookEntryType.Root>>;
     router: BookRouter | undefined;
     showLoading: boolean;
 }>()({
     tagName: 'book-entry-display',
+    state() {
+        return {
+            lastElement: undefined as undefined | Element,
+        };
+    },
     styles: css`
         :host {
             display: flex;
@@ -31,10 +37,6 @@ export const BookEntryDisplay = defineBookElement<{
             padding: 32px;
         }
 
-        .inline-entry {
-            margin: 8px;
-        }
-
         * + .block-entry {
             margin-top: 32px;
         }
@@ -43,13 +45,20 @@ export const BookEntryDisplay = defineBookElement<{
             margin-top: 32px;
         }
 
+        .inline-entry {
+            margin: 8px;
+
+            &.block-entry {
+                display: block;
+            }
+        }
+
         h1 {
             margin: 0;
             padding: 0;
         }
 
         ${BookBreadcrumbsBar} {
-            position: sticky;
             top: 0;
         }
 
@@ -79,10 +88,7 @@ export const BookEntryDisplay = defineBookElement<{
     events: {
         loadingRender: defineElementEvent<boolean>(),
     },
-    stateInitStatic: {
-        lastElement: undefined as undefined | Element,
-    },
-    renderCallback: ({inputs, dispatch, events, state, updateState}) => {
+    render: ({inputs, dispatch, events, state, updateState}) => {
         const currentSearch = extractSearchQuery(inputs.currentRoute.paths);
 
         const entryTemplates = createNodeTemplates({

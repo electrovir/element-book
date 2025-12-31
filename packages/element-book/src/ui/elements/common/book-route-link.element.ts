@@ -1,12 +1,13 @@
 import {css, html, listen} from 'element-vir';
-import {shouldMouseEventTriggerRoutes} from 'spa-router-vir';
-import {BookFullRoute, BookRouter} from '../../../routing/book-routing';
-import {ChangeRouteEvent} from '../../events/change-route.event';
-import {defineBookElement} from '../define-book-element';
+import {shouldClickEventTriggerRouteChange} from 'spa-router-vir';
+import {type BookRouter} from '../../../routing/book-router.js';
+import {type BookFullRoute} from '../../../routing/book-routing.js';
+import {ChangeRouteEvent} from '../../events/change-route.event.js';
+import {defineBookElement} from '../define-book-element.js';
 
 export const BookRouteLink = defineBookElement<{
     route: Partial<BookFullRoute>;
-    router: BookRouter | undefined;
+    router: Readonly<BookRouter> | undefined;
 }>()({
     tagName: 'book-route-link',
     cssVars: {
@@ -23,10 +24,9 @@ export const BookRouteLink = defineBookElement<{
             width: 100%;
         }
     `,
-    renderCallback: ({inputs, dispatch}) => {
+    render: ({inputs, dispatch}) => {
         const linkUrl: string =
-            inputs.router?.createRoutesUrl({
-                ...inputs.router?.getCurrentRawRoutes(),
+            inputs.router?.createRouteUrl({
                 ...inputs.route,
             }) ?? '#';
 
@@ -34,7 +34,7 @@ export const BookRouteLink = defineBookElement<{
             <a
                 href=${linkUrl}
                 ${listen('click', (clickEvent) => {
-                    if (!inputs.router || shouldMouseEventTriggerRoutes(clickEvent)) {
+                    if (!inputs.router || shouldClickEventTriggerRouteChange(clickEvent)) {
                         clickEvent.preventDefault();
                         window.scrollTo(0, 0);
                         dispatch(new ChangeRouteEvent(inputs.route));

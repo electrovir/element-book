@@ -1,15 +1,15 @@
-import {BookEntryTypeEnum} from '../data/book-entry/book-entry-type';
-import {defineBookPage} from '../data/book-entry/book-page/define-book-page';
-import {createBookTreeFromEntries} from '../data/book-tree/book-tree';
-import {BookTreeNode} from '../data/book-tree/book-tree-node';
+import {type BookEntryType} from '../data/book-entry/book-entry-type.js';
+import {defineBookPage} from '../data/book-entry/book-page/define-book-page.js';
+import {type BookTreeNode} from '../data/book-tree/book-tree-node.js';
+import {createBookTreeFromEntries} from '../data/book-tree/book-tree.js';
 
 const page1 = defineBookPage({
     parent: undefined,
     title: 'page 1',
-    elementExamplesCallback({defineExample}) {
+    defineExamples({defineExample}) {
         defineExample({
             title: 'example 1',
-            renderCallback() {
+            render() {
                 return 'hi';
             },
         });
@@ -43,12 +43,12 @@ const tree = createBookTreeFromEntries(exampleTreeInputs);
 export const treeExample = {
     tree: tree.tree,
     flattenedNodes: tree.flattenedNodes as [
-        BookTreeNode<BookEntryTypeEnum.Root>,
-        BookTreeNode<BookEntryTypeEnum.Page>,
-        BookTreeNode<BookEntryTypeEnum.ElementExample>,
-        BookTreeNode<BookEntryTypeEnum.Page>,
-        BookTreeNode<BookEntryTypeEnum.Page>,
-        BookTreeNode<BookEntryTypeEnum.Page>,
+        BookTreeNode<BookEntryType.Root>,
+        BookTreeNode<BookEntryType.Page>,
+        BookTreeNode<BookEntryType.ElementExample>,
+        BookTreeNode<BookEntryType.Page>,
+        BookTreeNode<BookEntryType.Page>,
+        BookTreeNode<BookEntryType.Page>,
     ],
     treeInputs: exampleTreeInputs,
     entries: exampleEntries,

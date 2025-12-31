@@ -1,9 +1,14 @@
-import {PartialAndUndefined, mapObjectValues} from '@augment-vir/common';
-import {isBookTreeNode} from '../../book-tree/book-tree';
-import {BookTreeNode} from '../../book-tree/book-tree-node';
-import {BookEntryTypeEnum} from '../book-entry-type';
-import {BookPageControlsValues} from './book-page-controls';
+import {type PartialWithUndefined, mapObjectValues} from '@augment-vir/common';
+import {type BookTreeNode} from '../../book-tree/book-tree-node.js';
+import {isBookTreeNode} from '../../book-tree/book-tree.js';
+import {BookEntryType} from '../book-entry-type.js';
+import {type BookPageControlsValues} from './book-page-controls.js';
 
+/**
+ * Nested page controls.
+ *
+ * @category Internal
+ */
 export type ControlsWrapper = {
     children: {
         [Breadcrumb: string]: ControlsWrapper;
@@ -11,6 +16,11 @@ export type ControlsWrapper = {
     controls: BookPageControlsValues;
 };
 
+/**
+ * Find the controls at the given breadcrumbs.
+ *
+ * @category Internal
+ */
 export function traverseControls(
     controlsWrapper: ControlsWrapper,
     fullUrlBreadcrumbs: ReadonlyArray<string>,
@@ -53,6 +63,11 @@ function traverseAndInsertNewControls(
     return allControls;
 }
 
+/**
+ * Add new controls at the given breadcrumbs.
+ *
+ * @category Internal
+ */
 export function createNewControls(
     controlsWrapper: Readonly<ControlsWrapper>,
     breadcrumbsForNewValue: ReadonlyArray<string>,
@@ -73,13 +88,18 @@ export function createNewControls(
     return newControls;
 }
 
+/**
+ * Add new controls from the given tree node.
+ *
+ * @category Internal
+ */
 export function updateTreeControls(
     node: BookTreeNode,
-    existingControls: PartialAndUndefined<ControlsWrapper> | undefined,
+    existingControls: PartialWithUndefined<ControlsWrapper> | undefined,
 ): ControlsWrapper {
     const controls =
         existingControls?.controls ||
-        (isBookTreeNode(node, BookEntryTypeEnum.Page)
+        (isBookTreeNode(node, BookEntryType.Page)
             ? mapObjectValues(node.entry.controls, (name, setup) => {
                   return setup.initValue;
               })

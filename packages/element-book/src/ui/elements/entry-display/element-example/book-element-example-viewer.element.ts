@@ -1,51 +1,53 @@
 import {combineErrors, extractErrorMessage} from '@augment-vir/common';
 import {html, renderIf} from 'element-vir';
-import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
-import {BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls';
-import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
-import {unsetInternalState} from '../../../../data/unset';
-import {BookRouter} from '../../../../routing/book-routing';
-import {BookError} from '../../common/book-error.element';
-import {defineBookElement} from '../../define-book-element';
+import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
+import {type BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls.js';
+import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
+import {unsetInternalState} from '../../../../data/unset.js';
+import {BookError} from '../../common/book-error.element.js';
+import {defineBookElement} from '../../define-book-element.js';
 
 export const BookElementExampleViewer = defineBookElement<{
-    elementExampleNode: BookTreeNode<BookEntryTypeEnum.ElementExample>;
+    elementExampleNode: BookTreeNode<BookEntryType.ElementExample>;
     currentPageControls: BookPageControlsValues;
-    router: BookRouter | undefined;
 }>()({
     tagName: 'book-element-example-viewer',
-    stateInitStatic: {
-        isUnset: unsetInternalState,
-    } as any,
-    renderCallback({state, inputs, updateState}) {
+    state() {
+        return {
+            isUnset: unsetInternalState,
+        } as any;
+    },
+    render({state, inputs, updateState}) {
         try {
             if (inputs.elementExampleNode.entry.errors.length) {
                 throw combineErrors(inputs.elementExampleNode.entry.errors);
             }
 
             if (
-                !inputs.elementExampleNode.entry.renderCallback ||
-                typeof inputs.elementExampleNode.entry.renderCallback === 'string'
+                /** This is a check to make sure the input entry _does_ match the expected type. */
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                !inputs.elementExampleNode.entry.render ||
+                typeof inputs.elementExampleNode.entry.render === 'string'
             ) {
                 throw new Error(
-                    `Failed to render example '${inputs.elementExampleNode.entry.title}': renderCallback is not a function`,
+                    `Failed to render example '${inputs.elementExampleNode.entry.title}': render is not a function`,
                 );
             }
 
             if (state.isUnset === unsetInternalState) {
                 updateState({
                     isUnset: undefined,
-                    ...inputs.elementExampleNode.entry.stateInitStatic,
+                    ...inputs.elementExampleNode.entry.state?.(),
                 });
             }
 
-            const output = inputs.elementExampleNode.entry.renderCallback({
+            const output = inputs.elementExampleNode.entry.render({
                 state,
                 updateState,
                 controls: inputs.currentPageControls,
             });
             if (output instanceof Promise) {
-                throw new Error('renderCallback output cannot be a promise');
+                throw new TypeError('render output cannot be a promise');
             }
 
             return html`
@@ -60,6 +62,7 @@ export const BookElementExampleViewer = defineBookElement<{
                 ${output}
             `;
         } catch (error) {
+            console.error('ERROR HERE', extractErrorMessage(error));
             console.error(error);
             return html`
                 <${BookError.assign({

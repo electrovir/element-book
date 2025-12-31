@@ -1,12 +1,18 @@
-import {BookEntryTypeEnum} from './book-entry-type';
+import {type HTMLTemplateResult} from 'element-vir';
+import {type BookEntryType} from './book-entry-type.js';
 
+/**
+ * Base properties for all book entry types.
+ *
+ * @category Internal
+ */
 export type BaseBookEntry = {
     /**
      * Title for the entry. This is used to create breadcrumbs and URL paths. Each title must be
      * unique within a given entry's parent.
      */
     title: string;
-    entryType: BookEntryTypeEnum;
+    entryType: BookEntryType;
     /**
      * The parent page. A value of undefined here indicates that the entry should be at the top
      * level of the element book.
@@ -16,6 +22,6 @@ export type BaseBookEntry = {
      * A description that will be displayed below the entry title. Each item in the array will be a
      * separate paragraph.
      */
-    descriptionParagraphs: ReadonlyArray<string>;
+    descriptionParagraphs: ReadonlyArray<string | HTMLTemplateResult>;
     errors: Error[];
 };

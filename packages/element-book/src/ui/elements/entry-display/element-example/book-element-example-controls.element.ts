@@ -1,13 +1,14 @@
 import {css, html} from 'element-vir';
-import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
-import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
-import {BookMainRoute, BookRouter} from '../../../../routing/book-routing';
-import {colorThemeCssVars} from '../../../color-theme/color-theme';
-import {BookRouteLink} from '../../common/book-route-link.element';
-import {defineBookElement} from '../../define-book-element';
+import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
+import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
+import {type BookRouter} from '../../../../routing/book-router.js';
+import {BookMainRoute, type ValidBookPaths} from '../../../../routing/book-routing.js';
+import {colorThemeCssVars} from '../../../color-theme/color-theme.js';
+import {BookRouteLink} from '../../common/book-route-link.element.js';
+import {defineBookElement} from '../../define-book-element.js';
 
 export const BookElementExampleControls = defineBookElement<{
-    elementExampleNode: BookTreeNode<BookEntryTypeEnum.ElementExample>;
+    elementExampleNode: BookTreeNode<BookEntryType.ElementExample>;
     router: BookRouter | undefined;
 }>()({
     tagName: 'book-element-example-controls',
@@ -19,11 +20,11 @@ export const BookElementExampleControls = defineBookElement<{
             padding: 0 8px 4px;
         }
     `,
-    renderCallback({inputs}) {
-        const linkPaths = [
+    render({inputs}) {
+        const linkPaths: ValidBookPaths = [
             BookMainRoute.Book,
             ...inputs.elementExampleNode.fullUrlBreadcrumbs,
-        ] as const;
+        ];
 
         return html`
             <${BookRouteLink.assign({

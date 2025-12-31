@@ -1,11 +1,12 @@
 import {css, html} from 'element-vir';
-import {BookFullRoute, BookMainRoute, BookRouter} from '../../routing/book-routing';
-import {BookRouteLink} from './common/book-route-link.element';
-import {defineBookElement} from './define-book-element';
+import {type BookRouter} from '../../routing/book-router.js';
+import {type BookFullRoute, BookMainRoute} from '../../routing/book-routing.js';
+import {BookRouteLink} from './common/book-route-link.element.js';
+import {defineBookElement} from './define-book-element.js';
 
 export const BookBreadcrumbs = defineBookElement<{
     currentRoute: Readonly<BookFullRoute>;
-    router: BookRouter | undefined;
+    router: Readonly<BookRouter> | undefined;
 }>()({
     tagName: 'book-breadcrumbs',
     styles: css`
@@ -18,7 +19,7 @@ export const BookBreadcrumbs = defineBookElement<{
             padding: 0 4px;
         }
     `,
-    renderCallback: ({inputs}) => {
+    render: ({inputs}) => {
         const bookPaths = inputs.currentRoute.paths.slice(1);
 
         if (!bookPaths.length) {

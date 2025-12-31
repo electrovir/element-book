@@ -1,7 +1,8 @@
-import {assert} from '@open-wc/testing';
-import {defineBookPage} from '../book-entry/book-page/define-book-page';
-import {createBookTreeFromEntries} from './book-tree';
-import {searchFlattenedNodes} from './search-nodes';
+import {assert} from '@augment-vir/assert';
+import {describe, it} from '@augment-vir/test';
+import {defineBookPage} from '../book-entry/book-page/define-book-page.js';
+import {createBookTreeFromEntries} from './book-tree.js';
+import {searchFlattenedNodes} from './search-nodes.js';
 
 describe(searchFlattenedNodes.name, () => {
     it('filters out unmatched nodes', () => {
@@ -13,9 +14,9 @@ describe(searchFlattenedNodes.name, () => {
         const childC = defineBookPage({
             parent: childA,
             title: 'child-c',
-            elementExamplesCallback({defineExample}) {
+            defineExamples({defineExample}) {
                 defineExample({
-                    renderCallback() {
+                    render() {
                         return 'yo';
                     },
                     title: 'example A',
@@ -48,14 +49,14 @@ describe(searchFlattenedNodes.name, () => {
 
         const searchedTitles = searchedNodes.map((searchedNode) => searchedNode.entry.title);
 
-        assert.deepStrictEqual(flattenedOriginalNodeTitles, [
+        assert.deepEquals(flattenedOriginalNodeTitles, [
             '',
             'child A',
             'child-c',
             'example A',
             'child-b',
         ]);
-        assert.deepStrictEqual(searchedTitles, [
+        assert.deepEquals(searchedTitles, [
             'child A',
             'child-c',
             'example A',

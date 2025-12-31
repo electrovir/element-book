@@ -1,11 +1,16 @@
-import {Overwrite} from '@augment-vir/common';
-import {BaseBookEntry} from './base-book-entry';
-import {BookEntryTypeEnum} from './book-entry-type';
+import {type Overwrite} from '@augment-vir/common';
+import {type BaseBookEntry} from './base-book-entry.js';
+import {type BookEntryType} from './book-entry-type.js';
 
+/**
+ * The root of a book tree.
+ *
+ * @category Internal
+ */
 export type BookRoot = Overwrite<
     BaseBookEntry,
     {
-        entryType: BookEntryTypeEnum.Root;
+        entryType: BookEntryType.Root;
         parent: undefined;
     }
 >;

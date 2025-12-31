@@ -1,21 +1,22 @@
 import {combineErrors} from '@augment-vir/common';
 import {css, html} from 'element-vir';
-import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
+import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {
-    ControlsWrapper,
+    type ControlsWrapper,
     traverseControls,
-} from '../../../../data/book-entry/book-page/controls-wrapper';
-import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
-import {BookMainRoute, BookRouter} from '../../../../routing/book-routing';
-import {BookError} from '../../common/book-error.element';
-import {BookRouteLink} from '../../common/book-route-link.element';
-import {defineBookElement} from '../../define-book-element';
-import {BookEntryDescription} from '../book-entry-description.element';
-import {BookPageControls} from './book-page-controls.element';
+} from '../../../../data/book-entry/book-page/controls-wrapper.js';
+import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
+import {type BookRouter} from '../../../../routing/book-router.js';
+import {BookMainRoute, type ValidBookPaths} from '../../../../routing/book-routing.js';
+import {BookError} from '../../common/book-error.element.js';
+import {BookRouteLink} from '../../common/book-route-link.element.js';
+import {defineBookElement} from '../../define-book-element.js';
+import {BookEntryDescription} from '../book-entry-description.element.js';
+import {BookPageControls} from './book-page-controls.element.js';
 
 export const BookPageWrapper = defineBookElement<{
     isTopLevel: boolean;
-    pageNode: BookTreeNode<BookEntryTypeEnum.Page>;
+    pageNode: BookTreeNode<BookEntryType.Page>;
     router: BookRouter | undefined;
     controls: ControlsWrapper;
 }>()({
@@ -45,7 +46,7 @@ export const BookPageWrapper = defineBookElement<{
             display: inline-block;
         }
     `,
-    renderCallback({inputs}) {
+    render({inputs}) {
         const titleTemplate = inputs.isTopLevel
             ? html`
                   <h2 class="header-with-icon">${inputs.pageNode.entry.title}</h2>
@@ -54,12 +55,14 @@ export const BookPageWrapper = defineBookElement<{
                   <h3 class="header-with-icon">${inputs.pageNode.entry.title}</h3>
               `;
 
-        const linkPaths = [
+        const linkPaths: ValidBookPaths = [
             BookMainRoute.Book,
             ...inputs.pageNode.fullUrlBreadcrumbs,
-        ] as const;
+        ];
 
-        const error = combineErrors(inputs.pageNode.entry.errors);
+        const error = inputs.pageNode.entry.errors.length
+            ? combineErrors(inputs.pageNode.entry.errors)
+            : undefined;
         if (error) {
             console.error(error);
         }
@@ -77,14 +80,14 @@ export const BookPageWrapper = defineBookElement<{
                     })}>
                         ${titleTemplate}
                     </${BookRouteLink}>
-                    ${!!error
+                    ${error
                         ? html`
                               <${BookError.assign({message: error.message})}></${BookError}>
                           `
                         : html`
                               <${BookEntryDescription.assign({
                                   descriptionParagraphs:
-                                      inputs.pageNode.entry.descriptionParagraphs ?? [],
+                                      inputs.pageNode.entry.descriptionParagraphs,
                               })}></${BookEntryDescription}>
                               <${BookPageControls.assign({
                                   config: inputs.pageNode.entry.controls,

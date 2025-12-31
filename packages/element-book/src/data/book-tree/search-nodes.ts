@@ -1,7 +1,8 @@
+import {check} from '@augment-vir/assert';
 import {randomString} from '@augment-vir/common';
-import {isRunTimeType} from 'run-time-assertions';
-import {fuzzySearch} from '../../util/fuzzy-search';
-import {BookTreeNode} from './book-tree-node';
+import {convertTemplateToString} from 'element-vir';
+import {fuzzySearch} from '../../util/fuzzy-search.js';
+import {type BookTreeNode} from './book-tree-node.js';
 
 const searchJoin = randomString(32);
 
@@ -59,7 +60,13 @@ export function searchFlattenedNodes({
             fuzzySearch({
                 searchIn: [
                     treeNode.entry.title,
-                    ...treeNode.entry.descriptionParagraphs,
+                    ...treeNode.entry.descriptionParagraphs.map((paragraph) => {
+                        if (check.isString(paragraph)) {
+                            return paragraph;
+                        } else {
+                            return convertTemplateToString(paragraph);
+                        }
+                    }),
                 ]
                     .join(' ')
                     .toLowerCase(),
@@ -84,8 +91,8 @@ export function searchFlattenedNodes({
 
         const shouldInclude = includeInSearchResults[inSearchResultsKey];
 
-        if (!isRunTimeType(shouldInclude, 'boolean')) {
-            throw new Error(
+        if (!check.isBoolean(shouldInclude)) {
+            throw new TypeError(
                 `Failed to find '${treeNode.fullUrlBreadcrumbs.join(
                     ' > ',
                 )}' in includeInSearchResults.`,

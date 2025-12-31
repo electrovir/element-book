@@ -1,20 +1,20 @@
 import {wait} from '@augment-vir/common';
 import {css, html, listen, renderIf} from 'element-vir';
+import {type BookRouter} from '../../../routing/book-router.js';
 import {
-    BookFullRoute,
+    type BookFullRoute,
     BookMainRoute,
-    BookRouter,
     defaultBookFullRoute,
-} from '../../../routing/book-routing';
-import {colorThemeCssVars} from '../../color-theme/color-theme';
-import {ChangeRouteEvent} from '../../events/change-route.event';
-import {BookBreadcrumbs} from '../book-breadcrumbs.element';
-import {defineBookElement} from '../define-book-element';
+} from '../../../routing/book-routing.js';
+import {colorThemeCssVars} from '../../color-theme/color-theme.js';
+import {ChangeRouteEvent} from '../../events/change-route.event.js';
+import {BookBreadcrumbs} from '../book-breadcrumbs.element.js';
+import {defineBookElement} from '../define-book-element.js';
 
 export const BookBreadcrumbsBar = defineBookElement<{
     currentSearch: string;
-    currentRoute: BookFullRoute;
-    router: BookRouter | undefined;
+    currentRoute: Readonly<BookFullRoute>;
+    router: Readonly<BookRouter> | undefined;
 }>()({
     tagName: 'book-breadcrumbs-bar',
     styles: css`
@@ -23,13 +23,12 @@ export const BookBreadcrumbsBar = defineBookElement<{
                 ${colorThemeCssVars['element-book-page-foreground-faint-level-2-color'].value};
             padding: 4px 8px;
             background-color: ${colorThemeCssVars['element-book-page-background-color'].value};
-            z-index: 9999999999;
             display: flex;
             gap: 16px;
             justify-content: space-between;
         }
     `,
-    renderCallback({inputs, dispatch}) {
+    render({inputs, dispatch}) {
         return html`
             ${renderIf(
                 !!inputs.currentSearch,
@@ -50,11 +49,11 @@ export const BookBreadcrumbsBar = defineBookElement<{
                     const inputElement = event.currentTarget;
 
                     if (!(inputElement instanceof HTMLInputElement)) {
-                        throw new Error('Failed to find input element for search.');
+                        throw new TypeError('Failed to find input element for search.');
                     }
                     const preThrottleValue = inputElement.value;
                     // throttle it a bit
-                    await wait(200);
+                    await wait({milliseconds: 200});
 
                     if (inputElement.value !== preThrottleValue) {
                         return;

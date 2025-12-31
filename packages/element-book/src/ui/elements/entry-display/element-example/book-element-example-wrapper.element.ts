@@ -1,25 +1,23 @@
 import {omitObjectKeys} from '@augment-vir/common';
 import {css, html} from 'element-vir';
-import {BookEntryTypeEnum} from '../../../../data/book-entry/book-entry-type';
-import {BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls';
-import {BookTreeNode} from '../../../../data/book-tree/book-tree-node';
-import {BookRouter} from '../../../../routing/book-routing';
-import {colorThemeCssVars} from '../../../color-theme/color-theme';
-import {defineBookElement} from '../../define-book-element';
-import {BookElementExampleControls} from './book-element-example-controls.element';
-import {BookElementExampleViewer} from './book-element-example-viewer.element';
+import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
+import {type BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls.js';
+import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
+import {type BookRouter} from '../../../../routing/book-router.js';
+import {colorThemeCssVars} from '../../../color-theme/color-theme.js';
+import {defineBookElement} from '../../define-book-element.js';
+import {BookElementExampleControls} from './book-element-example-controls.element.js';
+import {BookElementExampleViewer} from './book-element-example-viewer.element.js';
 
 export const BookElementExampleWrapper = defineBookElement<{
-    elementExampleNode: BookTreeNode<BookEntryTypeEnum.ElementExample>;
+    elementExampleNode: BookTreeNode<BookEntryType.ElementExample>;
     currentPageControls: BookPageControlsValues;
     router: BookRouter | undefined;
 }>()({
     tagName: 'book-element-example-wrapper',
     styles: css`
         :host {
-            display: inline-flex;
-            flex-direction: column;
-            gap: 24px;
+            display: inline-block;
             max-width: 100%;
         }
 
@@ -39,6 +37,7 @@ export const BookElementExampleWrapper = defineBookElement<{
             flex-direction: column;
             gap: 24px;
             max-width: 100%;
+            align-items: flex-start;
         }
 
         ${BookElementExampleControls} {
@@ -49,7 +48,7 @@ export const BookElementExampleWrapper = defineBookElement<{
             color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
         }
     `,
-    renderCallback({inputs}) {
+    render({inputs}) {
         return html`
             <div class="individual-example-wrapper">
                 <${BookElementExampleControls.assign(

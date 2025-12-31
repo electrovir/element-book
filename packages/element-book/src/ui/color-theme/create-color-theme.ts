@@ -1,9 +1,9 @@
-import {PartialAndUndefined, mapObjectValues} from '@augment-vir/common';
+import {type PartialWithUndefined, mapObjectValues} from '@augment-vir/common';
 import Color from 'colorjs.io';
-import {CSSResult, unsafeCSS} from 'element-vir';
-import {RequireExactlyOne} from 'type-fest';
-import {NestedType} from '../../util/type';
-import {ColorTheme} from './color-theme';
+import {type CSSResult, unsafeCSS} from 'element-vir';
+import {type RequireExactlyOne} from 'type-fest';
+import {type NestedType} from '../../util/type.js';
+import {type ColorTheme} from './color-theme.js';
 
 // as cast because colorjs.io's types for itself are wrong
 type FixedColor = Color & {
@@ -30,6 +30,11 @@ function colorsObjectToCssResult<const Colors extends NestedColors>(
     }) as NestedColorsToCssResult<Colors>;
 }
 
+/**
+ * The default theme color.
+ *
+ * @category Internal
+ */
 export const defaultThemeStartColor = 'dodgerblue';
 
 type BackForeGroundColor = 'black' | 'white';
@@ -51,12 +56,22 @@ function createColorPair({
     };
 }
 
+/**
+ * Theme style options for the element-book app.
+ *
+ * @category Internal
+ */
 export enum ThemeStyle {
     Dark = 'dark',
     Light = 'light',
 }
 
-export type ThemeConfig = PartialAndUndefined<{
+/**
+ * Theme configuration options for the element-book app.
+ *
+ * @category Internal
+ */
+export type ThemeConfig = PartialWithUndefined<{
     themeColor: string;
     themeStyle: ThemeStyle;
 }>;
@@ -87,6 +102,11 @@ const faintBackgroundColors = {
     },
 } as const;
 
+/**
+ * Creates a theme from the given theme configuration.
+ *
+ * @category Internal
+ */
 export function createTheme({
     themeColor: inputThemeColor = defaultThemeStartColor,
     themeStyle = ThemeStyle.Light,

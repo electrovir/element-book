@@ -1,15 +1,11 @@
-import {isEnumValue} from '@augment-vir/common';
-import {createSpaRouter, SpaRouter} from 'spa-router-vir';
-import {BookMainRoute, BookRouter, defaultBookFullRoute, ValidBookPaths} from './book-routing';
+import {check} from '@augment-vir/assert';
+import {SpaRouter} from 'spa-router-vir';
+import {BookMainRoute, defaultBookFullRoute, type ValidBookPaths} from './book-routing.js';
 
-export function createBookRouter(baseRoute: string | undefined): BookRouter {
-    type SubTypes = BookRouter extends SpaRouter<infer Paths, infer Search, infer Hash>
-        ? {paths: Paths; search: Search; hash: Hash}
-        : never;
-
-    return createSpaRouter<SubTypes['paths'], SubTypes['search'], SubTypes['hash']>({
-        routeBase: baseRoute,
-        routeSanitizer(rawRoute) {
+export function createBookRouter(basePath: string | undefined) {
+    return new SpaRouter<ValidBookPaths, undefined, undefined>({
+        basePath,
+        sanitizeRoute(rawRoute) {
             const sanitizedPaths = sanitizePaths(rawRoute.paths);
 
             return {
@@ -21,17 +17,19 @@ export function createBookRouter(baseRoute: string | undefined): BookRouter {
     });
 }
 
-function sanitizePaths(paths: ReadonlyArray<string>): Readonly<ValidBookPaths> {
+export type BookRouter = ReturnType<typeof createBookRouter>;
+
+function sanitizePaths(paths: ReadonlyArray<string>): ValidBookPaths {
     const firstPath = paths[0];
 
-    if (!isEnumValue(firstPath, BookMainRoute)) {
+    if (!check.isEnumValue(firstPath, BookMainRoute)) {
         return defaultBookFullRoute.paths;
     } else if (firstPath === BookMainRoute.Book) {
         return [
             BookMainRoute.Book,
             ...paths.slice(1),
         ];
-    } else if (firstPath === BookMainRoute.Search) {
+    } else if ((firstPath as BookMainRoute) === BookMainRoute.Search) {
         if (!paths[1]) {
             return [
                 BookMainRoute.Book,

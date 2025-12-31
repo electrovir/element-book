@@ -1,18 +1,18 @@
-import {extractEventTarget} from '@augment-vir/browser';
-import {PropertyValueType} from '@augment-vir/common';
+import {check} from '@augment-vir/assert';
+import {type AnyObject, type Values} from '@augment-vir/common';
+import {extractEventTarget} from '@augment-vir/web';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
-import {isRunTimeType} from 'run-time-assertions';
 import {Options24Icon, ViraIcon, ViraInput} from 'vira';
-import {BookPage} from '../../../../data/book-entry/book-page/book-page';
 import {
-    BookPageControl,
-    BookPageControlInit,
-    BookPageControlTypeEnum,
-    BookPageControlsValues,
+    type BookPageControl,
+    type BookPageControlInit,
+    BookPageControlType,
+    type BookPageControlsValues,
     isControlInitType,
-} from '../../../../data/book-entry/book-page/book-page-controls';
-import {colorThemeCssVars} from '../../../color-theme/color-theme';
-import {defineBookElement} from '../../define-book-element';
+} from '../../../../data/book-entry/book-page/book-page-controls.js';
+import {type BookPage} from '../../../../data/book-entry/book-page/book-page.js';
+import {colorThemeCssVars} from '../../../color-theme/color-theme.js';
+import {defineBookElement} from '../../define-book-element.js';
 
 export const BookPageControls = defineBookElement<{
     config: BookPage['controls'];
@@ -74,7 +74,7 @@ export const BookPageControls = defineBookElement<{
             margin-left: -32px;
         }
     `,
-    renderCallback({inputs, dispatch, events}) {
+    render({inputs, dispatch, events}) {
         if (!Object.entries(inputs.config).length) {
             return '';
         }
@@ -87,7 +87,7 @@ export const BookPageControls = defineBookElement<{
                 ],
                 index,
             ) => {
-                if (controlInit.controlType === BookPageControlTypeEnum.Hidden) {
+                if (controlInit.controlType === BookPageControlType.Hidden) {
                     return '';
                 }
 
@@ -95,7 +95,7 @@ export const BookPageControls = defineBookElement<{
                     inputs.currentValues[controlName],
                     controlInit,
                     (newValue) => {
-                        const fullUrlBreadcrumbs = isRunTimeType(inputs.fullUrlBreadcrumbs, 'array')
+                        const fullUrlBreadcrumbs = check.isArray(inputs.fullUrlBreadcrumbs)
                             ? inputs.fullUrlBreadcrumbs
                             : inputs.fullUrlBreadcrumbs[controlName];
 
@@ -116,6 +116,7 @@ export const BookPageControls = defineBookElement<{
                         );
                     },
                 );
+
                 return html`
                     <div class="control-wrapper">
                         ${renderIf(
@@ -127,7 +128,13 @@ export const BookPageControls = defineBookElement<{
                             `,
                         )}
                         <label class="control-wrapper">
-                            <span>${controlName}</span>
+                            <span>
+                                ${controlInit.controlType === BookPageControlType.Custom
+                                    ? html`
+                                          &nbsp;
+                                      `
+                                    : controlName}
+                            </span>
                             ${controlInputTemplate}
                         </label>
                     </div>
@@ -138,17 +145,17 @@ export const BookPageControls = defineBookElement<{
 });
 
 function createControlInput(
-    value: unknown,
+    value: string,
     controlInit: BookPageControlInit<any>,
-    valueChange: (newValue: PropertyValueType<BookPageControlsValues>) => void,
+    valueChange: (newValue: Values<BookPageControlsValues>) => void,
 ) {
-    if (isControlInitType(controlInit, BookPageControlTypeEnum.Hidden)) {
+    if (isControlInitType(controlInit, BookPageControlType.Hidden)) {
         return '';
-    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Checkbox)) {
+    } else if (isControlInitType(controlInit, BookPageControlType.Checkbox)) {
         return html`
             <input
                 type="checkbox"
-                .value=${value}
+                ?checked=${value}
                 ${listen('input', (event) => {
                     const inputElement = extractEventTarget(event, HTMLInputElement);
 
@@ -156,7 +163,7 @@ function createControlInput(
                 })}
             />
         `;
-    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Color)) {
+    } else if (isControlInitType(controlInit, BookPageControlType.Color)) {
         return html`
             <input
                 type="color"
@@ -168,10 +175,10 @@ function createControlInput(
                 })}
             />
         `;
-    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Text)) {
+    } else if (isControlInitType(controlInit, BookPageControlType.Text)) {
         return html`
             <${ViraInput.assign({
-                value: String(value),
+                value,
                 showClearButton: true,
                 disableBrowserHelps: true,
             })}
@@ -180,7 +187,7 @@ function createControlInput(
                 })}
             ></${ViraInput}>
         `;
-    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Number)) {
+    } else if (isControlInitType(controlInit, BookPageControlType.Number)) {
         return html`
             <input
                 type="number"
@@ -192,7 +199,7 @@ function createControlInput(
                 })}
             />
         `;
-    } else if (isControlInitType(controlInit, BookPageControlTypeEnum.Dropdown)) {
+    } else if (isControlInitType(controlInit, BookPageControlType.Dropdown)) {
         return html`
             <select
                 .value=${value}
@@ -211,9 +218,13 @@ function createControlInput(
                 })}
             </select>
         `;
+    } else if (isControlInitType(controlInit, BookPageControlType.Custom)) {
+        return controlInit.content;
     } else {
         return html`
-            <p class="error">${controlInit.controlType} controls are not implemented yet.</p>
+            <p class="error">
+                ${(controlInit as AnyObject).controlType} controls are not implemented yet.
+            </p>
         `;
     }
 }

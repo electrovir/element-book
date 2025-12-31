@@ -1,16 +1,17 @@
-import {checkIfEntirelyInScrollView, waitForAnimationFrame} from '@augment-vir/browser';
-import {areJsonEqual} from '@augment-vir/common';
+import {check} from '@augment-vir/assert';
+import {checkIfEntirelyInScrollView, waitForAnimationFrame} from '@augment-vir/web';
 import {classMap, css, html, renderIf} from 'element-vir';
 import {Element16Icon, ViraIcon} from 'vira';
-import {BookEntryTypeEnum} from '../../../data/book-entry/book-entry-type';
-import {isBookTreeNode} from '../../../data/book-tree/book-tree';
-import {BookTreeNode} from '../../../data/book-tree/book-tree-node';
-import {BookMainRoute, BookRouter, defaultBookFullRoute} from '../../../routing/book-routing';
-import {colorThemeCssVars} from '../../color-theme/color-theme';
-import {BookRouteLink} from '../common/book-route-link.element';
-import {defineBookElement} from '../define-book-element';
-import {ElementBookSlotName} from '../element-book-app/element-book-app-slots';
-import {shouldShowTreeNodeInNav} from './book-nav-filter';
+import {BookEntryType} from '../../../data/book-entry/book-entry-type.js';
+import {type BookTreeNode} from '../../../data/book-tree/book-tree-node.js';
+import {isBookTreeNode} from '../../../data/book-tree/book-tree.js';
+import {type BookRouter} from '../../../routing/book-router.js';
+import {BookMainRoute, defaultBookFullRoute} from '../../../routing/book-routing.js';
+import {colorThemeCssVars} from '../../color-theme/color-theme.js';
+import {BookRouteLink} from '../common/book-route-link.element.js';
+import {defineBookElement} from '../define-book-element.js';
+import {ElementBookSlotName} from '../element-book-app/element-book-app-slots.js';
+import {shouldShowTreeNodeInNav} from './book-nav-filter.js';
 
 export const BookNav = defineBookElement<{
     flattenedNodes: ReadonlyArray<Readonly<BookTreeNode>>;
@@ -78,7 +79,7 @@ export const BookNav = defineBookElement<{
             color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
         }
     `,
-    renderCallback({inputs}) {
+    render({inputs}) {
         const navTreeTemplates = inputs.flattenedNodes.map((treeNode) => {
             if (!shouldShowTreeNodeInNav(treeNode, inputs.selectedPath)) {
                 return;
@@ -101,13 +102,13 @@ export const BookNav = defineBookElement<{
                         class=${classMap({
                             'title-row': true,
                             selected: inputs.selectedPath
-                                ? areJsonEqual(inputs.selectedPath, treeNode.fullUrlBreadcrumbs)
+                                ? check.jsonEquals(inputs.selectedPath, treeNode.fullUrlBreadcrumbs)
                                 : false,
                         })}
                     >
                         <div class="title-text">
                             ${renderIf(
-                                isBookTreeNode(treeNode, BookEntryTypeEnum.ElementExample),
+                                isBookTreeNode(treeNode, BookEntryType.ElementExample),
                                 html`
                                     <${ViraIcon.assign({icon: Element16Icon})}></${ViraIcon}>
                                 `,
@@ -134,7 +135,7 @@ export const BookNav = defineBookElement<{
 });
 
 export async function scrollSelectedNavElementIntoView(
-    bookNavInstance: typeof BookNav.instanceType,
+    bookNavInstance: typeof BookNav.InstanceType,
 ) {
     await waitForAnimationFrame(2);
 

@@ -1,13 +1,23 @@
-import {typedHasProperty} from '@augment-vir/common';
-import {BookEntryTypeEnum} from './book-entry-type';
-import {BookElementExample, BookPage} from './book-page/book-page';
-import {BookRoot} from './book-root';
+import {check} from '@augment-vir/assert';
+import {type BookEntryType} from './book-entry-type.js';
+import {type BookElementExample, type BookPage} from './book-page/book-page.js';
+import {type BookRoot} from './book-root.js';
 
+/**
+ * All possible book entries.
+ *
+ * @category Internal
+ */
 export type BookEntry = BookPage | BookRoot | BookElementExample;
 
-export function isBookEntry<const SpecificType extends BookEntryTypeEnum>(
+/**
+ * Check if the input is a book entry of the given type.
+ *
+ * @category Internal
+ */
+export function isBookEntry<const SpecificType extends BookEntryType>(
     entry: unknown,
     entryType: SpecificType,
 ): entry is Extract<BookEntry, {entryType: SpecificType}> {
-    return typedHasProperty(entry, 'entryType') && entry.entryType === entryType;
+    return check.hasKey(entry, 'entryType') && entry.entryType === entryType;
 }
