@@ -12,8 +12,8 @@
         "test:types": "npm run compile"
     },
     "dependencies": {
-        "@augment-vir/common": "^31.57.3",
-        "@augment-vir/web": "^31.57.3",
+        "@augment-vir/common": "^31.57.5",
+        "@augment-vir/web": "^31.57.5",
         "element-book": "^26.14.1",
         "element-vir": "^26.14.0"
     },
