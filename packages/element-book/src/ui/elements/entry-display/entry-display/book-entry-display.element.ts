@@ -46,6 +46,7 @@ export const BookEntryDisplay = defineBookElement<{
         }
 
         .inline-entry {
+            display: inline-block;
             margin: 8px;
 
             &.block-entry {
