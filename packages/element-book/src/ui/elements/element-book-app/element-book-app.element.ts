@@ -22,7 +22,7 @@ import {
 } from '../../color-theme/color-theme.js';
 import {type ThemeConfig, createTheme} from '../../color-theme/create-color-theme.js';
 import {ChangeRouteEvent} from '../../events/change-route.event.js';
-import {BookNav, scrollSelectedNavElementIntoView} from '../book-nav/book-nav.element.js';
+import {BookNav} from '../book-nav/book-nav.element.js';
 import {BookError} from '../common/book-error.element.js';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element.js';
 import {BookEntryDisplay} from '../entry-display/entry-display/book-entry-display.element.js';
@@ -104,11 +104,6 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             max-width: min(400px, 40%);
         }
     `,
-    init({host, state}) {
-        setTimeout(async () => {
-            await scrollNav(host, extractSearchQuery(state.currentRoute.paths), state.currentRoute);
-        }, 500);
-    },
     cleanup({state, updateState}) {
         if (state.router) {
             state.router.destroy();
@@ -286,7 +281,6 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                         if (!(navElement instanceof BookNav)) {
                             throw new TypeError(`Failed to find child '${BookNav.tagName}'`);
                         }
-                        await scrollNav(host, searchQuery, state.currentRoute);
                     })}
                     ${listen(BookPageControls.events.controlValueChange, (event) => {
                         if (!state.treeBasedControls) {
@@ -357,24 +351,3 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
         }
     },
 });
-
-async function scrollNav(
-    host: typeof ElementBookApp.InstanceType,
-    searchQuery: string,
-    currentRoutes: BookFullRoute,
-) {
-    /** If there is a search query, then there will be no selected nav to scroll to. */
-    if (searchQuery) {
-        return;
-    }
-    if (currentRoutes.paths.length <= 1) {
-        return;
-    }
-    const navElement = host.shadowRoot.querySelector(BookNav.tagName);
-
-    if (!(navElement instanceof BookNav)) {
-        throw new TypeError(`Failed to find child '${BookNav.tagName}'`);
-    }
-
-    await scrollSelectedNavElementIntoView(navElement);
-}

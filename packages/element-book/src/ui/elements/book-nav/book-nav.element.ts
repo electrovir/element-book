@@ -1,5 +1,4 @@
 import {check} from '@augment-vir/assert';
-import {checkIfEntirelyInScrollView, waitForAnimationFrame} from '@augment-vir/web';
 import {classMap, css, html, renderIf} from 'element-vir';
 import {Element16Icon, ViraIcon} from 'vira';
 import {BookEntryType} from '../../../data/book-entry/book-entry-type.js';
@@ -133,21 +132,3 @@ export const BookNav = defineBookElement<{
         `;
     },
 });
-
-export async function scrollSelectedNavElementIntoView(
-    bookNavInstance: typeof BookNav.InstanceType,
-) {
-    await waitForAnimationFrame(2);
-
-    const selected = bookNavInstance.shadowRoot.querySelector('.selected');
-
-    if (!selected) {
-        throw new Error('Failed to find selected nav tree element.');
-    }
-
-    if (await checkIfEntirelyInScrollView(selected)) {
-        return;
-    }
-
-    selected.scrollIntoView({behavior: 'smooth', block: 'center'});
-}
