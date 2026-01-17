@@ -7,11 +7,12 @@ import {colorThemeCssVars} from '../../../color-theme/color-theme.js';
 import {BookRouteLink} from '../../common/book-route-link.element.js';
 import {defineBookElement} from '../../define-book-element.js';
 
-export const BookElementExampleControls = defineBookElement<{
+export const BookElementExampleTitle = defineBookElement<{
+    blockNavigation: boolean;
     elementExampleNode: BookTreeNode<BookEntryType.ElementExample>;
     router: BookRouter | undefined;
 }>()({
-    tagName: 'book-element-example-controls',
+    tagName: 'book-element-example-title',
     styles: css`
         :host {
             display: flex;
@@ -21,6 +22,10 @@ export const BookElementExampleControls = defineBookElement<{
         }
     `,
     render({inputs}) {
+        if (inputs.blockNavigation) {
+            return inputs.elementExampleNode.entry.title;
+        }
+
         const linkPaths: ValidBookPaths = [
             BookMainRoute.Book,
             ...inputs.elementExampleNode.fullUrlBreadcrumbs,

@@ -25,6 +25,7 @@ export type OptionalConfig = {
     _debug: boolean;
     globalValues: GlobalValues;
     preventWindowTitleChange: boolean;
+    blockNavigation: boolean;
 } & RequireExactlyOne<
     Readonly<{
         /**

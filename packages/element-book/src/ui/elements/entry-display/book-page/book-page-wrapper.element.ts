@@ -15,6 +15,7 @@ import {BookEntryDescription} from '../book-entry-description.element.js';
 import {BookPageControls} from './book-page-controls.element.js';
 
 export const BookPageWrapper = defineBookElement<{
+    blockNavigation: boolean;
     isTopLevel: boolean;
     pageNode: BookTreeNode<BookEntryType.Page>;
     router: BookRouter | undefined;
@@ -67,19 +68,25 @@ export const BookPageWrapper = defineBookElement<{
             console.error(error);
         }
 
+        const headerTemplate = inputs.blockNavigation
+            ? titleTemplate
+            : html`
+                  <${BookRouteLink.assign({
+                      route: {
+                          paths: linkPaths,
+                          hash: undefined,
+                          search: undefined,
+                      },
+                      router: inputs.router,
+                  })}>
+                      ${titleTemplate}
+                  </${BookRouteLink}>
+              `;
+
         return html`
             <div class="page-header block-entry">
                 <div class="title-group">
-                    <${BookRouteLink.assign({
-                        route: {
-                            paths: linkPaths,
-                            hash: undefined,
-                            search: undefined,
-                        },
-                        router: inputs.router,
-                    })}>
-                        ${titleTemplate}
-                    </${BookRouteLink}>
+                    ${headerTemplate}
                     ${error
                         ? html`
                               <${BookError.assign({message: error.message})}></${BookError}>

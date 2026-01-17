@@ -1,4 +1,3 @@
-import {omitObjectKeys} from '@augment-vir/common';
 import {css, html} from 'element-vir';
 import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {type BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls.js';
@@ -6,10 +5,11 @@ import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
 import {type BookRouter} from '../../../../routing/book-router.js';
 import {colorThemeCssVars} from '../../../color-theme/color-theme.js';
 import {defineBookElement} from '../../define-book-element.js';
-import {BookElementExampleControls} from './book-element-example-controls.element.js';
+import {BookElementExampleTitle} from './book-element-example-title.element.js';
 import {BookElementExampleViewer} from './book-element-example-viewer.element.js';
 
 export const BookElementExampleWrapper = defineBookElement<{
+    blockNavigation: boolean;
     elementExampleNode: BookTreeNode<BookEntryType.ElementExample>;
     currentPageControls: BookPageControlsValues;
     router: BookRouter | undefined;
@@ -40,20 +40,22 @@ export const BookElementExampleWrapper = defineBookElement<{
             align-items: flex-start;
         }
 
-        ${BookElementExampleControls} {
+        ${BookElementExampleTitle} {
             color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
         }
 
-        :host(:hover) ${BookElementExampleControls} {
+        :host(:hover) ${BookElementExampleTitle} {
             color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
         }
     `,
     render({inputs}) {
         return html`
             <div class="individual-example-wrapper">
-                <${BookElementExampleControls.assign(
-                    omitObjectKeys(inputs, ['currentPageControls']),
-                )}></${BookElementExampleControls}>
+                <${BookElementExampleTitle.assign({
+                    blockNavigation: inputs.blockNavigation,
+                    elementExampleNode: inputs.elementExampleNode,
+                    router: inputs.router,
+                })}></${BookElementExampleTitle}>
                 <${BookElementExampleViewer.assign(inputs)}></${BookElementExampleViewer}>
             </div>
         `;

@@ -87,6 +87,7 @@ function getFlattenedControlsFromHiddenParents(
 }
 
 export function createNodeTemplates({
+    blockNavigation,
     currentNodes,
     isTopLevel,
     router,
@@ -94,6 +95,7 @@ export function createNodeTemplates({
     controls,
     originalTree,
 }: {
+    blockNavigation: boolean;
     currentNodes: ReadonlyArray<BookTreeNode>;
     isTopLevel: boolean;
     router: BookRouter | undefined;
@@ -138,6 +140,7 @@ export function createNodeTemplates({
             if (isBookTreeNode(currentNode, BookEntryType.Page)) {
                 return html`
                     <${BookPageWrapper.assign({
+                        blockNavigation,
                         isTopLevel,
                         pageNode: currentNode,
                         controls,
@@ -154,6 +157,7 @@ export function createNodeTemplates({
 
                 const content = html`
                     <${BookElementExampleWrapper.assign({
+                        blockNavigation,
                         elementExampleNode: currentNode,
                         currentPageControls: controlsForElementExample,
                         router,

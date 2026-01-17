@@ -1,7 +1,7 @@
 import {check} from '@augment-vir/assert';
 import {extractErrorMessage, makeWritable} from '@augment-vir/common';
 import {waitForAnimationFrame} from '@augment-vir/web';
-import {css, defineElement, defineElementEvent, html, listen} from 'element-vir';
+import {css, defineElement, defineElementEvent, html, listen, nothing} from 'element-vir';
 import {
     type ControlsWrapper,
     createNewControls,
@@ -265,7 +265,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             return html`
                 <div
                     class="root"
-                    ${listen(ChangeRouteEvent, async (event) => {
+                    ${listen(ChangeRouteEvent, (event) => {
                         const newRoute = event.detail;
 
                         if (!areRoutesNew(newRoute)) {
@@ -300,17 +300,24 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                         });
                     })}
                 >
-                    <${BookNav.assign({
-                        flattenedNodes: originalTree.flattenedNodes,
-                        router: state.router,
-                        selectedPath: searchQuery ? undefined : state.currentRoute.paths.slice(1),
-                    })}>
-                        <slot
-                            name=${ElementBookSlotName.NavHeader}
-                            slot=${ElementBookSlotName.NavHeader}
-                        ></slot>
-                    </${BookNav}>
+                    ${inputs.blockNavigation
+                        ? nothing
+                        : html`
+                              <${BookNav.assign({
+                                  flattenedNodes: originalTree.flattenedNodes,
+                                  router: state.router,
+                                  selectedPath: searchQuery
+                                      ? undefined
+                                      : state.currentRoute.paths.slice(1),
+                              })}>
+                                  <slot
+                                      name=${ElementBookSlotName.NavHeader}
+                                      slot=${ElementBookSlotName.NavHeader}
+                                  ></slot>
+                              </${BookNav}>
+                          `}
                     <${BookEntryDisplay.assign({
+                        blockNavigation: !!inputs.blockNavigation,
                         controls: currentControls,
                         currentNodes,
                         currentRoute: state.currentRoute,

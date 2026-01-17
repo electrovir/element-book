@@ -11,6 +11,7 @@ import {BookBreadcrumbsBar} from '../book-breadcrumbs-bar.element.js';
 import {createNodeTemplates} from './create-node-templates.js';
 
 export const BookEntryDisplay = defineBookElement<{
+    blockNavigation: boolean;
     controls: ControlsWrapper;
     currentNodes: ReadonlyArray<BookTreeNode>;
     currentRoute: Readonly<BookFullRoute>;
@@ -93,6 +94,7 @@ export const BookEntryDisplay = defineBookElement<{
         const currentSearch = extractSearchQuery(inputs.currentRoute.paths);
 
         const entryTemplates = createNodeTemplates({
+            blockNavigation: inputs.blockNavigation,
             currentNodes: inputs.currentNodes,
             isTopLevel: true,
             router: inputs.router,
