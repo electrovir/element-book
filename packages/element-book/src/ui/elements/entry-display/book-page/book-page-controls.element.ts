@@ -109,7 +109,17 @@ export const BookPageControls = defineBookElement<{
                             new events.controlValueChange({
                                 fullUrlBreadcrumbs,
                                 newValues: {
-                                    ...inputs.currentValues,
+                                    /**
+                                     * Only include values for controls defined in the current
+                                     * config, not inherited parent values. This prevents
+                                     * overwriting parent controls with their inherited values.
+                                     */
+                                    ...Object.fromEntries(
+                                        Object.keys(inputs.config).map((key) => [
+                                            key,
+                                            inputs.currentValues[key],
+                                        ]),
+                                    ),
                                     [controlName]: newValue,
                                 },
                             }),
