@@ -1,6 +1,6 @@
 {
     "name": "element-book",
-    "version": "26.15.2",
+    "version": "26.15.3",
     "keywords": [
         "book",
         "design system",
@@ -46,7 +46,7 @@
         "@augment-vir/web": "^31.59.0",
         "colorjs.io": "^0.6.1",
         "date-vir": "^8.1.0",
-        "lit-css-vars": "^3.2.1",
+        "lit-css-vars": "^3.2.2",
         "spa-router-vir": "^6.4.1",
         "typed-event-target": "^4.1.0"
     },
@@ -63,7 +63,7 @@
         "type-fest": "^5.4.1",
         "typedoc": "^0.28.16",
         "typescript": "5.9.3",
-        "vira": "^28.19.6"
+        "vira": "^28.19.7"
     },
     "peerDependencies": {
         "element-vir": ">=17",

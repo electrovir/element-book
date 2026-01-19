@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-book-mono-repo",
-    "version": "26.15.2",
+    "version": "26.15.3",
     "private": true,
     "repository": {
         "type": "git",
