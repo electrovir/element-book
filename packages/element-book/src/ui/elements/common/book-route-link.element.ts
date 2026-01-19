@@ -11,7 +11,7 @@ export const BookRouteLink = defineBookElement<{
 }>()({
     tagName: 'book-route-link',
     cssVars: {
-        'book-route-link-anchor-padding': '',
+        'book-route-link-anchor-padding': '0px',
     },
     styles: ({cssVars}) => css`
         a {
