@@ -1,8 +1,8 @@
 import {check} from '@augment-vir/assert';
 import {type AnyObject, type Values} from '@augment-vir/common';
-import {extractEventTarget} from '@augment-vir/web';
+import {VirColorPicker} from '@electrovir/color';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
-import {Options24Icon, ViraIcon, ViraInput} from 'vira';
+import {Options24Icon, ViraCheckbox, ViraIcon, ViraInput, ViraSelect} from 'vira';
 import {
     type BookPageControl,
     type BookPageControlInit,
@@ -62,7 +62,7 @@ export const BookPageControls = defineBookElement<{
             color: red;
         }
 
-        ${ViraInput} {
+        ${ViraInput}, ${ViraSelect} {
             height: 24px;
             max-width: 128px;
         }
@@ -163,27 +163,27 @@ function createControlInput(
         return '';
     } else if (isControlInitType(controlInit, BookPageControlType.Checkbox)) {
         return html`
-            <input
-                type="checkbox"
-                ?checked=${value}
-                ${listen('input', (event) => {
-                    const inputElement = extractEventTarget(event, HTMLInputElement);
-
-                    valueChange(inputElement.checked);
+            <${ViraCheckbox.assign({
+                value: !!value,
+            })}
+                ${listen(ViraCheckbox.events.valueChange, (event) => {
+                    valueChange(event.detail);
                 })}
-            />
+            ></${ViraCheckbox}>
         `;
     } else if (isControlInitType(controlInit, BookPageControlType.Color)) {
         return html`
-            <input
-                type="color"
-                .value=${value}
-                ${listen('input', (event) => {
-                    const inputElement = extractEventTarget(event, HTMLInputElement);
-
-                    valueChange(inputElement.value);
+            <${VirColorPicker.assign({
+                color: value,
+            })}
+                style=${css`
+                    ${VirColorPicker.cssVars['vir-color-picker-swatch-height'].name}: 24px;
+                    ${VirColorPicker.cssVars['vir-color-picker-swatch-width'].name}: 24px;
+                `}
+                ${listen(VirColorPicker.events.colorChange, (event) => {
+                    valueChange(event.detail);
                 })}
-            />
+            ></${VirColorPicker}>
         `;
     } else if (isControlInitType(controlInit, BookPageControlType.Text)) {
         return html`
@@ -199,34 +199,30 @@ function createControlInput(
         `;
     } else if (isControlInitType(controlInit, BookPageControlType.Number)) {
         return html`
-            <input
-                type="number"
-                .value=${value}
-                ${listen('input', (event) => {
-                    const inputElement = extractEventTarget(event, HTMLInputElement);
-
-                    valueChange(inputElement.value);
+            <${ViraInput.assign({
+                value,
+                allowedInputs: /\d/,
+            })}
+                ${listen(ViraInput.events.valueChange, (event) => {
+                    valueChange(event.detail);
                 })}
-            />
+            ></${ViraInput}>
         `;
     } else if (isControlInitType(controlInit, BookPageControlType.Dropdown)) {
         return html`
-            <select
-                .value=${value}
-                ${listen('input', (event) => {
-                    const selectElement = extractEventTarget(event, HTMLSelectElement);
-
-                    valueChange(selectElement.value);
+            <${ViraSelect.assign({
+                value,
+                options: controlInit.options.map((option) => {
+                    return {
+                        label: option,
+                        value: option,
+                    };
+                }),
+            })}
+                ${listen(ViraSelect.events.valueChange, (event) => {
+                    valueChange(event.detail);
                 })}
-            >
-                ${controlInit.options.map((optionLabel) => {
-                    return html`
-                        <option ?selected=${optionLabel === value} value=${optionLabel}>
-                            ${optionLabel}
-                        </option>
-                    `;
-                })}
-            </select>
+            ></${ViraSelect}>
         `;
     } else if (isControlInitType(controlInit, BookPageControlType.Custom)) {
         return controlInit.content;
