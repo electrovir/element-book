@@ -201,7 +201,7 @@ function createControlInput(
         return html`
             <${ViraInput.assign({
                 value,
-                allowedInputs: /\d/,
+                allowedInputs: /[\d.]/,
             })}
                 ${listen(ViraInput.events.valueChange, (event) => {
                     valueChange(event.detail);
