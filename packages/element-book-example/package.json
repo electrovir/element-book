@@ -12,10 +12,10 @@
         "test:types": "npm run compile"
     },
     "dependencies": {
-        "@augment-vir/common": "^31.59.3",
-        "@augment-vir/web": "^31.59.3",
+        "@augment-vir/common": "^31.67.0",
+        "@augment-vir/web": "^31.67.0",
         "element-book": "^26.16.1",
-        "element-vir": "^26.14.3"
+        "element-vir": "^26.14.4"
     },
     "devDependencies": {
         "@web/dev-server-esbuild": "^1.0.5",
@@ -24,9 +24,9 @@
         "@web/test-runner-playwright": "^0.11.1",
         "esbuild": "^0.27.3",
         "markdown-code-example-inserter": "^3.0.3",
-        "typedoc": "^0.28.16",
+        "typedoc": "^0.28.17",
         "typescript": "5.9.3",
         "vite": "^7.3.1",
-        "vite-tsconfig-paths": "^6.0.4"
+        "vite-tsconfig-paths": "^6.1.1"
     }
 }
