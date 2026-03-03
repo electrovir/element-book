@@ -66,7 +66,14 @@ export function createBookTreeFromEntries({
 
     const tree = createEmptyBookTreeRoot();
 
-    entries.forEach((newEntry) => addEntryToTree({tree, newEntry, debug, manuallyAdded: true}));
+    entries.forEach((newEntry) =>
+        addEntryToTree({
+            tree,
+            newEntry,
+            debug,
+            manuallyAdded: true,
+        }),
+    );
 
     const flattenedNodes = flattenTree(tree);
 
@@ -103,7 +110,12 @@ function getOrAddImmediateParent(
         console.info(`parent of ${entry.title} not found in tree; adding it now.`);
     }
 
-    addEntryToTree({tree, newEntry: entry.parent, debug, manuallyAdded: false});
+    addEntryToTree({
+        tree,
+        newEntry: entry.parent,
+        debug,
+        manuallyAdded: false,
+    });
     const immediateParentAfterAdding = traverseToImmediateParent(entry, tree);
 
     if (!immediateParentAfterAdding) {
@@ -178,7 +190,12 @@ function addEntryToTree({
         Object.values(newEntry.elementExamples).length
     ) {
         Object.values(newEntry.elementExamples).forEach((elementExample) =>
-            addEntryToTree({tree, newEntry: elementExample, debug, manuallyAdded}),
+            addEntryToTree({
+                tree,
+                newEntry: elementExample,
+                debug,
+                manuallyAdded,
+            }),
         );
     }
 }

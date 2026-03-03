@@ -89,7 +89,9 @@ export const BookPageWrapper = defineBookElement<{
                     ${headerTemplate}
                     ${error
                         ? html`
-                              <${BookError.assign({message: error.message})}></${BookError}>
+                              <${BookError.assign({
+                                  message: error.message,
+                              })}></${BookError}>
                           `
                         : html`
                               <${BookEntryDescription.assign({

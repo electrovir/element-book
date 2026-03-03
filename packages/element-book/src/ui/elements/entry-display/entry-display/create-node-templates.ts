@@ -82,7 +82,11 @@ function getFlattenedControlsFromHiddenParents(
                 },
             };
         },
-        {config: {}, current: {}, breadcrumbs: {}},
+        {
+            config: {},
+            current: {},
+            breadcrumbs: {},
+        },
     );
 }
 

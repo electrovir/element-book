@@ -119,10 +119,14 @@ export const BookLazyEntry = defineBookElement<{
                         unobserveElement(state.placeholderElement);
                     }
 
-                    updateState({placeholderElement: element});
+                    updateState({
+                        placeholderElement: element,
+                    });
 
                     observedElements.set(element, () => {
-                        updateState({hasRendered: true});
+                        updateState({
+                            hasRendered: true,
+                        });
                     });
                     getSharedObserver().observe(element);
                 })}

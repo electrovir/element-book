@@ -11,7 +11,6 @@ export * from './data/book-tree/book-tree-node.js';
 export * from './routing/book-routing.js';
 export * from './ui/color-theme/color-theme.js';
 export * from './ui/color-theme/create-color-theme.js';
-export * from './ui/elements/element-book-app/element-book-app-slots.js';
 export * from './ui/elements/element-book-app/element-book-app.element.js';
 export * from './ui/elements/element-book-app/element-book-config.js';
 export * from './ui/elements/element-book-app/global-values.js';

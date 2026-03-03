@@ -73,7 +73,9 @@ export function createNewControls(
     breadcrumbsForNewValue: ReadonlyArray<string>,
     newValues: BookPageControlsValues,
 ): ControlsWrapper {
-    const newControls = {...controlsWrapper};
+    const newControls = {
+        ...controlsWrapper,
+    };
 
     traverseAndInsertNewControls(
         newControls,

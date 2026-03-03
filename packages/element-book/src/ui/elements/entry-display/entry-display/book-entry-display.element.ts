@@ -6,7 +6,6 @@ import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
 import {type BookRouter} from '../../../../routing/book-router.js';
 import {type BookFullRoute, extractSearchQuery} from '../../../../routing/book-routing.js';
 import {defineBookElement} from '../../define-book-element.js';
-import {ElementBookSlotName} from '../../element-book-app/element-book-app-slots.js';
 import {BookBreadcrumbsBar} from '../book-breadcrumbs-bar.element.js';
 import {createNodeTemplates} from './create-node-templates.js';
 
@@ -119,26 +118,30 @@ export const BookEntryDisplay = defineBookElement<{
                         })}
                         class="loading"
                     >
-                        <${ViraIcon.assign({icon: LoaderAnimated24Icon})}></${ViraIcon}>
+                        <${ViraIcon.assign({
+                            icon: LoaderAnimated24Icon,
+                        })}></${ViraIcon}>
                     </div>
                     ${renderIf(
                         !!state.lastElement,
                         html`
                             ${state.lastElement}
-                            <slot name=${ElementBookSlotName.Footer}></slot>
+                            <slot></slot>
                         `,
                     )}
                 `,
                 html`
                     <div
                         ${onDomCreated((element) => {
-                            updateState({lastElement: element});
+                            updateState({
+                                lastElement: element,
+                            });
                         })}
                         class="all-book-entries-wrapper"
                     >
                         ${entryTemplates}
                     </div>
-                    <slot name=${ElementBookSlotName.Footer}></slot>
+                    <slot></slot>
                 `,
             )}
         `;

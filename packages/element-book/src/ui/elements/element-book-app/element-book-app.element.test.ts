@@ -15,9 +15,7 @@ describe(ElementBookApp.tagName, () => {
             })}></${ElementBookApp}>
         `);
 
-        assert.instanceOf(elementBookAppInstance, ElementBookApp);
-
-        return elementBookAppInstance;
+        return elementBookAppInstance as typeof ElementBookApp.InstanceType;
     }
 
     async function getBookErrorMessage(
@@ -40,8 +38,12 @@ describe(ElementBookApp.tagName, () => {
                 }
             },
             {
-                interval: {milliseconds: 100},
-                timeout: {seconds: 10},
+                interval: {
+                    milliseconds: 100,
+                },
+                timeout: {
+                    seconds: 10,
+                },
             },
             `Failed to find '${BookError.tagName}'`,
         );

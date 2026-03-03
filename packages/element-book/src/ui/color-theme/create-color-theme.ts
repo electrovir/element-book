@@ -23,7 +23,11 @@ function colorsObjectToCssResult<const Colors extends NestedColors>(
 ): NestedColorsToCssResult<Colors> {
     return mapObjectValues(colors, (key, value) => {
         if (value instanceof Color) {
-            return unsafeCSS(value.toString({format: 'hex'}));
+            return unsafeCSS(
+                value.toString({
+                    format: 'hex',
+                }),
+            );
         } else {
             return colorsObjectToCssResult(value);
         }
@@ -118,12 +122,26 @@ export function createTheme({
 
     const colors = {
         nav: {
-            hover: createColorPair({background: themeColor.clone().set({'hsl.l': 93})}),
-            active: createColorPair({background: themeColor.clone().set({'hsl.l': 90})}),
-            selected: createColorPair({background: themeColor.clone().set({'hsl.l': 85})}),
+            hover: createColorPair({
+                background: themeColor.clone().set({
+                    'hsl.l': 93,
+                }),
+            }),
+            active: createColorPair({
+                background: themeColor.clone().set({
+                    'hsl.l': 90,
+                }),
+            }),
+            selected: createColorPair({
+                background: themeColor.clone().set({
+                    'hsl.l': 85,
+                }),
+            }),
         },
         accent: {
-            icon: themeColor.clone().set({'hsl.l': 40}),
+            icon: themeColor.clone().set({
+                'hsl.l': 40,
+            }),
         },
         page: {
             background: backgroundColor,

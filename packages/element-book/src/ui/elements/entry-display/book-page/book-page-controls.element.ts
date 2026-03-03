@@ -132,7 +132,9 @@ export const BookPageControls = defineBookElement<{
                         ${renderIf(
                             index === 0,
                             html`
-                                <${ViraIcon.assign({icon: Options24Icon})}
+                                <${ViraIcon.assign({
+                                    icon: Options24Icon,
+                                })}
                                     class="options-icon"
                                 ></${ViraIcon}>
                             `,

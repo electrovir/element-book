@@ -1,4 +1,4 @@
-import {ElementBookApp, ElementBookSlotName} from 'element-book';
+import {ElementBookApp} from 'element-book';
 import {css, defineElement, html, listen} from 'element-vir';
 import {pages} from '../../element-book-example/example.book.js';
 
@@ -42,7 +42,9 @@ export const VirApp = defineElement()({
                         if (!(element instanceof HTMLInputElement)) {
                             throw new TypeError('input element not found for input event');
                         }
-                        updateState({themeColor: element.value});
+                        updateState({
+                            themeColor: element.value,
+                        });
                     })}
                     type="color"
                 />
@@ -61,11 +63,13 @@ export const VirApp = defineElement()({
                 },
             })}
                 ${listen(ElementBookApp.events.pathUpdate, (event) => {
-                    updateState({paths: event.detail});
+                    updateState({
+                        paths: event.detail,
+                    });
                 })}
             >
-                <h1 slot=${ElementBookSlotName.NavHeader}>My Title</h1>
-                <footer slot=${ElementBookSlotName.Footer}>Example Footer</footer>
+                <h1 slot=${ElementBookApp.slotNames.navHeader}>My Title</h1>
+                <footer slot=${ElementBookApp.slotNames.footer}>Example Footer</footer>
             </${ElementBookApp}>
         `;
     },

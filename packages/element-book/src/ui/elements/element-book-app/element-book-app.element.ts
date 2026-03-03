@@ -26,7 +26,6 @@ import {BookNav} from '../book-nav/book-nav.element.js';
 import {BookError} from '../common/book-error.element.js';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element.js';
 import {BookEntryDisplay} from '../entry-display/entry-display/book-entry-display.element.js';
-import {ElementBookSlotName} from './element-book-app-slots.js';
 import {type ElementBookConfig} from './element-book-config.js';
 import {getCurrentNodes} from './get-current-nodes.js';
 import {type GlobalValues} from './global-values.js';
@@ -68,6 +67,18 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     events: {
         pathUpdate: defineElementEvent<ReadonlyArray<string>>(),
     },
+    slotNames: [
+        /**
+         * Used to specify a footer for the main element example viewer. It always appears at the
+         * bottom of the viewer's scroll area.
+         */
+        'footer',
+        /**
+         * Used to specify a header above the navigation sidebar. This is a particularly good place
+         * for branding.
+         */
+        'navHeader',
+    ],
     styles: css`
         :host {
             display: flex;
@@ -107,10 +118,12 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     cleanup({state, updateState}) {
         if (state.router) {
             state.router.destroy();
-            updateState({router: undefined});
+            updateState({
+                router: undefined,
+            });
         }
     },
-    render: ({state, inputs, host, updateState, dispatch, events}) => {
+    render: ({state, inputs, host, updateState, dispatch, events, slotNames}) => {
         if (inputs._debug) {
             console.info('rendering element-book app');
         }
@@ -131,7 +144,9 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
         function updateWindowTitle(topNodeTitle: string | undefined) {
             if (!inputs.preventWindowTitleChange) {
                 if (!state.originalWindowTitle) {
-                    updateState({originalWindowTitle: document.title});
+                    updateState({
+                        originalWindowTitle: document.title,
+                    });
                 }
                 document.title = [
                     state.originalWindowTitle,
@@ -172,12 +187,16 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 inputs.elementBookRoutePaths &&
                 !check.jsonEquals(inputs.elementBookRoutePaths, state.currentRoute.paths)
             ) {
-                updateRoutes({paths: makeWritable(inputs.elementBookRoutePaths)});
+                updateRoutes({
+                    paths: makeWritable(inputs.elementBookRoutePaths),
+                });
             }
 
             if (inputs.internalRouterConfig?.useInternalRouter && !state.router) {
                 const router = createBookRouter(inputs.internalRouterConfig.basePath);
-                updateState({router});
+                updateState({
+                    router,
+                });
 
                 router.listen(true, (fullRoute) => {
                     updateState({
@@ -259,7 +278,9 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             }
 
             if (inputs._debug) {
-                console.info({currentControls});
+                console.info({
+                    currentControls,
+                });
             }
 
             return html`
@@ -272,7 +293,9 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             return;
                         }
 
-                        updateState({loading: true});
+                        updateState({
+                            loading: true,
+                        });
 
                         updateRoutes(newRoute);
 
@@ -310,10 +333,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                                       ? undefined
                                       : state.currentRoute.paths.slice(1),
                               })}>
-                                  <slot
-                                      name=${ElementBookSlotName.NavHeader}
-                                      slot=${ElementBookSlotName.NavHeader}
-                                  ></slot>
+                                  <slot name=${slotNames.navHeader}></slot>
                               </${BookNav}>
                           `}
                     <${BookEntryDisplay.assign({
@@ -333,20 +353,22 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             );
 
                             if (entryDisplay) {
-                                entryDisplay.scroll({top: 0, behavior: 'instant'});
+                                entryDisplay.scroll({
+                                    top: 0,
+                                    behavior: 'instant',
+                                });
                             } else {
                                 console.error(
                                     `Failed to find '${BookEntryDisplay.tagName}' for scrolling.`,
                                 );
                             }
                             await waitForAnimationFrame();
-                            updateState({loading: !event.detail});
+                            updateState({
+                                loading: !event.detail,
+                            });
                         })}
                     >
-                        <slot
-                            name=${ElementBookSlotName.Footer}
-                            slot=${ElementBookSlotName.Footer}
-                        ></slot>
+                        <slot name=${slotNames.footer}></slot>
                     </${BookEntryDisplay}>
                 </div>
             `;

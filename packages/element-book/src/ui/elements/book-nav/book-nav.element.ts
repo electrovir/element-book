@@ -9,7 +9,6 @@ import {BookMainRoute, defaultBookFullRoute} from '../../../routing/book-routing
 import {colorThemeCssVars} from '../../color-theme/color-theme.js';
 import {BookRouteLink} from '../common/book-route-link.element.js';
 import {defineBookElement} from '../define-book-element.js';
-import {ElementBookSlotName} from '../element-book-app/element-book-app-slots.js';
 import {shouldShowTreeNodeInNav} from './book-nav-filter.js';
 
 export const BookNav = defineBookElement<{
@@ -109,7 +108,9 @@ export const BookNav = defineBookElement<{
                             ${renderIf(
                                 isBookTreeNode(treeNode, BookEntryType.ElementExample),
                                 html`
-                                    <${ViraIcon.assign({icon: Element16Icon})}></${ViraIcon}>
+                                    <${ViraIcon.assign({
+                                        icon: Element16Icon,
+                                    })}></${ViraIcon}>
                                 `,
                             )}
                             ${treeNode.entry.title}
@@ -124,7 +125,7 @@ export const BookNav = defineBookElement<{
                 route: defaultBookFullRoute,
                 router: inputs.router,
             })}>
-                <slot name=${ElementBookSlotName.NavHeader}>Book</slot>
+                <slot>Book</slot>
             </${BookRouteLink}>
             <ul>
                 ${navTreeTemplates}

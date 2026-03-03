@@ -37,8 +37,14 @@ const parentPage1 = defineBookPageWithGlobals<{
         }),
     },
 });
-const parentPage2 = defineBookPage({title: 'Parent Page 2', parent: undefined});
-const subPage = defineBookPage({title: 'Sub Page 1', parent: parentPage2});
+const parentPage2 = defineBookPage({
+    title: 'Parent Page 2',
+    parent: undefined,
+});
+const subPage = defineBookPage({
+    title: 'Sub Page 1',
+    parent: parentPage2,
+});
 
 function createExamplePage(index: number, parent: BookPage) {
     const newPage = defineBookPage({
@@ -184,4 +190,6 @@ export const pages = [
     parentPage2,
 ];
 
-console.info({pages});
+console.info({
+    pages,
+});
