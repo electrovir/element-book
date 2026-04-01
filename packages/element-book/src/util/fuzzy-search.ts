@@ -41,15 +41,13 @@ export function fuzzySearch({
     const searchQueryLength = searchQuery.length;
     if (searchQueryLength > searchInLength) {
         return false;
-    }
-    if (searchQueryLength === searchInLength) {
+    } else if (searchQueryLength === searchInLength) {
         return searchQuery === searchIn;
     }
 
     const lowercaseSearchIn = searchIn.toLowerCase();
     const lowercaseSearchQuery = searchQuery.toLowerCase();
 
-    // eslint-disable-next-line sonarjs/no-labels
     outer: for (let i = 0, j = 0; i < searchQueryLength; i++) {
         const charCode = lowercaseSearchQuery.codePointAt(i);
         while (j < searchInLength) {

@@ -1,10 +1,10 @@
 import {combineErrors, extractErrorMessage} from '@augment-vir/common';
 import {html, renderIf} from 'element-vir';
+import {ViraError} from 'vira';
 import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {type BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls.js';
 import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
 import {unsetInternalState} from '../../../../data/unset.js';
-import {BookError} from '../../common/book-error.element.js';
 import {defineBookElement} from '../../define-book-element.js';
 
 export const BookElementExampleViewer = defineBookElement<{
@@ -21,9 +21,7 @@ export const BookElementExampleViewer = defineBookElement<{
         try {
             if (inputs.elementExampleNode.entry.errors.length) {
                 throw combineErrors(inputs.elementExampleNode.entry.errors);
-            }
-
-            if (
+            } else if (
                 /** This is a check to make sure the input entry _does_ match the expected type. */
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 !inputs.elementExampleNode.entry.render ||
@@ -65,11 +63,9 @@ export const BookElementExampleViewer = defineBookElement<{
             console.error('ERROR HERE', extractErrorMessage(error));
             console.error(error);
             return html`
-                <${BookError.assign({
-                    message: `${
-                        inputs.elementExampleNode.entry.title
-                    } failed: ${extractErrorMessage(error)}`,
-                })}></${BookError}>
+                <${ViraError}>
+                    ${inputs.elementExampleNode.entry.title} failed: ${extractErrorMessage(error)}
+                </${ViraError}>
             `;
         }
     },

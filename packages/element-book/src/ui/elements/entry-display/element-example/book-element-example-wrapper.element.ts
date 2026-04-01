@@ -1,4 +1,5 @@
 import {css, html} from 'element-vir';
+import {viraTheme} from 'vira';
 import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {type BookPageControlsValues} from '../../../../data/book-entry/book-page/book-page-controls.js';
 import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
@@ -27,11 +28,6 @@ export const BookElementExampleWrapper = defineBookElement<{
             flex-wrap: wrap;
         }
 
-        .error {
-            color: red;
-            font-weight: bold;
-        }
-
         .individual-example-wrapper {
             display: flex;
             flex-direction: column;
@@ -41,7 +37,7 @@ export const BookElementExampleWrapper = defineBookElement<{
         }
 
         ${BookElementExampleTitle} {
-            color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
+            color: ${viraTheme.colors['vira-grey-foreground-placeholder'].foreground.value};
         }
 
         :host(:hover) ${BookElementExampleTitle} {

@@ -1,5 +1,6 @@
 import {combineErrors} from '@augment-vir/common';
 import {css, html} from 'element-vir';
+import {ViraError} from 'vira';
 import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {
     type ControlsWrapper,
@@ -8,7 +9,6 @@ import {
 import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
 import {type BookRouter} from '../../../../routing/book-router.js';
 import {BookMainRoute, type ValidBookPaths} from '../../../../routing/book-routing.js';
-import {BookError} from '../../common/book-error.element.js';
 import {BookRouteLink} from '../../common/book-route-link.element.js';
 import {defineBookElement} from '../../define-book-element.js';
 import {BookEntryDescription} from '../book-entry-description.element.js';
@@ -89,9 +89,7 @@ export const BookPageWrapper = defineBookElement<{
                     ${headerTemplate}
                     ${error
                         ? html`
-                              <${BookError.assign({
-                                  message: error.message,
-                              })}></${BookError}>
+                              <${ViraError}>${error.message}</${ViraError}>
                           `
                         : html`
                               <${BookEntryDescription.assign({

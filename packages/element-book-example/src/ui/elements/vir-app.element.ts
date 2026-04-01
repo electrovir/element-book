@@ -25,33 +25,60 @@ export const VirApp = defineElement()({
             margin: 0;
             margin-bottom: 16px;
         }
+
+        .controls {
+            display: flex;
+            gap: 16px;
+            padding: 0 16px;
+            align-items: center;
+        }
     `,
     state() {
         return {
             themeColor: undefined as string | undefined,
+            darkMode: undefined as boolean | undefined,
             paths: ['book'] as ReadonlyArray<string>,
         };
     },
     render: ({state, updateState}) => {
         return html`
-            <label>
-                Theme color
-                <input
-                    ${listen('input', (event) => {
-                        const element = event.currentTarget;
-                        if (!(element instanceof HTMLInputElement)) {
-                            throw new TypeError('input element not found for input event');
-                        }
-                        updateState({
-                            themeColor: element.value,
-                        });
-                    })}
-                    type="color"
-                />
-            </label>
+            <div class="controls">
+                <label>
+                    Theme color
+                    <input
+                        ${listen('input', (event) => {
+                            const element = event.currentTarget;
+                            if (!(element instanceof HTMLInputElement)) {
+                                throw new TypeError('input element not found for input event');
+                            }
+                            updateState({
+                                themeColor: element.value,
+                            });
+                        })}
+                        type="color"
+                    />
+                </label>
+                <label>
+                    Dark mode
+                    <input
+                        type="checkbox"
+                        .checked=${state.darkMode ?? false}
+                        ${listen('change', (event) => {
+                            const element = event.currentTarget;
+                            if (!(element instanceof HTMLInputElement)) {
+                                throw new TypeError('input element not found for change event');
+                            }
+                            updateState({
+                                darkMode: element.checked,
+                            });
+                        })}
+                    />
+                </label>
+            </div>
             <${ElementBookApp.assign({
                 pages,
                 themeColor: state.themeColor,
+                darkMode: state.darkMode,
                 internalRouterConfig: {
                     useInternalRouter: true,
                     basePath: 'element-book',

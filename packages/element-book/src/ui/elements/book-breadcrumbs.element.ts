@@ -1,4 +1,5 @@
 import {css, html} from 'element-vir';
+import {viraTheme} from 'vira';
 import {type BookRouter} from '../../routing/book-router.js';
 import {type BookFullRoute, BookMainRoute} from '../../routing/book-routing.js';
 import {BookRouteLink} from './common/book-route-link.element.js';
@@ -12,7 +13,7 @@ export const BookBreadcrumbs = defineBookElement<{
     styles: css`
         :host {
             display: flex;
-            color: #999;
+            color: ${viraTheme.colors['vira-grey-foreground-header'].foreground.value};
         }
 
         .spacer {

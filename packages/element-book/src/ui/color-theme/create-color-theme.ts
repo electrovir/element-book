@@ -1,37 +1,21 @@
-import {type PartialWithUndefined, mapObjectValues} from '@augment-vir/common';
+import {type PartialWithUndefined} from '@augment-vir/common';
 import Color from 'colorjs.io';
 import {type CSSResult, unsafeCSS} from 'element-vir';
 import {type RequireExactlyOne} from 'type-fest';
-import {type NestedType} from '../../util/type.js';
+import {viraColorPalette} from 'vira';
 import {type ColorTheme} from './color-theme.js';
 
-// as cast because colorjs.io's types for itself are wrong
+/** @internal */
 type FixedColor = Color & {
     set: (input: Record<string, number>) => Color;
 };
 
-type NestedColors = NestedType<Color>;
-
-type NestedColorsToCssResult<Colors extends Readonly<NestedColors>> = {
-    [PropName in keyof Colors]: Colors[PropName] extends Color
-        ? CSSResult
-        : NestedColorsToCssResult<Exclude<Colors[PropName], Color>>;
-};
-
-function colorsObjectToCssResult<const Colors extends NestedColors>(
-    colors: Colors,
-): NestedColorsToCssResult<Colors> {
-    return mapObjectValues(colors, (key, value) => {
-        if (value instanceof Color) {
-            return unsafeCSS(
-                value.toString({
-                    format: 'hex',
-                }),
-            );
-        } else {
-            return colorsObjectToCssResult(value);
-        }
-    }) as NestedColorsToCssResult<Colors>;
+function colorToCss(color: Color): CSSResult {
+    return unsafeCSS(
+        color.toString({
+            format: 'hex',
+        }),
+    );
 }
 
 /**
@@ -39,7 +23,7 @@ function colorsObjectToCssResult<const Colors extends NestedColors>(
  *
  * @category Internal
  */
-export const defaultThemeStartColor = 'dodgerblue';
+export const defaultThemeStartColor: string = viraColorPalette['vira-accent-500'].default;
 
 type BackForeGroundColor = 'black' | 'white';
 
@@ -50,13 +34,19 @@ function calculateTextColorString(color: Color): BackForeGroundColor {
     return textColorString;
 }
 
-function createColorPair({
+function createCssColorPair({
     background,
     foreground,
-}: RequireExactlyOne<{background: Color; foreground: Color}>) {
+}: RequireExactlyOne<{background: Color; foreground: Color}>): {
+    background: CSSResult;
+    foreground: CSSResult;
+} {
+    const bg = background ?? new Color(calculateTextColorString(foreground));
+    const fg = foreground ?? new Color(calculateTextColorString(background));
+
     return {
-        background: background ?? new Color(calculateTextColorString(foreground)),
-        foreground: foreground ?? new Color(calculateTextColorString(background)),
+        background: colorToCss(bg),
+        foreground: colorToCss(fg),
     };
 }
 
@@ -80,32 +70,6 @@ export type ThemeConfig = PartialWithUndefined<{
     themeStyle: ThemeStyle;
 }>;
 
-function flipBackForeground(input: BackForeGroundColor): BackForeGroundColor {
-    return input === 'black' ? 'white' : 'black';
-}
-
-const faintForegroundColors = {
-    black: {
-        foregroundFaint1: new Color('#ccc'),
-        foregroundFaint2: new Color('#eee'),
-    },
-    white: {
-        foregroundFaint1: new Color('#ccc'),
-        foregroundFaint2: new Color('#eee'),
-    },
-} as const;
-
-const faintBackgroundColors = {
-    black: {
-        backgroundFaint1: new Color('#666'),
-        backgroundFaint2: new Color('#444'),
-    },
-    white: {
-        backgroundFaint1: new Color('#ccc'),
-        backgroundFaint2: new Color('#fafafa'),
-    },
-} as const;
-
 /**
  * Creates a theme from the given theme configuration.
  *
@@ -113,45 +77,33 @@ const faintBackgroundColors = {
  */
 export function createTheme({
     themeColor: inputThemeColor = defaultThemeStartColor,
-    themeStyle = ThemeStyle.Light,
 }: ThemeConfig = {}): ColorTheme {
     const themeColor = new Color(inputThemeColor) as FixedColor;
-    const backgroundColor = new Color(themeStyle === ThemeStyle.Dark ? 'black' : 'white');
-    const foregroundColorString = calculateTextColorString(backgroundColor);
-    const foregroundColor = new Color(foregroundColorString);
 
-    const colors = {
+    return {
         nav: {
-            hover: createColorPair({
+            hover: createCssColorPair({
                 background: themeColor.clone().set({
                     'hsl.l': 93,
                 }),
             }),
-            active: createColorPair({
+            active: createCssColorPair({
                 background: themeColor.clone().set({
                     'hsl.l': 90,
                 }),
             }),
-            selected: createColorPair({
+            selected: createCssColorPair({
                 background: themeColor.clone().set({
                     'hsl.l': 85,
                 }),
             }),
         },
         accent: {
-            icon: themeColor.clone().set({
-                'hsl.l': 40,
-            }),
+            icon: colorToCss(
+                themeColor.clone().set({
+                    'hsl.l': 40,
+                }),
+            ),
         },
-        page: {
-            background: backgroundColor,
-            ...faintBackgroundColors[flipBackForeground(foregroundColorString)],
-            foreground: foregroundColor,
-            ...faintForegroundColors[foregroundColorString],
-        },
-    } as const;
-
-    const convertedToCssResults = colorsObjectToCssResult(colors);
-
-    return convertedToCssResults;
+    };
 }

@@ -1,7 +1,11 @@
 import {check} from '@augment-vir/assert';
 import {extractErrorMessage, makeWritable} from '@augment-vir/common';
 import {waitForAnimationFrame} from '@augment-vir/web';
+import {colorCss} from '@electrovir/color';
 import {css, defineElement, defineElementEvent, html, listen, nothing} from 'element-vir';
+import {applyCssVarsViaStyleElement} from 'lit-css-vars';
+import {themeDefaultKey} from 'theme-vir';
+import {ViraError, viraTheme, viraThemeDarkOverride} from 'vira';
 import {
     type ControlsWrapper,
     createNewControls,
@@ -15,15 +19,10 @@ import {
     defaultBookFullRoute,
     extractSearchQuery,
 } from '../../../routing/book-routing.js';
-import {
-    type ColorTheme,
-    colorThemeCssVars,
-    setThemeCssVars,
-} from '../../color-theme/color-theme.js';
+import {type ColorTheme, setThemeCssVars} from '../../color-theme/color-theme.js';
 import {type ThemeConfig, createTheme} from '../../color-theme/create-color-theme.js';
 import {ChangeRouteEvent} from '../../events/change-route.event.js';
 import {BookNav} from '../book-nav/book-nav.element.js';
-import {BookError} from '../common/book-error.element.js';
 import {BookPageControls} from '../entry-display/book-page/book-page-controls.element.js';
 import {BookEntryDisplay} from '../entry-display/entry-display/book-entry-display.element.js';
 import {type ElementBookConfig} from './element-book-config.js';
@@ -62,6 +61,9 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                   }
                 | undefined,
             originalWindowTitle: undefined as string | undefined,
+            isDarkMode: globalThis.matchMedia('(prefers-color-scheme: dark)').matches,
+            /** Cleanup callback for the dark mode media query listener. */
+            darkModeCleanup: undefined as (() => void) | undefined,
         };
     },
     events: {
@@ -86,12 +88,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             height: 100%;
             width: 100%;
             font-family: sans-serif;
-            background-color: ${colorThemeCssVars['element-book-page-background-color'].value};
-            color: ${colorThemeCssVars['element-book-page-foreground-color'].value};
-        }
-
-        .error {
-            color: red;
+            ${colorCss(viraTheme.colors[themeDefaultKey])}
         }
 
         .root {
@@ -118,10 +115,14 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
     cleanup({state, updateState}) {
         if (state.router) {
             state.router.destroy();
-            updateState({
-                router: undefined,
-            });
         }
+        if (state.darkModeCleanup) {
+            state.darkModeCleanup();
+        }
+        updateState({
+            router: undefined,
+            darkModeCleanup: undefined,
+        });
     },
     render: ({state, inputs, host, updateState, dispatch, events, slotNames}) => {
         if (inputs._debug) {
@@ -221,6 +222,29 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 setThemeCssVars(host, newTheme);
             }
 
+            if (!state.darkModeCleanup) {
+                const query = globalThis.matchMedia('(prefers-color-scheme: dark)');
+                const listener = (event: MediaQueryListEvent) => {
+                    updateState({
+                        isDarkMode: event.matches,
+                    });
+                };
+                query.addEventListener('change', listener);
+                updateState({
+                    isDarkMode: query.matches,
+                    darkModeCleanup: () => {
+                        query.removeEventListener('change', listener);
+                    },
+                });
+            }
+
+            const isDarkMode = inputs.darkMode ?? state.isDarkMode;
+
+            applyCssVarsViaStyleElement(
+                isDarkMode ? viraThemeDarkOverride.overrides : {},
+                'element-book-dark-mode',
+            );
+
             const debug: boolean = inputs._debug ?? false;
 
             const originalTree = createBookTreeFromEntries({
@@ -271,9 +295,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
 
             if (!currentControls) {
                 return html`
-                    <${BookError.assign({
-                        message: 'Failed to generate page controls.',
-                    })}></${BookError}>
+                    <${ViraError}>Failed to generate page controls.</${ViraError}>
                 `;
             }
 
@@ -375,7 +397,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
         } catch (error) {
             console.error(error);
             return html`
-                <p class="error">${extractErrorMessage(error)}</p>
+                <${ViraError}>${extractErrorMessage(error)}</${ViraError}>
             `;
         }
     },

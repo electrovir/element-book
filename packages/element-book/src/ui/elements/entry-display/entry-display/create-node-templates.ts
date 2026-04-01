@@ -8,6 +8,7 @@ import {
     nothing,
     repeat,
 } from 'element-vir';
+import {ViraError} from 'vira';
 import {BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {
     type BookPageControlsInitBase,
@@ -20,7 +21,6 @@ import {
 import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
 import {isBookTreeNode, traverseToImmediateParent} from '../../../../data/book-tree/book-tree.js';
 import {type BookRouter} from '../../../../routing/book-router.js';
-import {BookError} from '../../common/book-error.element.js';
 import {BookPageControls} from '../book-page/book-page-controls.element.js';
 import {BookPageWrapper} from '../book-page/book-page-wrapper.element.js';
 import {BookElementExampleWrapper} from '../element-example/book-element-example-wrapper.element.js';
@@ -180,9 +180,9 @@ export function createNodeTemplates({
                 return nothing;
             } else {
                 const content = html`
-                    <${BookError.assign({
-                        message: `Unknown entry type for rendering: '${currentNode.entry.entryType}'`,
-                    })}></${BookError}>
+                    <${ViraError}>
+                        Unknown entry type for rendering: '${currentNode.entry.entryType}'
+                    </${ViraError}>
                 `;
                 return html`
                     <${BookLazyEntry.assign({

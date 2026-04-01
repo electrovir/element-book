@@ -1,5 +1,6 @@
 import {css, html, type HTMLTemplateResult} from 'element-vir';
-import {colorThemeCssVars} from '../../color-theme/color-theme.js';
+import {themeDefaultKey} from 'theme-vir';
+import {viraTheme} from 'vira';
 import {defineBookElement} from '../define-book-element.js';
 
 export const BookEntryDescription = defineBookElement<{
@@ -8,14 +9,14 @@ export const BookEntryDescription = defineBookElement<{
     tagName: 'book-entry-description',
     styles: css`
         :host {
-            color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
+            color: ${viraTheme.colors['vira-grey-foreground-placeholder'].foreground.value};
             display: inline-flex;
             flex-direction: column;
             gap: 8px;
         }
 
         :host(:hover) {
-            color: ${colorThemeCssVars['element-book-page-foreground-color'].value};
+            color: ${viraTheme.colors[themeDefaultKey].foreground.value};
         }
 
         p {

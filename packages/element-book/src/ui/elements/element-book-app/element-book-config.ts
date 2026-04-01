@@ -22,6 +22,8 @@ export type ElementBookConfig = {
 export type OptionalConfig = {
     /** The base theme color from which all other element-book colors will be generated from. */
     themeColor: string;
+    /** Force dark mode on or off. When `undefined`, follows the system preference. */
+    darkMode: boolean;
     _debug: boolean;
     globalValues: GlobalValues;
     preventWindowTitleChange: boolean;

@@ -1,12 +1,13 @@
 import {wait} from '@augment-vir/common';
 import {css, html, listen, renderIf} from 'element-vir';
+import {themeDefaultKey} from 'theme-vir';
+import {viraTheme} from 'vira';
 import {type BookRouter} from '../../../routing/book-router.js';
 import {
     type BookFullRoute,
     BookMainRoute,
     defaultBookFullRoute,
 } from '../../../routing/book-routing.js';
-import {colorThemeCssVars} from '../../color-theme/color-theme.js';
 import {ChangeRouteEvent} from '../../events/change-route.event.js';
 import {BookBreadcrumbs} from '../book-breadcrumbs.element.js';
 import {defineBookElement} from '../define-book-element.js';
@@ -20,9 +21,9 @@ export const BookBreadcrumbsBar = defineBookElement<{
     styles: css`
         :host {
             border-bottom: 1px solid
-                ${colorThemeCssVars['element-book-page-foreground-faint-level-2-color'].value};
+                ${viraTheme.colors['vira-grey-foreground-placeholder'].foreground.value};
             padding: 4px 8px;
-            background-color: ${colorThemeCssVars['element-book-page-background-color'].value};
+            background-color: ${viraTheme.colors[themeDefaultKey].background.value};
             display: flex;
             gap: 16px;
             justify-content: space-between;

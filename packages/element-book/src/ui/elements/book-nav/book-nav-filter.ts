@@ -8,9 +8,7 @@ export function shouldShowTreeNodeInNav(
 ): boolean {
     if (currentNode.entry.entryType === BookEntryType.Root) {
         return false;
-    }
-
-    if (currentNode.entry.entryType === BookEntryType.Page) {
+    } else if (currentNode.entry.entryType === BookEntryType.Page) {
         return true;
     }
 

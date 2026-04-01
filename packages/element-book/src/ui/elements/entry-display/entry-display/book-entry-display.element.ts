@@ -1,5 +1,7 @@
+import {colorCss} from '@electrovir/color';
 import {css, defineElementEvent, html, onDomCreated, renderIf} from 'element-vir';
-import {LoaderAnimated24Icon, ViraIcon, viraAnimationDurations} from 'vira';
+import {themeDefaultKey} from 'theme-vir';
+import {LoaderAnimated24Icon, ViraIcon, viraAnimationDurations, viraTheme} from 'vira';
 import {type BookEntryType} from '../../../../data/book-entry/book-entry-type.js';
 import {type ControlsWrapper} from '../../../../data/book-entry/book-page/controls-wrapper.js';
 import {type BookTreeNode} from '../../../../data/book-tree/book-tree-node.js';
@@ -33,6 +35,7 @@ export const BookEntryDisplay = defineBookElement<{
         }
 
         .all-book-entries-wrapper {
+            background-color: ${viraTheme.colors[themeDefaultKey].background.value};
             flex-grow: 1;
             padding: 32px;
         }
@@ -67,7 +70,7 @@ export const BookEntryDisplay = defineBookElement<{
             flex-grow: 1;
             padding: 64px;
             position: absolute;
-            background-color: white;
+            ${colorCss(viraTheme.colors[themeDefaultKey])}
             animation: fade-in linear
                 ${viraAnimationDurations['vira-interaction-animation-duration'].value} forwards;
             z-index: 100;

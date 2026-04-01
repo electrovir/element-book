@@ -2,8 +2,8 @@ import {assert, waitUntil} from '@augment-vir/assert';
 import {describe, it, testWeb} from '@augment-vir/test';
 import {queryThroughShadow} from '@augment-vir/web';
 import {html} from 'element-vir';
+import {ViraError} from 'vira';
 import {defineBookPage} from '../../../data/book-entry/book-page/define-book-page.js';
-import {BookError} from '../common/book-error.element.js';
 import {ElementBookApp} from './element-book-app.element.js';
 import {type ElementBookConfig} from './element-book-config.js';
 
@@ -18,7 +18,7 @@ describe(ElementBookApp.tagName, () => {
         return elementBookAppInstance as typeof ElementBookApp.InstanceType;
     }
 
-    async function getBookErrorMessage(
+    async function getErrorMessage(
         elementBookAppInstance: (typeof ElementBookApp)['InstanceType'],
     ): Promise<string> {
         const errorWrapper = await waitUntil.isTruthy(
@@ -26,12 +26,12 @@ describe(ElementBookApp.tagName, () => {
                 try {
                     const errorWrapper = queryThroughShadow(
                         elementBookAppInstance,
-                        BookError.tagName,
+                        ViraError.tagName,
                         {
                             all: false,
                         },
                     );
-                    assert.instanceOf(errorWrapper, BookError);
+                    assert.instanceOf(errorWrapper, ViraError);
                     return errorWrapper;
                 } catch {
                     return undefined;
@@ -45,11 +45,11 @@ describe(ElementBookApp.tagName, () => {
                     seconds: 10,
                 },
             },
-            `Failed to find '${BookError.tagName}'`,
+            `Failed to find '${ViraError.tagName}'`,
         );
 
         return await waitUntil.isTruthy(
-            () => errorWrapper.shadowRoot.textContent.trim(),
+            () => errorWrapper.textContent.trim(),
             undefined,
             'never got an error message',
         );
@@ -68,7 +68,7 @@ describe(ElementBookApp.tagName, () => {
         ]);
         assert.isIn(
             "Cannot create duplicate 'duplicate-title'",
-            await getBookErrorMessage(elementBookAppInstance),
+            await getErrorMessage(elementBookAppInstance),
         );
     });
 
@@ -98,7 +98,7 @@ describe(ElementBookApp.tagName, () => {
 
         assert.isIn(
             "Example title 'duplicate example' in page 'title' is already taken.",
-            await getBookErrorMessage(elementBookAppInstance),
+            await getErrorMessage(elementBookAppInstance),
         );
     });
 
@@ -112,7 +112,7 @@ describe(ElementBookApp.tagName, () => {
 
         assert.isIn(
             'Cannot define an element-book page with an empty title.',
-            await getBookErrorMessage(elementBookAppInstance),
+            await getErrorMessage(elementBookAppInstance),
         );
     });
 });

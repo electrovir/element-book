@@ -1,6 +1,6 @@
 import {check} from '@augment-vir/assert';
 import {classMap, css, html, renderIf} from 'element-vir';
-import {Element16Icon, ViraIcon} from 'vira';
+import {Element16Icon, ViraIcon, viraTheme} from 'vira';
 import {BookEntryType} from '../../../data/book-entry/book-entry-type.js';
 import {type BookTreeNode} from '../../../data/book-tree/book-tree-node.js';
 import {isBookTreeNode} from '../../../data/book-tree/book-tree.js';
@@ -25,9 +25,9 @@ export const BookNav = defineBookElement<{
             display: flex;
             flex-direction: column;
             padding: 16px 0;
-            background-color: ${colorThemeCssVars[
-                'element-book-page-background-faint-level-2-color'
-            ].value};
+
+            background-color: ${viraTheme.colors['vira-grey-behind-fg-highest-contrast'].background
+                .value};
         }
 
         .title-row:hover {

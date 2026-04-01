@@ -2,7 +2,15 @@ import {check} from '@augment-vir/assert';
 import {type AnyObject, type Values} from '@augment-vir/common';
 import {VirColorPicker} from '@electrovir/color';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
-import {Options24Icon, ViraCheckbox, ViraIcon, ViraInput, ViraSelect} from 'vira';
+import {
+    Options24Icon,
+    ViraCheckbox,
+    ViraError,
+    ViraIcon,
+    ViraInput,
+    ViraSelect,
+    viraTheme,
+} from 'vira';
 import {
     type BookPageControl,
     type BookPageControlInit,
@@ -11,7 +19,6 @@ import {
     isControlInitType,
 } from '../../../../data/book-entry/book-page/book-page-controls.js';
 import {type BookPage} from '../../../../data/book-entry/book-page/book-page.js';
-import {colorThemeCssVars} from '../../../color-theme/color-theme.js';
 import {defineBookElement} from '../../define-book-element.js';
 
 export const BookPageControls = defineBookElement<{
@@ -43,7 +50,7 @@ export const BookPageControls = defineBookElement<{
             align-content: flex-start;
             gap: 16px;
             row-gap: 10px;
-            color: ${colorThemeCssVars['element-book-page-foreground-faint-level-1-color'].value};
+            color: ${viraTheme.colors['vira-grey-foreground-placeholder'].foreground.value};
         }
 
         ${hostClasses['book-page-controls-has-controls'].selector} {
@@ -55,11 +62,6 @@ export const BookPageControls = defineBookElement<{
             display: flex;
             gap: 4px;
             flex-direction: column;
-        }
-
-        .error {
-            font-weight: bold;
-            color: red;
         }
 
         ${ViraInput}, ${ViraSelect} {
@@ -230,9 +232,9 @@ function createControlInput(
         return controlInit.content;
     } else {
         return html`
-            <p class="error">
+            <${ViraError}>
                 ${(controlInit as AnyObject).controlType} controls are not implemented yet.
-            </p>
+            </${ViraError}>
         `;
     }
 }
