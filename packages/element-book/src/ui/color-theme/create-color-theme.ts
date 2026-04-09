@@ -23,7 +23,7 @@ function colorToCss(color: Color): CSSResult {
  *
  * @category Internal
  */
-export const defaultThemeStartColor: string = viraColorPalette['vira-accent-500'].default;
+export const defaultThemeStartColor: string = viraColorPalette['vira-brand-500'].default;
 
 type BackForeGroundColor = 'black' | 'white';
 
