@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
 import {check} from '@augment-vir/assert';
-import {type SetOptionalAndNullable, type Values} from '@augment-vir/common';
+import {type SetOptionalAndNullable} from '@augment-vir/common';
 import {type PropertyInitMapBase} from 'element-vir';
 import {type EmptyObject} from 'type-fest';
 import {type GlobalValues} from '../../../ui/elements/element-book-app/global-values.js';
@@ -45,7 +45,10 @@ export type CollapseControlsInit<
     /** Prevent infinite recursion TypeScript errors. */
     RecursionDepth = InfiniteRecursionLimiter,
 > = CurrentControlsInit &
-    (RecursionDepth extends [any, ...infer RemainingDepth]
+    (RecursionDepth extends [
+        any,
+        ...infer RemainingDepth,
+    ]
         ? ParentPage extends BookPage<
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               infer GlobalValuesType,
@@ -67,7 +70,10 @@ export type CollapseGlobalValuesType<
     /** Prevent infinite recursion TypeScript errors. */
     RecursionDepth = InfiniteRecursionLimiter,
 > = GlobalValuesType &
-    (RecursionDepth extends [any, ...infer RemainingDepth]
+    (RecursionDepth extends [
+        any,
+        ...infer RemainingDepth,
+    ]
         ? ParentPage extends BookPage<
               infer GlobalValuesType,
               infer GrandParentPage,
@@ -162,9 +168,7 @@ export function defineBookPage<
                 };
                 alreadyTakenElementExampleNames.add(elementExampleInit.title);
 
-                page.elementExamples[titleToUrlBreadcrumb(newExample.title)] = newExample as Values<
-                    (typeof page)['elementExamples']
-                >;
+                page.elementExamples[titleToUrlBreadcrumb(newExample.title)] = newExample;
             },
         });
     }

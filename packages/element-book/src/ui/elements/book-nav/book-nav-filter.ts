@@ -13,7 +13,7 @@ export function shouldShowTreeNodeInNav(
     }
 
     const isParentSelected = check.jsonEquals(
-        selectedPath as unknown,
+        selectedPath,
         currentNode.fullUrlBreadcrumbs.slice(0, -1),
     );
 

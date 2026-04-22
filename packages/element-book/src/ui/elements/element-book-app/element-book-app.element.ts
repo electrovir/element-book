@@ -52,7 +52,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             colors: {
                 config: undefined,
                 theme: createTheme(undefined),
-            } as ColorThemeState,
+            },
             treeBasedControls: undefined as
                 | {
                       pages: ElementBookConfig['pages'];

@@ -45,7 +45,7 @@ export function createEmptyBookTreeRoot(): BookTreeNode<BookEntryType.Root> {
         },
         urlBreadcrumb: '',
         fullUrlBreadcrumbs: [],
-        children: {} as Record<string, BookTreeNode>,
+        children: {},
         manuallyAdded: true,
     };
 

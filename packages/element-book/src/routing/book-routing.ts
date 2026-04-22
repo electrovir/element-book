@@ -15,7 +15,15 @@ export enum BookMainRoute {
  *
  * @category Internal
  */
-export type ValidBookPaths = [BookMainRoute.Search, string] | [BookMainRoute.Book, ...string[]];
+export type ValidBookPaths =
+    | [
+          BookMainRoute.Search,
+          string,
+      ]
+    | [
+          BookMainRoute.Book,
+          ...string[],
+      ];
 
 /**
  * A full element-book app route. Only paths are supported.
