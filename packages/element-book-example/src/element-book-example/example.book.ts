@@ -165,13 +165,13 @@ const testPage3 = defineBookPage({
         defineExample({
             title: 'example with error',
             render() {
-                return `broken`;
+                return 'broken';
             },
         });
         defineExample({
             title: 'example with error',
             render() {
-                return `broken`;
+                return 'broken';
             },
         });
     },

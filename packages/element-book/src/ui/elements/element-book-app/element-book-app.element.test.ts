@@ -55,7 +55,7 @@ describe(ElementBookApp.tagName, () => {
         );
     }
 
-    it('should render error message when there are duplicate page names', async () => {
+    it('renders an error message when there are duplicate page names', async () => {
         const elementBookAppInstance = await setupPagesTest([
             defineBookPage({
                 parent: undefined,
@@ -72,7 +72,7 @@ describe(ElementBookApp.tagName, () => {
         );
     });
 
-    it('should render error message when there are duplicate examples', async () => {
+    it('renders an error message when there are duplicate examples', async () => {
         const examplePage = defineBookPage({
             parent: undefined,
             title: 'title',
@@ -102,7 +102,7 @@ describe(ElementBookApp.tagName, () => {
         );
     });
 
-    it('should render error message when there are empty page titles', async () => {
+    it('renders an error message when there are empty page titles', async () => {
         const elementBookAppInstance = await setupPagesTest([
             defineBookPage({
                 parent: undefined,

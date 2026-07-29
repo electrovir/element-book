@@ -15,8 +15,8 @@ export function getPageTitleError(title: string): Error | undefined {
             ? invalidMatch
                 ? new Error(`Book page title has invalid character '${invalidMatch[0]}'.`)
                 : undefined
-            : new Error(`Book page title resolved to empty breadcrumb.`)
-        : new Error(`Cannot define an element-book page with an empty title.`);
+            : new Error('Book page title resolved to empty breadcrumb.')
+        : new Error('Cannot define an element-book page with an empty title.');
 }
 
 export const bookEntryVerifiers = {

@@ -74,12 +74,12 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
          * Used to specify a footer for the main element example viewer. It always appears at the
          * bottom of the viewer's scroll area.
          */
-        'footer',
+        'element-book-app-footer',
         /**
          * Used to specify a header above the navigation sidebar. This is a particularly good place
          * for branding.
          */
-        'navHeader',
+        'element-book-app-nav-header',
     ],
     styles: css`
         :host {
@@ -355,7 +355,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                                       ? undefined
                                       : state.currentRoute.paths.slice(1),
                               })}>
-                                  <slot name=${slotNames.navHeader}></slot>
+                                  <slot name=${slotNames['element-book-app-nav-header']}></slot>
                               </${BookNav}>
                           `}
                     <${BookEntryDisplay.assign({
@@ -390,7 +390,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                             });
                         })}
                     >
-                        <slot name=${slotNames.footer}></slot>
+                        <slot name=${slotNames['element-book-app-footer']}></slot>
                     </${BookEntryDisplay}>
                 </div>
             `;

@@ -95,8 +95,10 @@ export const VirApp = defineElement()({
                     });
                 })}
             >
-                <h1 slot=${ElementBookApp.slotNames.navHeader}>My Title</h1>
-                <footer slot=${ElementBookApp.slotNames.footer}>Example Footer</footer>
+                <h1 slot=${ElementBookApp.slotNames['element-book-app-nav-header']}>My Title</h1>
+                <footer slot=${ElementBookApp.slotNames['element-book-app-footer']}>
+                    Example Footer
+                </footer>
             </${ElementBookApp}>
         `;
     },

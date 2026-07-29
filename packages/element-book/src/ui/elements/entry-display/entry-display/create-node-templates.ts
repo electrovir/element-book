@@ -32,22 +32,27 @@ type FlattenedControls = {
     breadcrumbs: Record<string, ReadonlyArray<string>>;
 };
 
-function getFlattenedControlsFromHiddenParents(
-    currentNodes: ReadonlyArray<BookTreeNode>,
-    currentControls: ControlsWrapper,
-    currentNode: BookTreeNode,
-    originalTree: Readonly<BookTreeNode<BookEntryType.Root>>,
-): FlattenedControls | undefined {
+function getFlattenedControlsFromHiddenParents({
+    currentNodes,
+    currentControls,
+    currentNode,
+    originalTree,
+}: Readonly<{
+    currentNodes: ReadonlyArray<BookTreeNode>;
+    currentControls: ControlsWrapper;
+    currentNode: BookTreeNode;
+    originalTree: Readonly<BookTreeNode<BookEntryType.Root>>;
+}>): FlattenedControls | undefined {
     const parent = traverseToImmediateParent(currentNode, originalTree);
     const allControls: FlattenedControls[] = [];
 
     if (parent) {
-        const parentControls = getFlattenedControlsFromHiddenParents(
+        const parentControls = getFlattenedControlsFromHiddenParents({
             currentNodes,
             currentControls,
-            parent,
+            currentNode: parent,
             originalTree,
-        );
+        });
         if (parentControls) {
             allControls.push(parentControls);
         }
@@ -116,12 +121,12 @@ export function createNodeTemplates({
     }
 
     const hiddenAncestorControls = check.isLengthAtLeast(currentNodes, 1)
-        ? getFlattenedControlsFromHiddenParents(
+        ? getFlattenedControlsFromHiddenParents({
               currentNodes,
-              controls,
-              currentNodes[0],
+              currentControls: controls,
+              currentNode: currentNodes[0],
               originalTree,
-          )
+          })
         : undefined;
 
     const hiddenAncestorControlsTemplate =

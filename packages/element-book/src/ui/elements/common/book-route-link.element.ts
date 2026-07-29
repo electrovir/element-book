@@ -28,7 +28,7 @@ export const BookRouteLink = defineBookElement<{
         const linkUrl: string =
             inputs.router?.createRouteUrl({
                 ...inputs.route,
-            }) ?? '#';
+            }).url || '#';
 
         return html`
             <a

@@ -1,6 +1,6 @@
 {
     "name": "element-book",
-    "version": "26.17.3",
+    "version": "26.17.4",
     "keywords": [
         "book",
         "design system",
@@ -22,7 +22,7 @@
         "type": "git",
         "url": "git+https://github.com/electrovir/element-book.git"
     },
-    "license": "(MIT or CC0 1.0)",
+    "license": "(MIT OR CC0-1.0)",
     "author": {
         "name": "electrovir",
         "url": "https://github.com/electrovir"
@@ -41,31 +41,31 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^31.68.4",
-        "@augment-vir/common": "^31.68.4",
-        "@augment-vir/web": "^31.68.4",
-        "@electrovir/color": "^1.7.9",
-        "colorjs.io": "^0.6.1",
-        "date-vir": "^8.3.2",
-        "lit-css-vars": "^3.6.2",
-        "spa-router-vir": "^6.4.1",
-        "typed-event-target": "^4.3.0"
+        "@augment-vir/assert": "^32.2.1",
+        "@augment-vir/common": "^32.2.1",
+        "@augment-vir/web": "^32.2.1",
+        "@electrovir/color": "^1.7.11",
+        "colorjs.io": "^0.7.0",
+        "date-vir": "^8.6.2",
+        "lit-css-vars": "^3.6.3",
+        "spa-router-vir": "^6.6.1",
+        "typed-event-target": "^4.3.2"
     },
     "devDependencies": {
-        "@augment-vir/test": "^31.68.4",
-        "@web/dev-server-esbuild": "^1.0.5",
-        "@web/test-runner": "^0.20.2",
-        "@web/test-runner-commands": "^0.9.0",
-        "@web/test-runner-playwright": "^0.11.1",
-        "@web/test-runner-visual-regression": "^0.10.0",
-        "element-vir": "^26.15.1",
+        "@augment-vir/test": "^32.2.1",
+        "@web/dev-server-esbuild": "^2.0.0",
+        "@web/test-runner": "^1.0.0",
+        "@web/test-runner-commands": "^1.0.1",
+        "@web/test-runner-playwright": "^1.0.0",
+        "@web/test-runner-visual-regression": "^1.0.1",
+        "element-vir": "^26.17.1",
         "istanbul-smart-text-reporter": "^1.1.5",
-        "markdown-code-example-inserter": "^3.0.3",
-        "theme-vir": "^28.25.0",
-        "type-fest": "^5.6.0",
-        "typedoc": "^0.28.19",
+        "markdown-code-example-inserter": "^3.0.6",
+        "theme-vir": "^28.25.1",
+        "type-fest": "^5.8.0",
+        "typedoc": "^0.28.20",
         "typescript": "5.9.3",
-        "vira": "^31.16.0"
+        "vira": "^31.28.1"
     },
     "peerDependencies": {
         "element-vir": ">=17",
