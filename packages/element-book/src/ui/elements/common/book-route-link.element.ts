@@ -13,17 +13,19 @@ export const BookRouteLink = defineBookElement<{
     cssVars: {
         'book-route-link-anchor-padding': '0px',
     },
-    styles: ({cssVars}) => css`
-        a {
-            box-sizing: border-box;
-            display: block;
-            padding: ${cssVars['book-route-link-anchor-padding'].value};
-            text-decoration: inherit;
-            color: inherit;
-            height: 100%;
-            width: 100%;
-        }
-    `,
+    styles: ({cssVars}) => {
+        return css`
+            a {
+                box-sizing: border-box;
+                display: block;
+                padding: ${cssVars['book-route-link-anchor-padding'].value};
+                text-decoration: inherit;
+                color: inherit;
+                height: 100%;
+                width: 100%;
+            }
+        `;
+    },
     render: ({inputs, dispatch}) => {
         const linkUrl: string =
             inputs.router?.createRouteUrl({

@@ -41,41 +41,43 @@ export const BookPageControls = defineBookElement<{
     hostClasses: {
         'book-page-controls-has-controls': ({inputs}) => !!Object.keys(inputs.config).length,
     },
-    styles: ({hostClasses}) => css`
-        :host {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            padding-left: 36px;
-            align-content: flex-start;
-            gap: 16px;
-            row-gap: 10px;
-            color: ${viraTheme.colors['vira-grey-foreground-placeholder'].foreground.value};
-        }
+    styles: ({hostClasses}) => {
+        return css`
+            :host {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: flex-end;
+                padding-left: 36px;
+                align-content: flex-start;
+                gap: 16px;
+                row-gap: 10px;
+                color: ${viraTheme.colors['vira-grey-foreground-placeholder'].foreground.value};
+            }
 
-        ${hostClasses['book-page-controls-has-controls'].selector} {
-            margin-top: 8px;
-        }
+            ${hostClasses['book-page-controls-has-controls'].selector} {
+                margin-top: 8px;
+            }
 
-        .control-wrapper {
-            position: relative;
-            display: flex;
-            gap: 4px;
-            flex-direction: column;
-        }
+            .control-wrapper {
+                position: relative;
+                display: flex;
+                gap: 4px;
+                flex-direction: column;
+            }
 
-        ${ViraInput}, ${ViraSelect} {
-            height: 24px;
-            max-width: 128px;
-        }
+            ${ViraInput}, ${ViraSelect} {
+                height: 24px;
+                max-width: 128px;
+            }
 
-        ${ViraIcon}.options-icon {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            margin-left: -32px;
-        }
-    `,
+            ${ViraIcon}.options-icon {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                margin-left: -32px;
+            }
+        `;
+    },
     render({inputs, dispatch, events}) {
         if (!Object.entries(inputs.config).length) {
             return '';
@@ -117,10 +119,12 @@ export const BookPageControls = defineBookElement<{
                                      * overwriting parent controls with their inherited values.
                                      */
                                     ...Object.fromEntries(
-                                        Object.keys(inputs.config).map((key) => [
-                                            key,
-                                            inputs.currentValues[key],
-                                        ]),
+                                        Object.keys(inputs.config).map((key) => {
+                                            return [
+                                                key,
+                                                inputs.currentValues[key],
+                                            ];
+                                        }),
                                     ),
                                     [controlName]: newValue,
                                 },

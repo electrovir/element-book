@@ -66,14 +66,14 @@ export function createBookTreeFromEntries({
 
     const tree = createEmptyBookTreeRoot();
 
-    entries.forEach((newEntry) =>
-        addEntryToTree({
+    entries.forEach((newEntry) => {
+        return addEntryToTree({
             tree,
             newEntry,
             debug,
             manuallyAdded: true,
-        }),
-    );
+        });
+    });
 
     const flattenedNodes = flattenTree(tree);
 
@@ -189,14 +189,14 @@ function addEntryToTree({
         isBookEntry(newEntry, BookEntryType.Page) &&
         Object.values(newEntry.elementExamples).length
     ) {
-        Object.values(newEntry.elementExamples).forEach((elementExample) =>
-            addEntryToTree({
+        Object.values(newEntry.elementExamples).forEach((elementExample) => {
+            return addEntryToTree({
                 tree,
                 newEntry: elementExample,
                 debug,
                 manuallyAdded,
-            }),
-        );
+            });
+        });
     }
 }
 

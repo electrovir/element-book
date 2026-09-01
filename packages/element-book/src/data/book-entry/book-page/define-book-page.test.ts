@@ -85,9 +85,9 @@ describe(defineBookPage.name, () => {
 
         assert.isLengthExactly(Object.values(badPage.elementExamples), 1);
 
-        Object.values(badPage.elementExamples).forEach((example) =>
-            assert.isLengthExactly(example.errors, 1),
-        );
+        Object.values(badPage.elementExamples).forEach((example) => {
+            return assert.isLengthExactly(example.errors, 1);
+        });
     });
 });
 

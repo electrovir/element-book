@@ -20,63 +20,66 @@ export const BookNav = defineBookElement<{
     cssVars: {
         'book-nav-internal-indent': '0',
     },
-    styles: ({cssVars}) => css`
-        :host {
-            display: flex;
-            flex-direction: column;
-            padding: 16px 0;
+    styles: ({cssVars}) => {
+        return css`
+            :host {
+                display: flex;
+                flex-direction: column;
+                padding: 16px 0;
 
-            background-color: ${viraTheme.colors['vira-grey-behind-fg-highest-contrast'].background
-                .value};
-        }
+                background-color: ${viraTheme.colors['vira-grey-behind-fg-highest-contrast']
+                    .background.value};
+            }
 
-        .title-row:hover {
-            background-color: ${colorThemeCssVars['element-book-nav-hover-background-color'].value};
-            color: ${colorThemeCssVars['element-book-nav-hover-foreground-color'].value};
-        }
+            .title-row:hover {
+                background-color: ${colorThemeCssVars['element-book-nav-hover-background-color']
+                    .value};
+                color: ${colorThemeCssVars['element-book-nav-hover-foreground-color'].value};
+            }
 
-        .title-row:active {
-            background-color: ${colorThemeCssVars['element-book-nav-active-background-color']
-                .value};
-            color: ${colorThemeCssVars['element-book-nav-active-foreground-color'].value};
-        }
+            .title-row:active {
+                background-color: ${colorThemeCssVars['element-book-nav-active-background-color']
+                    .value};
+                color: ${colorThemeCssVars['element-book-nav-active-foreground-color'].value};
+            }
 
-        .title-row {
-            display: block;
-            ${BookRouteLink.cssVars['book-route-link-anchor-padding']
-                .name}: 1px 24px 1px calc(calc(16px * ${cssVars['book-nav-internal-indent']
-                .value}) + 8px);
-        }
+            .title-row {
+                display: block;
+                ${BookRouteLink.cssVars['book-route-link-anchor-padding']
+                    .name}: 1px 24px 1px calc(calc(16px * ${cssVars['book-nav-internal-indent']
+                    .value}) + 8px);
+            }
 
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
 
-        .selected,
-        .selected:hover {
-            background-color: ${colorThemeCssVars['element-book-nav-selected-background-color']
-                .value};
-            color: ${colorThemeCssVars['element-book-nav-selected-foreground-color'].value};
-            pointer-events: none;
-        }
+            .selected,
+            .selected:hover {
+                background-color: ${colorThemeCssVars['element-book-nav-selected-background-color']
+                    .value};
+                color: ${colorThemeCssVars['element-book-nav-selected-foreground-color'].value};
+                pointer-events: none;
+            }
 
-        .title-text {
-            white-space: nowrap;
-            padding: 1px 0;
-            text-overflow: ellipsis;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            font-size: 16px;
-        }
+            .title-text {
+                white-space: nowrap;
+                padding: 1px 0;
+                text-overflow: ellipsis;
+                display: flex;
+                gap: 8px;
+                align-items: center;
+                font-size: 16px;
+            }
 
-        ${ViraIcon} {
-            display: inline-flex;
-            color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
-        }
-    `,
+            ${ViraIcon} {
+                display: inline-flex;
+                color: ${colorThemeCssVars['element-book-accent-icon-color'].value};
+            }
+        `;
+    },
     render({inputs}) {
         const navTreeTemplates = inputs.flattenedNodes.map((treeNode) => {
             if (!shouldShowTreeNodeInNav(treeNode, inputs.selectedPath)) {

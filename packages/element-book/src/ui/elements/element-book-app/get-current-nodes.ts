@@ -26,10 +26,10 @@ function filterNodes(
     flattenedNodes: ReadonlyArray<Readonly<BookTreeNode>>,
     paths: ReadonlyArray<string>,
 ): BookTreeNode[] {
-    return flattenedNodes.filter((node) =>
-        doBreadcrumbsStartWith({
+    return flattenedNodes.filter((node) => {
+        return doBreadcrumbsStartWith({
             searchFor: paths.slice(1),
             searchIn: node.fullUrlBreadcrumbs,
-        }),
-    );
+        });
+    });
 }
