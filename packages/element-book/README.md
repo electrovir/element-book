@@ -76,7 +76,3 @@ npm i element-book
         },
     });
     ```
-
-## Why not Storybook?
-
-Because Storybook is un-composable, impossible to debug, and full of behind-the-scenes \*magic\* that you can't backtrack without already understanding the inner workings of Storybook itself. With `element-book`, it's all just imports that you can directly follow with the TypeScript compiler.
