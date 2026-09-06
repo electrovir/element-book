@@ -111,22 +111,24 @@ export const BookPageControls = defineBookElement<{
 
                         dispatch(
                             new events.controlValueChange({
-                                fullUrlBreadcrumbs,
-                                newValues: {
-                                    /**
-                                     * Only include values for controls defined in the current
-                                     * config, not inherited parent values. This prevents
-                                     * overwriting parent controls with their inherited values.
-                                     */
-                                    ...Object.fromEntries(
-                                        Object.keys(inputs.config).map((key) => {
-                                            return [
-                                                key,
-                                                inputs.currentValues[key],
-                                            ];
-                                        }),
-                                    ),
-                                    [controlName]: newValue,
+                                detail: {
+                                    fullUrlBreadcrumbs,
+                                    newValues: {
+                                        /**
+                                         * Only include values for controls defined in the current
+                                         * config, not inherited parent values. This prevents
+                                         * overwriting parent controls with their inherited values.
+                                         */
+                                        ...Object.fromEntries(
+                                            Object.keys(inputs.config).map((key) => {
+                                                return [
+                                                    key,
+                                                    inputs.currentValues[key],
+                                                ];
+                                            }),
+                                        ),
+                                        [controlName]: newValue,
+                                    },
                                 },
                             }),
                         );

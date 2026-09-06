@@ -65,14 +65,20 @@ export const BookBreadcrumbsBar = defineBookElement<{
                     if (inputElement.value) {
                         dispatch(
                             new ChangeRouteEvent({
-                                paths: [
-                                    BookMainRoute.Search,
-                                    encodeURIComponent(inputElement.value),
-                                ],
+                                detail: {
+                                    paths: [
+                                        BookMainRoute.Search,
+                                        encodeURIComponent(inputElement.value),
+                                    ],
+                                },
                             }),
                         );
                     } else {
-                        dispatch(new ChangeRouteEvent(defaultBookFullRoute));
+                        dispatch(
+                            new ChangeRouteEvent({
+                                detail: defaultBookFullRoute,
+                            }),
+                        );
                     }
                 })}
             />

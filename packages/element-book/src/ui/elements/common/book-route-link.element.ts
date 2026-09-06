@@ -39,7 +39,11 @@ export const BookRouteLink = defineBookElement<{
                     if (!inputs.router || shouldClickEventTriggerRouteChange(clickEvent)) {
                         clickEvent.preventDefault();
                         window.scrollTo(0, 0);
-                        dispatch(new ChangeRouteEvent(inputs.route));
+                        dispatch(
+                            new ChangeRouteEvent({
+                                detail: inputs.route,
+                            }),
+                        );
                     }
                 })}
             >

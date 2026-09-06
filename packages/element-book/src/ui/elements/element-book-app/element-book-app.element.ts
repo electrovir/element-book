@@ -179,7 +179,11 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
                 inputs.elementBookRoutePaths &&
                 !check.jsonEquals(inputs.elementBookRoutePaths, state.currentRoute.paths)
             ) {
-                dispatch(new events.pathUpdate(newRoute.paths));
+                dispatch(
+                    new events.pathUpdate({
+                        detail: newRoute.paths,
+                    }),
+                );
             }
         }
 

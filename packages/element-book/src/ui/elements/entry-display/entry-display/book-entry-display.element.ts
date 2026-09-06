@@ -117,7 +117,11 @@ export const BookEntryDisplay = defineBookElement<{
                 html`
                     <div
                         ${onDomCreated(() => {
-                            dispatch(new events.loadingRender(true));
+                            dispatch(
+                                new events.loadingRender({
+                                    detail: true,
+                                }),
+                            );
                         })}
                         class="loading"
                     >

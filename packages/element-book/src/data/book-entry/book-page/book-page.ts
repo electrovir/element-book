@@ -82,7 +82,7 @@ export type BookElementExample<
          */
         state: () => State;
         /** Specify which events this example should intercept (so the user can see them). */
-        showEvents: ReadonlyArray<string | TypedEvent>;
+        showEvents: ReadonlyArray<string | TypedEvent<string>>;
         /**
          * Style the element example. You can even use the :host selector to style this specific
          * example's wrapper element!
