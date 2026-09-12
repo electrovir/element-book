@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-book-example",
-    "version": "27.0.0-beta.0",
+    "version": "27.0.0-beta.1",
     "private": true,
     "license": "(MIT OR CC0-1.0)",
     "sideEffects": false,
