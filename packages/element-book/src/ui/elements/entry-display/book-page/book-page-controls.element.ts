@@ -1,10 +1,10 @@
 import {check} from '@augment-vir/assert';
 import {type AnyObject, type Values} from '@augment-vir/common';
-import {VirColorPicker} from '@electrovir/color';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {
     Options24Icon,
     ViraCheckbox,
+    ViraColorPicker,
     ViraError,
     ViraIcon,
     ViraInput,
@@ -183,17 +183,17 @@ function createControlInput(
         `;
     } else if (isControlInitType(controlInit, BookPageControlType.Color)) {
         return html`
-            <${VirColorPicker.assign({
+            <${ViraColorPicker.assign({
                 color: value,
             })}
                 style=${css`
-                    ${VirColorPicker.cssVars['vir-color-picker-swatch-height'].name}: 24px;
-                    ${VirColorPicker.cssVars['vir-color-picker-swatch-width'].name}: 24px;
+                    ${ViraColorPicker.cssVars['vira-color-picker-swatch-height'].name}: 24px;
+                    ${ViraColorPicker.cssVars['vira-color-picker-swatch-width'].name}: 24px;
                 `}
-                ${listen(VirColorPicker.events.colorChange, (event) => {
+                ${listen(ViraColorPicker.events.colorChange, (event) => {
                     valueChange(event.detail);
                 })}
-            ></${VirColorPicker}>
+            ></${ViraColorPicker}>
         `;
     } else if (isControlInitType(controlInit, BookPageControlType.Text)) {
         return html`
