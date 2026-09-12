@@ -1,6 +1,6 @@
 {
     "name": "element-book",
-    "version": "27.0.0-beta.2",
+    "version": "27.0.0-beta.3",
     "keywords": [
         "book",
         "design system",
@@ -41,9 +41,9 @@
         "test:docs": "virmator docs check"
     },
     "dependencies": {
-        "@augment-vir/assert": "^32.3.0-beta.0",
-        "@augment-vir/common": "^32.3.0-beta.0",
-        "@augment-vir/web": "^32.3.0-beta.0",
+        "@augment-vir/assert": "^32.3.0",
+        "@augment-vir/common": "^32.3.0",
+        "@augment-vir/web": "^32.3.0",
         "@electrovir/color": "^2.0.0-beta.0",
         "colorjs.io": "^0.7.1",
         "date-vir": "^9.1.1",
@@ -52,16 +52,16 @@
         "typed-event-target": "^4.3.3"
     },
     "devDependencies": {
-        "@augment-vir/test": "^32.3.0-beta.0",
+        "@augment-vir/test": "^32.3.0",
         "@web/dev-server-esbuild": "^2.0.0",
         "@web/test-runner": "^1.0.0",
         "@web/test-runner-commands": "^1.0.1",
         "@web/test-runner-playwright": "^1.0.0",
         "@web/test-runner-visual-regression": "^1.0.1",
-        "element-vir": "27.0.0-beta.3",
+        "element-vir": "27.0.0",
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.6",
-        "theme-vir": "^29.0.0-beta.0",
+        "theme-vir": "^29.0.0-beta.1",
         "type-fest": "^5.9.0",
         "typedoc": "^0.28.20",
         "typescript": "5.9.3",
@@ -69,7 +69,7 @@
     },
     "peerDependencies": {
         "element-vir": "^27.0.0-beta.3",
-        "theme-vir": "^29.0.0-beta.0",
+        "theme-vir": "^29.0.0-beta.1",
         "vira": "^32.0.0-beta.0"
     },
     "engines": {
