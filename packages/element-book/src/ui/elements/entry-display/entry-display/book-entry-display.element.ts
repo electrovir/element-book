@@ -92,7 +92,7 @@ export const BookEntryDisplay = defineBookElement<{
     events: {
         loadingRender: defineElementEvent<boolean>(),
     },
-    render: ({inputs, dispatch, events, state, updateState}) => {
+    render({inputs, dispatch, events, state, updateState}) {
         const currentSearch = extractSearchQuery(inputs.currentRoute.paths);
 
         const entryTemplates = createNodeTemplates({

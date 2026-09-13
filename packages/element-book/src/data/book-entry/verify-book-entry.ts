@@ -20,17 +20,17 @@ export function getPageTitleError(title: string): Error | undefined {
 }
 
 export const bookEntryVerifiers = {
-    [BookEntryType.ElementExample]: () => {
+    [BookEntryType.ElementExample]() {
         /** Currently all element example checking happens on page definition. */
         return [];
     },
-    [BookEntryType.Page]: (bookPage) => {
+    [BookEntryType.Page](bookPage) {
         return [
             getPageTitleError(bookPage.title),
             ...checkControls(bookPage.controls, bookPage.title),
         ].filter(check.isTruthy);
     },
-    [BookEntryType.Root]: () => {
+    [BookEntryType.Root]() {
         return [];
     },
 } satisfies {

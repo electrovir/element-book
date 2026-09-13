@@ -39,9 +39,11 @@ export const BookPageControls = defineBookElement<{
         }>(),
     },
     hostClasses: {
-        'book-page-controls-has-controls': ({inputs}) => !!Object.keys(inputs.config).length,
+        'book-page-controls-has-controls'({inputs}) {
+            return !!Object.keys(inputs.config).length;
+        },
     },
-    styles: ({hostClasses}) => {
+    styles({hostClasses}) {
         return css`
             :host {
                 display: flex;

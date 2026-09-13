@@ -40,7 +40,7 @@ export const VirApp = defineElement()({
             paths: ['book'] as ReadonlyArray<string>,
         };
     },
-    render: ({state, updateState}) => {
+    render({state, updateState}) {
         return html`
             <div class="controls">
                 <label>

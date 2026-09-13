@@ -124,7 +124,7 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
             darkModeCleanup: undefined,
         });
     },
-    render: ({state, inputs, host, updateState, dispatch, events, slotNames}) => {
+    render({state, inputs, host, updateState, dispatch, events, slotNames}) {
         if (inputs._debug) {
             console.info('rendering element-book app');
         }
@@ -228,15 +228,15 @@ export const ElementBookApp = defineElement<ElementBookConfig>()({
 
             if (!state.darkModeCleanup) {
                 const query = globalThis.matchMedia('(prefers-color-scheme: dark)');
-                const listener = (event: MediaQueryListEvent) => {
+                function listener(event: MediaQueryListEvent) {
                     updateState({
                         isDarkMode: event.matches,
                     });
-                };
+                }
                 query.addEventListener('change', listener);
                 updateState({
                     isDarkMode: query.matches,
-                    darkModeCleanup: () => {
+                    darkModeCleanup() {
                         query.removeEventListener('change', listener);
                     },
                 });

@@ -20,7 +20,7 @@ export const BookNav = defineBookElement<{
     cssVars: {
         'book-nav-internal-indent': '0',
     },
-    styles: ({cssVars}) => {
+    styles({cssVars}) {
         return css`
             :host {
                 display: flex;

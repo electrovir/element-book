@@ -37,7 +37,7 @@ describe(defineBookPage.name, () => {
                         'what up',
                     ],
                     render({state, updateState}) {
-                        if (state.observable.value === undefined) {
+                        if (state.observable.value == undefined) {
                             state.observable.setValue(5);
                         }
                         return '';

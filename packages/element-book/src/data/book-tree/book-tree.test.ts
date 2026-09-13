@@ -1,6 +1,6 @@
 import {assert} from '@augment-vir/assert';
 import {describe, it, itCases} from '@augment-vir/test';
-import {treeExample} from '../../test/example-tree.test-helper.js';
+import {treeExample} from '../../test/example-tree.mock.js';
 import {BookEntryType} from '../book-entry/book-entry-type.js';
 import {type BookTreeNode, isBookTreeNodeMarker} from './book-tree-node.js';
 import {

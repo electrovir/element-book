@@ -13,7 +13,7 @@ export const BookRouteLink = defineBookElement<{
     cssVars: {
         'book-route-link-anchor-padding': '0px',
     },
-    styles: ({cssVars}) => {
+    styles({cssVars}) {
         return css`
             a {
                 box-sizing: border-box;
@@ -26,7 +26,7 @@ export const BookRouteLink = defineBookElement<{
             }
         `;
     },
-    render: ({inputs, dispatch}) => {
+    render({inputs, dispatch}) {
         const linkUrl: string =
             inputs.router?.createRouteUrl({
                 ...inputs.route,
