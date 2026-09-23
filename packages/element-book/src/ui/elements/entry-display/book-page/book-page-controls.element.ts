@@ -1,14 +1,14 @@
-import {check} from '@augment-vir/assert';
+import {assertWrap, check} from '@augment-vir/assert';
 import {type AnyObject, type Values} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {
     Options24Icon,
     ViraCheckbox,
     ViraColorPicker,
+    ViraDropdown,
     ViraError,
     ViraIcon,
     ViraInput,
-    ViraSelect,
     viraTheme,
 } from 'vira';
 import {
@@ -67,7 +67,7 @@ export const BookPageControls = defineBookElement<{
                 flex-direction: column;
             }
 
-            ${ViraInput}, ${ViraSelect} {
+            ${ViraInput}, ${ViraDropdown} {
                 height: 24px;
                 max-width: 128px;
             }
@@ -222,8 +222,10 @@ function createControlInput(
         `;
     } else if (isControlInitType(controlInit, BookPageControlType.Dropdown)) {
         return html`
-            <${ViraSelect.assign({
-                value,
+            <${ViraDropdown.assign({
+                selected: [
+                    value,
+                ],
                 options: controlInit.options.map((option) => {
                     return {
                         label: option,
@@ -231,10 +233,10 @@ function createControlInput(
                     };
                 }),
             })}
-                ${listen(ViraSelect.events.valueChange, (event) => {
-                    valueChange(event.detail);
+                ${listen(ViraDropdown.events.selectedValuesChange, (event) => {
+                    valueChange(assertWrap.isDefined(event.detail[0]));
                 })}
-            ></${ViraSelect}>
+            ></${ViraDropdown}>
         `;
     } else if (isControlInitType(controlInit, BookPageControlType.Custom)) {
         return controlInit.content;
