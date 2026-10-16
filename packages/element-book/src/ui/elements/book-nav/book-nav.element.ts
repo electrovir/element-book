@@ -1,6 +1,6 @@
 import {check} from '@augment-vir/assert';
 import {classMap, css, html, renderIf} from 'element-vir';
-import {Element16Icon, ViraIcon, viraTheme} from 'vira';
+import {lucideIcons, ViraIcon, viraTheme} from 'vira';
 import {BookEntryType} from '../../../data/book-entry/book-entry-type.js';
 import {type BookTreeNode} from '../../../data/book-tree/book-tree-node.js';
 import {isBookTreeNode} from '../../../data/book-tree/book-tree.js';
@@ -112,7 +112,7 @@ export const BookNav = defineBookElement<{
                                 isBookTreeNode(treeNode, BookEntryType.ElementExample),
                                 html`
                                     <${ViraIcon.assign({
-                                        icon: Element16Icon,
+                                        icon: lucideIcons.CodeXml,
                                     })}></${ViraIcon}>
                                 `,
                             )}

@@ -2,7 +2,8 @@ import {assertWrap, check} from '@augment-vir/assert';
 import {type AnyObject, type Values} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {
-    Options24Icon,
+    createSizedIcon,
+    lucideIcons,
     ViraCheckbox,
     ViraColorPicker,
     ViraDropdown,
@@ -14,8 +15,8 @@ import {
 import {
     type BookPageControl,
     type BookPageControlInit,
-    BookPageControlType,
     type BookPageControlsValues,
+    BookPageControlType,
     isControlInitType,
 } from '../../../../data/book-entry/book-page/book-page-controls.js';
 import {type BookPage} from '../../../../data/book-entry/book-page/book-page.js';
@@ -143,7 +144,7 @@ export const BookPageControls = defineBookElement<{
                             index === 0,
                             html`
                                 <${ViraIcon.assign({
-                                    icon: Options24Icon,
+                                    icon: createSizedIcon(lucideIcons.SlidersHorizontal, 24),
                                 })}
                                     class="options-icon"
                                 ></${ViraIcon}>
