@@ -1,5 +1,5 @@
 import {defineElement, html} from 'element-vir';
-import {ElementBookApp} from '../ui/elements/element-book-app/element-book-app.element.js';
+import {ElementBookApp} from '../index.js';
 import {myPage} from './define-page.example.js';
 
 export const MyApp = defineElement()({

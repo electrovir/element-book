@@ -1,6 +1,6 @@
 {
     "name": "@electrovir/element-book-example",
-    "version": "27.0.2",
+    "version": "27.0.3",
     "private": true,
     "license": "(MIT OR CC0-1.0)",
     "sideEffects": false,
@@ -14,7 +14,7 @@
     "dependencies": {
         "@augment-vir/common": "^32.5.0",
         "@augment-vir/web": "^32.5.0",
-        "element-book": "^27.0.2",
+        "element-book": "^27.0.3",
         "element-vir": "^27.0.2"
     },
     "devDependencies": {
@@ -23,10 +23,10 @@
         "@web/test-runner-commands": "^1.0.1",
         "@web/test-runner-playwright": "^1.0.0",
         "esbuild": "^0.28.2",
-        "markdown-code-example-inserter": "^3.0.6",
+        "markdown-code-example-inserter": "^3.1.1",
         "typedoc": "^0.28.20",
         "typescript": "5.9.3",
-        "vite": "^8.3.1",
+        "vite": "^8.3.4",
         "vite-tsconfig-paths": "^6.1.1"
     }
 }

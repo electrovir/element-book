@@ -1,5 +1,5 @@
 import {html} from 'element-vir';
-import {defineBookPage} from '../data/book-entry/book-page/define-book-page.js';
+import {defineBookPage} from '../index.js';
 
 export const myPage = defineBookPage({
     /** Use `undefined` if your page is at the top level. */

@@ -20,7 +20,7 @@ npm i element-book
     <!-- example-link: ./src/readme-examples/define-page.example.ts -->
 
     ```TypeScript
-    import {defineBookPage} from '../data/book-entry/book-page/define-book-page.js';
+    import {defineBookPage} from 'element-book';
 
     export const myPage = defineBookPage({
         /** Use `undefined` if your page is at the top level. */
@@ -35,7 +35,7 @@ npm i element-book
 
     ```TypeScript
     import {html} from 'element-vir';
-    import {defineBookPage} from '../data/book-entry/book-page/define-book-page.js';
+    import {defineBookPage} from 'element-book';
 
     export const myPage = defineBookPage({
         /** Use `undefined` if your page is at the top level. */
@@ -60,7 +60,7 @@ npm i element-book
 
     ```TypeScript
     import {defineElement, html} from 'element-vir';
-    import {ElementBookApp} from '../ui/elements/element-book-app/element-book-app.element.js';
+    import {ElementBookApp} from 'element-book';
     import {myPage} from './define-page.example.js';
 
     export const MyApp = defineElement()({
