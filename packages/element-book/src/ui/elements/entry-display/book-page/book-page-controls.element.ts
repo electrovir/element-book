@@ -3,7 +3,7 @@ import {type AnyObject, type Values} from '@augment-vir/common';
 import {css, defineElementEvent, html, listen, renderIf} from 'element-vir';
 import {
     createSizedIcon,
-    lucideIcons,
+    LucideSlidersHorizontalIcon,
     ViraCheckbox,
     ViraColorPicker,
     ViraDropdown,
@@ -144,7 +144,7 @@ export const BookPageControls = defineBookElement<{
                             index === 0,
                             html`
                                 <${ViraIcon.assign({
-                                    icon: createSizedIcon(lucideIcons.SlidersHorizontal, 24),
+                                    icon: createSizedIcon(LucideSlidersHorizontalIcon, 24),
                                 })}
                                     class="options-icon"
                                 ></${ViraIcon}>
